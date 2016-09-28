@@ -1,0 +1,71 @@
+hash: 05cbf0db3fede52bfdb03ebe2eb7b1661c572e578bb1e6317fd2124664e31194
+updated: 2016-09-28T10:37:46.640334446-07:00
+imports:
+- name: github.com/dgrijalva/jwt-go
+  version: 24c63f56522a87ec5339cc3567883f1039378fdb
+- name: github.com/fsnotify/fsnotify
+  version: f12c6236fe7b5cf6bcf30e5935d08cb079d78334
+- name: github.com/golang/protobuf
+  version: 87c000235d3d852c1628dc9490cd21ab36a7d69f
+  subpackages:
+  - proto
+- name: github.com/labstack/echo
+  version: 4de38c07d159b4f370b3ccc08a13102410c12c4b
+  subpackages:
+  - context
+  - middleware
+- name: github.com/labstack/gommon
+  version: f3b1a1b3bd4726161e1200863d278df7da5e66ff
+  subpackages:
+  - bytes
+  - color
+  - log
+  - random
+- name: github.com/mattn/go-colorable
+  version: ed8eb9e318d7a84ce5915b495b7d35e0cfe7b5a8
+- name: github.com/mattn/go-isatty
+  version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
+- name: github.com/miekg/dns
+  version: db96a2b759cdef4f11a34506a42eb8d1290c598e
+- name: github.com/mitchellh/mapstructure
+  version: ca63d7c062ee3c9f34db231e352b60012b4fd0c1
+- name: github.com/nats-io/nats
+  version: 70b70be17b77e8da86b6a3bcfe94fb22718a8dd0
+  subpackages:
+  - encoders/builtin
+- name: github.com/nats-io/nuid
+  version: 289cccf02c178dc782430d534e3c1f5b72af807f
+- name: github.com/rsc/letsencrypt
+  version: 35c6e61d12298c67f1e90548d34a34585ac289da
+- name: github.com/tylerb/graceful
+  version: 50a48b6e73fcc75b45e22c05b79629a67c79e938
+- name: github.com/valyala/fasttemplate
+  version: 3b874956e03f1636d171bda64b130f9135f42cff
+- name: github.com/xenolf/lego
+  version: ca0bd606b23a8b50f92915772917bd187ae1491b
+  subpackages:
+  - acme
+- name: golang.org/x/crypto
+  version: 8e06e8ddd9629eb88639aba897641bff8031f1d3
+  subpackages:
+  - ocsp
+- name: golang.org/x/net
+  version: f09c4662a0bd6bd8943ac7b4931e185df9471da4
+  subpackages:
+  - context
+  - publicsuffix
+  - websocket
+- name: golang.org/x/sys
+  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
+  subpackages:
+  - unix
+- name: golang.org/x/time
+  version: 711ca1cb87636abec28122ef3bc6a77269d433f3
+  subpackages:
+  - rate
+- name: gopkg.in/square/go-jose.v1
+  version: aa2e30fdd1fe9dd3394119af66451ae790d50e0d
+  subpackages:
+  - cipher
+  - json
+testImports: []

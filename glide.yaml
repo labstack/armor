@@ -1,0 +1,15 @@
+package: github.com/labstack/armor
+import:
+- package: github.com/fsnotify/fsnotify
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
+- package: github.com/labstack/echo
+  version: v3
+  subpackages:
+  - middleware
+- package: github.com/labstack/gommon
+  subpackages:
+  - log
+- package: github.com/mitchellh/mapstructure
+- package: github.com/nats-io/nats
