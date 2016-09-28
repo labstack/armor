@@ -1,4 +1,4 @@
-# Armor - Simple HTTP Server
+# Armor - Simple HTTP server, supports HTTP/2 and auto TLS
 
 Armor is a simple HTTP server written in Go. It is based on the upcoming [Echo](https://github.com/labstack/echo) v3.
 
