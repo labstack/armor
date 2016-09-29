@@ -51,7 +51,7 @@ Open a terminal and type `armor`
 |   _   ||   |  | || ||_|| ||       ||   |  | |
 |__| |__||___|  |_||_|   |_||_______||___|  |_|
 
-                                      v0.1.0
+                                      v0.1.1
 
               Simple HTTP Server
       https://github.com/labstack/armor

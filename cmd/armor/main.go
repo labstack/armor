@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
+	"os"
 
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/http"
@@ -12,7 +13,7 @@ import (
 )
 
 const (
-	version = "0.1.0"
+	version = "0.1.1"
 	banner  = `
  _______  ______    __   __  _______  ______
 |   _   ||    _ |  |  |_|  ||       ||    _ |
@@ -49,7 +50,9 @@ func main() {
 	}
 
 	// Global flags
-	config := flag.String("c", "", "armor config file")
+	c := flag.String("c", "", "config file")
+	v := flag.Bool("v", false, "print the version")
+
 	// daemon := flag.Bool("d", false, "run in daemon mode")
 	// -daemon
 	// -p [http port]
@@ -62,15 +65,16 @@ func main() {
 	// - restart
 	// - reload
 	// port := flag.String("p", "", "the port to bind to")
-	// version := flag.String("v", "", "print version")
 	// directory?
 	flag.Parse()
 
-	// Commands
-	// TODO:
+	if *v {
+		color.Printf("armor %s", color.Red("v"+version))
+		os.Exit(0)
+	}
 
 	// Load config
-	data, err := ioutil.ReadFile(*config)
+	data, err := ioutil.ReadFile(*c)
 	if err != nil {
 		// Use default config
 		data = []byte(defaultConfig)
