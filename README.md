@@ -10,7 +10,7 @@ Armor is a simple HTTP server written in Go. It is based on the upcoming [Echo](
 - Define virtual hosts with path level routing
 - Graceful shutdown
 - Limit request body
-- Server static files
+- Serve static files
 - Log requests
 - Gzip response
 - CORS
