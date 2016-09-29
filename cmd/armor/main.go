@@ -24,10 +24,10 @@ const (
 
                                       %s
 
-              Simple HTTP Server
-      https://github.com/labstack/armor
-_________________ O/___________________________
-                  O\
+Simple HTTP server, supports HTTP/2 and auto TLS
+      %s
+___________________O/___________________________
+                   O\
 `
 	defaultConfig = `{
     "address": ":8080",
@@ -83,6 +83,6 @@ func main() {
 	// if *port != "" {
 	//   a.HTTP.Address = net.JoinHostPort("", *port)
 	// }
-	color.Printf(banner+"\n", color.Red("v"+version))
+	color.Printf(banner+"\n", color.Red("v"+version), color.Blue("https://github.com/labstack/armor"))
 	http.Start(a)
 }
