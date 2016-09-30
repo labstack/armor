@@ -1,0 +1,19 @@
+package: github.com/labstack/echo
+import:
+- package: github.com/dgrijalva/jwt-go
+- package: github.com/labstack/gommon
+  subpackages:
+  - bytes
+  - color
+  - log
+  - random
+- package: github.com/mattn/go-isatty
+- package: github.com/stretchr/testify
+  subpackages:
+  - assert
+- package: github.com/valyala/fasttemplate
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: gopkg.in/tylerb/graceful.v1
+- package: github.com/rsc/letsencrypt
