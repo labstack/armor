@@ -1,5 +1,7 @@
 # Armor - Simple HTTP server, supports HTTP/2 and auto TLS
 
+[![Join the chat at https://gitter.im/labstack/armor](https://badges.gitter.im/labstack/armor.svg)](https://gitter.im/labstack/armor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Armor is a simple HTTP server written in Go. It is based on the upcoming [Echo](https://github.com/labstack/echo) v3.
 
 ## What can it do today?
