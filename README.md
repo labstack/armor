@@ -1,5 +1,7 @@
 # Armor - Simple HTTP server, supports HTTP/2 and auto TLS
 
+[![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/labstack/armor/master/LICENSE) [![Build Status](http://img.shields.io/travis/labstack/armor.svg?style=flat-square)](https://travis-ci.org/labstack/echo) [![Join the chat at https://gitter.im/labstack/armor](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg?style=flat-square)](https://gitter.im/labstack/armor) [![Twitter](https://img.shields.io/badge/twitter-@labstack-55acee.svg?style=flat-square)](https://twitter.com/labstack)
+
 Armor is a simple HTTP server written in Go. It is based on the upcoming [Echo](https://github.com/labstack/echo) v3.
 
 ## What can it do today?
@@ -53,10 +55,10 @@ Open a terminal and type `armor`
 
                                       v0.1.1
 
-              Simple HTTP Server
+Simple HTTP server, supports HTTP/2 and auto TLS
       https://github.com/labstack/armor
-_________________ O/___________________________
-                  O\
+___________________O/___________________________
+                   O\
 
  ⇛ http server started on :8080
 ```
