@@ -38,7 +38,16 @@ a custom plugin super easy.
 - Download the latest armor release for your platform from https://github.com/labstack/armor/releases
 - Copy the armor binary to somewhere on the `PATH` so that it can be executed e.g. `/usr/local/bin` or `%PATH%`
 
-### Executing
+### Usage
+
+```sh
+Usage of armor:
+  -c string
+    	config file
+  -p string
+    	listen port
+  -v	print the version
+```
 
 Open a terminal and type `armor`
 

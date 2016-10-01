@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
+	"net"
 	"os"
 
 	"github.com/labstack/armor"
@@ -13,8 +14,7 @@ import (
 )
 
 const (
-	version = "0.1.1"
-	banner  = `
+	banner = `
  _______  ______    __   __  _______  ______
 |   _   ||    _ |  |  |_|  ||       ||    _ |
 |  |_|  ||   | ||  |       ||   _   ||   | ||
@@ -51,6 +51,7 @@ func main() {
 
 	// Global flags
 	c := flag.String("c", "", "config file")
+	p := flag.String("p", "", "listen port")
 	v := flag.Bool("v", false, "print the version")
 
 	// daemon := flag.Bool("d", false, "run in daemon mode")
@@ -69,7 +70,7 @@ func main() {
 	flag.Parse()
 
 	if *v {
-		color.Printf("armor %s", color.Red("v"+version))
+		color.Printf("armor %s", color.Red("v"+armor.Version))
 		os.Exit(0)
 	}
 
@@ -84,9 +85,9 @@ func main() {
 	}
 
 	// Flags should override
-	// if *port != "" {
-	//   a.HTTP.Address = net.JoinHostPort("", *port)
-	// }
-	color.Printf(banner+"\n", color.Red("v"+version), color.Blue("https://github.com/labstack/armor"))
+	if *p != "" {
+		a.Address = net.JoinHostPort("", *p)
+	}
+	color.Printf(banner+"\n", color.Red("v"+armor.Version), color.Blue("https://github.com/labstack/armor"))
 	http.Start(a)
 }

@@ -40,3 +40,7 @@ type (
 		Plugins map[string]interface{} `json:"plugins"`
 	}
 )
+
+const (
+	Version = "0.1.1"
+)
