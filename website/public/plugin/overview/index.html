@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>
+        Overview - Simple HTTP server, supports HTTP/2 and auto TLS - LabStack Armor
+    </title>
+    <meta name="description" content="Simple HTTP server, HTTP/2, Auto TL via https://letsencrypt.org, High performance, Minimalistic and Fast.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://armor.labstack.com/styles/w3.css">
+    <link rel="stylesheet" href="https://armor.labstack.com/styles/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+    <link rel="stylesheet" href="https://armor.labstack.com/styles/prism.css">
+    <link rel="stylesheet" href="https://armor.labstack.com/styles/main.css">
+</head>
+
+<body>
+	<nav class="navbar">
+  <a href="https://armor.labstack.com/"><img class="logo" src="https://armor.labstack.com/images/logo.png" alt="Armor"></a>
+  
+  <a class="github-button" href="https://github.com/labstack/armor" data-icon="octicon-star" data-style="mega" data-count-href="/labstack/armor/stargazers" data-count-api="/repos/labstack/armor#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star labstack/armor on GitHub">
+    Star
+  </a>
+  <span class="w3-xxlarge w3-hide-large" onclick="openSidenav()">&#9776;</span>
+</nav>
+
+	<nav id="sidenav" class="w3-sidenav w3-collapse w3-animate-left">
+  <span class="w3-closenav w3-xxlarge w3-hide-large" onclick="closeSidenav()">
+    &times;
+  </span>
+  <a class="support w3-btn w3-white w3-border w3-border-theme w3-round-xlarge" href="https://armor.labstack.com/support-armor">
+    <i class="fa fa-heart" aria-hidden="true"></i> Support Armor
+  </a>
+  
+  
+    <h4><i class='fa fa-book'></i> Guide</h4>
+      
+        <a href="https://armor.labstack.com/guide/getting-started">
+          Getting Started
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/guide/configuration">
+          Configuration
+        </a>
+        
+      
+  
+    <h4><i class='fa fa-plug'></i> Plugins</h4>
+      
+        <a class="active" href="https://armor.labstack.com/plugin/overview">
+          Overview
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/redirect">
+          Redirect
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/trailing-slash">
+          TrailingSlash
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/body-limit">
+          BodyLimit
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/gzip">
+          Gzip
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/logger">
+          Logger
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/proxy">
+          Proxy
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/secure">
+          Secure
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/cors">
+          CORS
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/static">
+          Static
+        </a>
+        
+      
+        <a href="https://armor.labstack.com/plugin/header">
+          Header
+        </a>
+        
+      
+  
+    <h4><i class='fa fa-code'></i> Recipes</h4>
+      
+  
+</nav>
+
+	<div id="search-menu"></div>
+
+	<div class="w3-main w3-padding-128">
+		
+
+
+	  <div class="w3-row-padding">
+			<div class="w3-col m9 l9">
+				
+        <article class="content">
+          <section>
+            
+
+<!-- ## Plugin Overview -->
+
+<h2 id="plugin-configuration">Plugin Configuration</h2>
+
+<h3 id="proxy"><code>proxy</code></h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left"><code>balance</code></td>
+<td align="left">string</td>
+<td align="left">Defalut value <code>random</code></td>
+</tr>
+</tbody>
+</table>
+
+          </section>
+          <footer style="margin-top: 40px;">
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+               
+              var disqus_shortname = 'labstack';
+
+               
+              (function() {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+              })();
+            </script>
+          </footer>
+        </article>
+			</div>
+	  </div>
+	</div>
+	<footer class="w3-container w3-padding-48 w3-center footer">
+  <p>
+    <strong>Armor</strong> by <a href="https://labstack.com">LabStack</a> © 2016 LabStack. All Rights Reserved.
+  </p>
+  <p>
+    <a class="icon" href="https://blog.labstack.com">
+      <i class="fa fa-rss" aria-hidden="true"></i>
+    </a>
+    <a class="icon" href="https://github.com/labstack">
+      <i class="fa fa-github" aria-hidden="true"></i>
+    </a>
+    <a class="icon" href="https://facebook.com/labstack">
+      <i class="fa fa-facebook" aria-hidden="true"></i>
+    </a>
+    <a class="icon" href="https://twitter.com/labstack">
+      <i class="fa fa-twitter" aria-hidden="true"></i>
+    </a>
+    <a class="icon" href="https://plus.google.com/+labstack">
+      <i class="fa fa-google-plus" aria-hidden="true"></i>
+    </a>
+  </p>
+</footer>
+<script type="text/javascript" src="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+  docsearch({
+    apiKey: '69dfc65b57ccba29ec34b68aa5b274ed',
+    indexName: 'labstack',
+    inputSelector: '#search-box',
+    autocompleteOptions: {
+      dropdownMenuContainer: '#search-menu'
+    }
+  });
+</script>
+
+<script async defer id="github-bjs" src="//buttons.github.io/buttons.js"></script>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-85059636-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+<script src="https://armor.labstack.com/scripts/prism.js"></script>
+<script src="https://armor.labstack.com/scripts/armor.js"></script>
+
+</body>
+</html>

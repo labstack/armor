@@ -22,12 +22,12 @@ Armor is written in Go. It is based on the upcoming [Echo](https://github.com/la
   - ContentSecurityPolicy
 - Add / Remove trailing slash from the URL with option to redirect
 - Redirect requests
- - HTTP to HTTPS
- - HTTP to HTTPS WWW
- - HTTP to HTTPS non WWW
- - Non WWW to WWW
- - WWW to non WWW
-
+ - http to https
+ - http to https www
+ - http to https non www
+ - non www to www
+ - www to non www
+ 
 Most of the functionality is implemented via `Plugin` interface which makes writing
 a custom plugin super easy.
 

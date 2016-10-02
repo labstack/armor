@@ -1,0 +1,36 @@
+{
+  "baseurl": "https://armor.labstack.com",
+  "languageCode": "en-us",
+  "title": "Simple HTTP server, supports HTTP/2 and auto TLS - LabStack Armor",
+  "canonifyurls": true,
+  "googleAnalytics": "UA-85059636-1",
+  "permalinks": {
+    "guide": "/guide/:title",
+    "plugins": "/plugin/:title",
+    "recipes": "/recipes/:title"
+  },
+  "menu": {
+    "side": [{
+      "name": "Guide",
+      "pre": "<i class='fa fa-book'></i>",
+      "weight": 1,
+      "identifier": "guide",
+      "url": "guide"
+    },{
+      "name": "Plugins",
+      "pre": "<i class='fa fa-plug'></i>",
+      "weight": 1,
+      "identifier": "plugins",
+      "url": "plugins"
+    }, {
+      "name": "Recipes",
+      "pre": "<i class='fa fa-code'></i>",
+      "weight": 2,
+      "identifier": "recipes",
+      "url": "recipes"
+    }]
+  },
+  "params": {
+    "description": "Simple HTTP server, HTTP/2, Auto TL via https://letsencrypt.org, High performance, Minimalistic and Fast."
+  }
+}
