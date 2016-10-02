@@ -1,16 +1,16 @@
 hash: 05cbf0db3fede52bfdb03ebe2eb7b1661c572e578bb1e6317fd2124664e31194
-updated: 2016-09-28T10:37:46.640334446-07:00
+updated: 2016-10-01T21:10:23.663052058-07:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: 24c63f56522a87ec5339cc3567883f1039378fdb
 - name: github.com/fsnotify/fsnotify
-  version: f12c6236fe7b5cf6bcf30e5935d08cb079d78334
+  version: 55579be41eb3989c68f4ade2461b8fef2abaa18c
 - name: github.com/golang/protobuf
-  version: 87c000235d3d852c1628dc9490cd21ab36a7d69f
+  version: df1d3ca07d2d07bba352d5b73c4313b4e2a6203e
   subpackages:
   - proto
 - name: github.com/labstack/echo
-  version: 4de38c07d159b4f370b3ccc08a13102410c12c4b
+  version: 9c864319d321db96e2cb82f3140e18be4467261b
   subpackages:
   - context
   - middleware
@@ -22,7 +22,7 @@ imports:
   - log
   - random
 - name: github.com/mattn/go-colorable
-  version: ed8eb9e318d7a84ce5915b495b7d35e0cfe7b5a8
+  version: 6c903ff4aa50920ca86087a280590b36b3152b9c
 - name: github.com/mattn/go-isatty
   version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
 - name: github.com/miekg/dns
@@ -30,27 +30,27 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: ca63d7c062ee3c9f34db231e352b60012b4fd0c1
 - name: github.com/nats-io/nats
-  version: 70b70be17b77e8da86b6a3bcfe94fb22718a8dd0
+  version: 904e847fa3d16dff97348235a81fc744afa71acf
   subpackages:
   - encoders/builtin
 - name: github.com/nats-io/nuid
   version: 289cccf02c178dc782430d534e3c1f5b72af807f
 - name: github.com/rsc/letsencrypt
-  version: 35c6e61d12298c67f1e90548d34a34585ac289da
+  version: 76104d26167d38b6a0010f42bfc8ec5487742e8b
 - name: github.com/tylerb/graceful
   version: 50a48b6e73fcc75b45e22c05b79629a67c79e938
 - name: github.com/valyala/fasttemplate
   version: 3b874956e03f1636d171bda64b130f9135f42cff
 - name: github.com/xenolf/lego
-  version: ca0bd606b23a8b50f92915772917bd187ae1491b
+  version: f3cd0bfdeebbf2fff1893beafc156f979c3c1e41
   subpackages:
   - acme
 - name: golang.org/x/crypto
-  version: 8e06e8ddd9629eb88639aba897641bff8031f1d3
+  version: 568507f56e5b05b3c219ffd7fba12655c07bcc86
   subpackages:
   - ocsp
 - name: golang.org/x/net
-  version: f09c4662a0bd6bd8943ac7b4931e185df9471da4
+  version: cd95c68ba21fc7ee16ee38cc420473e3d8c4afd8
   subpackages:
   - context
   - publicsuffix

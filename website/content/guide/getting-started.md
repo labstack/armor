@@ -14,7 +14,7 @@ title = "Getting Started"
 
 ### Homebrew
 
-- [Coming soon](https://github.com/Homebrew/homebrew-core/pull/5403)
+`brew install armor`
 
 ### Go
 
@@ -39,7 +39,7 @@ Type `armor` in your terminal
 |   _   ||   |  | || ||_|| ||       ||   |  | |
 |__| |__||___|  |_||_|   |_||_______||___|  |_|
 
-                                      v0.1.1
+                                      v0.1.2
 
 Simple HTTP server, supports HTTP/2 and auto TLS
       https://github.com/labstack/armor

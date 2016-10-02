@@ -1,10 +1,11 @@
-+++
-title = "Overview"
-[menu.side]
-  parent = "plugins"
-  weight = 1
-  draft = true
-+++
+---
+title: Overview
+menu:
+  side:
+    parent: "plugins"
+    weight: 1
+draft: true
+---
 
 <!-- ## Plugin Overview -->
 

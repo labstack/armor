@@ -45,7 +45,7 @@ Name | Type | Description
 :--- | :--- | :----------
 `plugins` | object | Path plugins
 
-### [Plugins]({{< ref "plugins/overview.md">}})
+### [Plugins]({{< ref "plugins/redirect.md">}})
 
 ### Default Configuration
 
