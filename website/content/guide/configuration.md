@@ -93,7 +93,7 @@ Name | Type | Description
         "plugins": {
           "non-www-redirect": {},
           "static": {
-            "root": "/srv/web",
+            "root": "/var/www/web",
             "html5": true
           }
         }
@@ -101,21 +101,21 @@ Name | Type | Description
       "blog.labstack.com": {
         "plugins": {
           "static": {
-            "root": "/srv/blog"
+            "root": "/var/www/blog"
           }
         }
       },
       "armor.labstack.com": {
         "plugins": {
           "static": {
-            "root": "/srv/armor"
+            "root": "/var/www/armor"
           }
         }
       },
       "echo.labstack.com": {
         "plugins": {
           "static": {
-            "root": "/srv/echo"
+            "root": "/var/www/echo"
           }
         }
       }
