@@ -70,7 +70,7 @@ func main() {
 	flag.Parse()
 
 	if *v {
-		color.Printf("armor %s", color.Red("v"+armor.Version))
+		color.Printf("armor %s\n", color.Red("v"+armor.Version))
 		os.Exit(0)
 	}
 

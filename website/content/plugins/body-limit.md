@@ -1,7 +1,6 @@
 +++
 title = "Body Limit"
 [menu.side]
-  name = "BodyLimit"
   parent = "plugins"
   weight = 3
 +++

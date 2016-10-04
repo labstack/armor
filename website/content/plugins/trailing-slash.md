@@ -1,9 +1,8 @@
 +++
 title = "Trailing Slash"
 [menu.side]
-  name = "TrailingSlash"
   parent = "plugins"
-  weight = 2 
+  weight = 2
 +++
 
 ## TrailingSlash Plugin
