@@ -1,6 +1,8 @@
 +++
 title = "Auto TLS"
+description = "Automatic TLS (HTTPS) via Let’s Encrypt"
 [menu.side]
+  name = "Auto TLS"
   parent = "recipes"
   weight = 1
 +++
@@ -13,18 +15,19 @@ HTML page.
 ### Steps
 
 - Have a domain that resolves to an IP address via `A` or `CNAME` DNS record
-- Install Armor
+- [Install Armor]({{< ref "guide/getting-started.md#installation">}})
 - Copy config `config.json` to `/etc/armor`
 - Copy `index.html` to `/var/www/test`
 - Start Armor `armor -c /etc/armor/config.json`
 - Browse to `http://test.lab.st`, and in a few seconds TLS certificate will
 be installed automatically.
 
+### Source
+
 `config.json`
 
 ```js
 {
-  "address": ":80",
   "tls": {
     "auto": true,
     "cache_file": "/var/www/le.cache"
@@ -43,8 +46,6 @@ be installed automatically.
   }
 }
 ```
-
-### Source
 
 `index.html`
 

@@ -1,6 +1,8 @@
 +++
-title = "Logger"
+title = "Logger Plugin"
+description = "Logger plugin logs HTTP requests"
 [menu.side]
+  name = "Logger"
   parent = "plugins"
   weight = 3
 +++

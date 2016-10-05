@@ -1,6 +1,8 @@
 +++
-title = "Header"
+title = "Header Plugin"
+description = "Header plugin adds / removes response header"
 [menu.side]
+  name = "Header"
   parent = "plugins"
   weight = 5
 +++

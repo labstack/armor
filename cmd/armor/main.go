@@ -88,6 +88,12 @@ func main() {
 	if *p != "" {
 		a.Address = net.JoinHostPort("", *p)
 	}
+
+	// Defaults
+	if a.Address == "" {
+		a.Address = ":80"
+	}
+
 	color.Printf(banner+"\n", color.Red("v"+armor.Version), color.Blue("https://github.com/labstack/armor"))
 	http.Start(a)
 }

@@ -1,6 +1,8 @@
 +++
-title = "Secure"
+title = "Secure Plugin"
+description = "Secure plugin provides protection against web attacks"
 [menu.side]
+  name = "Secure"
   parent = "plugins"
   weight = 3
 +++
@@ -9,7 +11,7 @@ title = "Secure"
 
 ### `secure`
 
-Secure middleware provides protection against cross-site scripting (XSS) attack,
+Secure plugin provides protection against cross-site scripting (XSS) attack,
 content type sniffing, clickjacking, insecure connection and other code injection
 attacks.
 

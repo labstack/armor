@@ -1,6 +1,8 @@
 +++
 title = "Getting Started"
+description = "Getting started with Armor"
 [menu.side]
+  name = "Getting Started"
   parent = "guide"
   weight = 1
 +++

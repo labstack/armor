@@ -1,6 +1,8 @@
 +++
-title = "Proxy"
+title = "Proxy Plugin"
+description = "Proxy plugin proxies HTTP and WebSocket requests to upstream servers"
 [menu.side]
+  name = "Proxy"
   parent = "plugins"
   weight = 3
 +++

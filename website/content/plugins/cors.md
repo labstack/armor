@@ -1,6 +1,8 @@
 +++
-title = "CORS"
+title = "CORS Plugin"
+description = "CORS plugin gives web servers cross-domain access controls, which enable secure cross-domain data transfers."
 [menu.side]
+  name = "CORS"
   parent = "plugins"
   weight = 4
 +++

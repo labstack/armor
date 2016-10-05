@@ -1,6 +1,8 @@
 +++
-title = "Gzip"
+title = "Gzip Plugin"
+description = "Gzip plugin compresses HTTP response using gzip compression scheme"
 [menu.side]
+  name = "Gzip"
   parent = "plugins"
   weight = 3
 +++

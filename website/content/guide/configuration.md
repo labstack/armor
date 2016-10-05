@@ -1,10 +1,11 @@
----
-title: Configuration
-menu:
-  side:
-    parent: guide
-    weight: 2
----
++++
+title = "Configuration"
+description = "Armor configuration"
+[menu.side]
+  name = "Configuration"
+  parent = "guide"
+  weight = 2
++++
 
 ## Configuration
 
