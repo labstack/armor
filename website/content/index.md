@@ -4,7 +4,7 @@ title: Index
 
 # Armor
 
-**Simple HTTP server, supports HTTP/2 and auto TLS**
+**Uncomplicated HTTP server, supports HTTP/2 and auto TLS**
 
 ## What can it do today?
 

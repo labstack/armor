@@ -25,7 +25,7 @@ const (
 
                                       %s
 
-Simple HTTP server, supports HTTP/2 and auto TLS
+Uncomplicated HTTP server, supports HTTP/2 and auto TLS
       %s
 ___________________O/___________________________
                    O\

@@ -1,7 +1,7 @@
 {
   "baseurl": "https://armor.labstack.com",
   "languageCode": "en-us",
-  "title": "Armor - Simple HTTP server, supports HTTP/2 and auto TLS",
+  "title": "Armor - Uncomplicated HTTP server, supports HTTP/2 and auto TLS",
   "canonifyurls": true,
   "googleAnalytics": "UA-85059636-1",
   "permalinks": {

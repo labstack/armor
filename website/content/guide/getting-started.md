@@ -43,7 +43,7 @@ Type `armor` in your terminal
 
                                       v0.1.2
 
-Simple HTTP server, supports HTTP/2 and auto TLS
+Uncomplicated HTTP server, supports HTTP/2 and auto TLS
       https://github.com/labstack/armor
 ___________________O/___________________________
                    O\
