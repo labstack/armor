@@ -57,6 +57,6 @@ be installed automatically.
 </head>
 <body>
   <h1>Welcome to Armor!</h1>
-<body>
-<html>
+</body>
+</html>
 ```

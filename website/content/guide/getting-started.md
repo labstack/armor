@@ -56,6 +56,16 @@ the default config. Go to http://localhost:8080 to browse the directory.
 
 Armor can also be run using Docker `docker run labstack/armor`.
 
+### Docker
+
+```sh
+docker run \
+  -p 8080:80 \
+  -v <config_file>:/etc/armor/config.json \
+  -v <volume_to_mount>:/var/www \
+    labstack/armor -c /etc/armor/config.json
+```
+
 ### Command-line Flags
 
 - `-p` http listen port

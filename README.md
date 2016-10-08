@@ -6,7 +6,7 @@ Armor is written in Go. It is based on the upcoming [Echo](https://github.com/la
 
 ## What can it do today?
 
-- Serve HTTP2
+- Serve HTTP/2
 - Automatically install TLS certificates from https://letsencrypt.org
 - Proxy HTTP and WebSocket requests
 - Define virtual hosts with path level routing
@@ -15,11 +15,12 @@ Armor is written in Go. It is based on the upcoming [Echo](https://github.com/la
 - Serve static files
 - Log requests
 - Gzip response
-- CORS
+- Cross-origin Resource Sharing (CORS)
 - Security
   - XSSProtection
   - ContentTypeNosniff
   - ContentSecurityPolicy
+  - HTTP Strict Transport Security (HSTS)
 - Add / Remove trailing slash from the URL with option to redirect
 - Redirect requests
  - http to https
@@ -27,7 +28,7 @@ Armor is written in Go. It is based on the upcoming [Echo](https://github.com/la
  - http to https non www
  - non www to www
  - www to non www
- 
+
 Most of the functionality is implemented via `Plugin` interface which makes writing
 a custom plugin super easy.
 
@@ -35,9 +36,6 @@ a custom plugin super easy.
 
 ## What's on the roadmap?
 
-- More command-line options
-- More plugins
-- More features
-- Website
-- Code coverage
-- Test cases
+- [x] Website
+- [ ] Code coverage
+- [ ] Test cases

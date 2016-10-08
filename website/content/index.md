@@ -8,7 +8,7 @@ title: Index
 
 ## What can it do today?
 
-- Serve HTTP2
+- Serve HTTP/2
 - Automatically install TLS certificates from https://letsencrypt.org
 - Proxy HTTP and WebSocket requests
 - Define virtual hosts with path level routing
@@ -17,11 +17,12 @@ title: Index
 - Serve static files
 - Log requests
 - Gzip response
-- CORS
+- Cross-origin Resource Sharing (CORS)
 - Security
   - XSSProtection
   - ContentTypeNosniff
   - ContentSecurityPolicy
+  - HTTP Strict Transport Security (HSTS)
 - Add / Remove trailing slash from the URL with option to redirect
 - Redirect requests
  - http to https
