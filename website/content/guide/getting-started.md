@@ -54,9 +54,7 @@ ___________________O/___________________________
 This starts armor on address `:8080`, serving the current directory listing using
 the default config. Go to http://localhost:8080 to browse the directory.
 
-Armor can also be run using Docker `docker run labstack/armor`.
-
-### Docker
+Armor can also be run as in a Docker:
 
 ```sh
 docker run \

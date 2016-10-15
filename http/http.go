@@ -58,17 +58,17 @@ func Start(a *armor.Armor) {
 			} else {
 				host.Echo.Use(p.Process)
 			}
+		}
 
-			// Paths
-			for name, path := range host.Paths {
-				g := host.Echo.Group(name)
-				for name, pg := range path.Plugins {
-					p, err := plugin.Decode(name, pg, a)
-					if err != nil {
-						h.logger.Error(err)
-					}
-					g.Use(p.Process)
+		// Paths
+		for name, path := range host.Paths {
+			g := host.Echo.Group(name)
+			for name, pg := range path.Plugins {
+				p, err := plugin.Decode(name, pg, a)
+				if err != nil {
+					h.logger.Error(err)
 				}
+				g.Use(p.Process)
 			}
 		}
 	}

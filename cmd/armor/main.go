@@ -23,12 +23,12 @@ const (
 |   _   ||   |  | || ||_|| ||       ||   |  | |
 |__| |__||___|  |_||_|   |_||_______||___|  |_|
 
-                                      %s
+%s               %s
 
-Uncomplicated HTTP server, supports HTTP/2 and auto TLS
-      %s
-___________________O/___________________________
-                   O\
+Uncomplicated HTTP server, supports HTTP/2 and
+auto TLS
+_______________O/______________________________
+               O\
 `
 	defaultConfig = `{
     "address": ":8080",
@@ -94,6 +94,6 @@ func main() {
 		a.Address = ":80"
 	}
 
-	color.Printf(banner+"\n", color.Red("v"+armor.Version), color.Blue("https://github.com/labstack/armor"))
+	color.Printf(banner+"\n", color.Blue("https://armor.labstack.com"), color.Red("v"+armor.Version))
 	http.Start(a)
 }
