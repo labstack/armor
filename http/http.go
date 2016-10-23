@@ -62,6 +62,9 @@ func Start(a *armor.Armor) {
 
 		// Paths
 		for pn, path := range host.Paths {
+			if pn == "/" {
+				pn = ""
+			}
 			g := host.Echo.Group(pn)
 			for name, pg := range path.Plugins {
 				p, err := plugin.Decode(name, pg, hn, pn, a)
