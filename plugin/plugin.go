@@ -90,7 +90,7 @@ func Lookup(base Base) (p Plugin) {
 	case "static":
 		p = &Static{Base: base}
 	case "nats":
-		p = &NATS{Base: base}
+		// p = &NATS{Base: base}
 	}
 	return
 }

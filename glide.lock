@@ -1,5 +1,5 @@
-hash: 05cbf0db3fede52bfdb03ebe2eb7b1661c572e578bb1e6317fd2124664e31194
-updated: 2016-10-22T16:39:27.777778978-07:00
+hash: 75af2c145e0a105907fadbb36b2de0c94d94d564f2ac37918935849fde98260b
+updated: 2016-10-22T17:34:39.327059293-07:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: 24c63f56522a87ec5339cc3567883f1039378fdb
@@ -10,7 +10,7 @@ imports:
   subpackages:
   - proto
 - name: github.com/labstack/echo
-  version: 4760f4cedfd67244e94b23e280b374af874d75bd
+  version: 0f219b59ecdba64ac084af5cec853b3c1e4adc3a
   subpackages:
   - middleware
 - name: github.com/labstack/gommon
@@ -28,13 +28,6 @@ imports:
   version: 58f52c57ce9df13460ac68200cef30a008b9c468
 - name: github.com/mitchellh/mapstructure
   version: f3009df150dadf309fdee4a54ed65c124afad715
-- name: github.com/nats-io/nats
-  version: aab6caaf3a868d3f1a8cd87b7c34b364306df278
-  subpackages:
-  - encoders/builtin
-  - util
-- name: github.com/nats-io/nuid
-  version: 289cccf02c178dc782430d534e3c1f5b72af807f
 - name: github.com/rsc/letsencrypt
   version: 76104d26167d38b6a0010f42bfc8ec5487742e8b
 - name: github.com/tylerb/graceful
