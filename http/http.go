@@ -22,7 +22,8 @@ func Start(a *armor.Armor) {
 		logger: a.Logger,
 	}
 	e := echo.New()
-	e.Logger = a.Logger
+	h.logger.SetLevel(log.ERROR)
+	e.Logger = h.logger
 
 	// Internal
 	e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -97,12 +98,12 @@ func Start(a *armor.Armor) {
 	if a.TLS != nil {
 		go func() {
 			if err := h.startTLS(a, e); err != nil {
-				panic(err)
+				h.logger.Fatal(err)
 			}
 		}()
 	}
 	if err := e.Start(a.Address); err != nil {
-		panic(err)
+		h.logger.Fatal(err)
 	}
 }
 

@@ -37,11 +37,10 @@ type (
 )
 
 const (
-	DEBUG Lvl = iota
+	DEBUG Lvl = iota + 1
 	INFO
 	WARN
 	ERROR
-	FATAL
 	OFF
 )
 
@@ -70,11 +69,11 @@ func New(prefix string) (l *Logger) {
 
 func (l *Logger) initLevels() {
 	l.levels = []string{
+		"-",
 		l.color.Blue("DEBUG"),
 		l.color.Green("INFO"),
 		l.color.Yellow("WARN"),
 		l.color.Red("ERROR"),
-		l.color.RedBg("FATAL"),
 	}
 }
 
@@ -128,15 +127,16 @@ func (l *Logger) SetHeader(h string) {
 }
 
 func (l *Logger) Print(i ...interface{}) {
-	fmt.Fprintln(l.output, i...)
+	l.log(0, "", i...)
+	// fmt.Fprintln(l.output, i...)
 }
 
 func (l *Logger) Printf(format string, args ...interface{}) {
-	fmt.Fprintf(l.output, format, args...)
+	l.log(0, format, args...)
 }
 
 func (l *Logger) Printj(j JSON) {
-	json.NewEncoder(l.output).Encode(j)
+	l.log(0, "json", j)
 }
 
 func (l *Logger) Debug(i ...interface{}) {
@@ -188,17 +188,33 @@ func (l *Logger) Errorj(j JSON) {
 }
 
 func (l *Logger) Fatal(i ...interface{}) {
-	l.log(FATAL, "", i...)
+	l.Print(i...)
 	os.Exit(1)
 }
 
 func (l *Logger) Fatalf(format string, args ...interface{}) {
-	l.log(FATAL, format, args...)
+	l.Printf(format, args...)
 	os.Exit(1)
 }
 
 func (l *Logger) Fatalj(j JSON) {
-	l.log(FATAL, "json", j)
+	l.Printj(j)
+	os.Exit(1)
+}
+
+func (l *Logger) Panic(i ...interface{}) {
+	l.Print(i...)
+	panic(fmt.Sprint(i...))
+}
+
+func (l *Logger) Panicf(format string, args ...interface{}) {
+	l.Printf(format, args...)
+	panic(fmt.Sprintf(format, args))
+}
+
+func (l *Logger) Panicj(j JSON) {
+	l.Printj(j)
+	panic(j)
 }
 
 func DisableColor() {
@@ -309,6 +325,18 @@ func Fatalj(j JSON) {
 	global.Fatalj(j)
 }
 
+func Panic(i ...interface{}) {
+	global.Panic(i...)
+}
+
+func Panicf(format string, args ...interface{}) {
+	global.Panicf(format, args...)
+}
+
+func Panicj(j JSON) {
+	global.Panicj(j)
+}
+
 func (l *Logger) log(v Lvl, format string, args ...interface{}) {
 	l.mutex.Lock()
 	defer l.mutex.Unlock()
@@ -317,7 +345,7 @@ func (l *Logger) log(v Lvl, format string, args ...interface{}) {
 	defer l.bufferPool.Put(buf)
 	_, file, line, _ := runtime.Caller(3)
 
-	if v >= l.level {
+	if v >= l.level || v == 0 {
 		message := ""
 		if format == "" {
 			message = fmt.Sprint(args...)
@@ -329,10 +357,6 @@ func (l *Logger) log(v Lvl, format string, args ...interface{}) {
 			message = string(b)
 		} else {
 			message = fmt.Sprintf(format, args...)
-		}
-
-		if v >= ERROR {
-			// panic(message)
 		}
 
 		_, err := l.template.ExecuteFunc(buf, func(w io.Writer, tag string) (int, error) {
