@@ -1,10 +1,11 @@
----
-title: Hello World
-menu:
-  side:
-    parent: recipes
-    weight: 1
----
++++
+title = "Hello World Recipe"
+description = "Hello world recipe / example for Echo"
+[menu.side]
+  name = "Hello World"
+  parent = "recipes"
+  weight = 1
++++
 
 ## Hello World Recipe
 

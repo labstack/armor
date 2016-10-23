@@ -1,5 +1,6 @@
 +++
-title = "Basic Auth"
+title = "BasicAuth Middleware"
+description = "Basic auth middleware for Echo"
 [menu.side]
   name = "BasicAuth"
   parent = "middleware"

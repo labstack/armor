@@ -13,6 +13,7 @@ type (
 )
 
 func (s *Static) Initialize() (err error) {
+	s.Prefix = s.Path
 	s.Middleware = middleware.StaticWithConfig(s.StaticConfig)
 	return
 }

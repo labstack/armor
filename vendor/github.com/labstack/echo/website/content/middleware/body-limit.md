@@ -1,5 +1,6 @@
 +++
-title = "Body Limit"
+title = "BodyLimit Middleware"
+description = "Body limit middleware for Echo"
 [menu.side]
   name = "BodyLimit"
   parent = "middleware"

@@ -34,7 +34,7 @@ func Start(a *armor.Armor) {
 
 	// Global plugins
 	for name, pg := range a.Plugins {
-		p, err := plugin.Decode(name, pg, a)
+		p, err := plugin.Decode(name, pg, "", "", a)
 		if err != nil {
 			h.logger.Error(err)
 		}
@@ -46,10 +46,10 @@ func Start(a *armor.Armor) {
 	}
 
 	// Hosts
-	for _, host := range a.Hosts {
+	for hn, host := range a.Hosts {
 		host.Echo = echo.New()
 		for name, pg := range host.Plugins {
-			p, err := plugin.Decode(name, pg, a)
+			p, err := plugin.Decode(name, pg, hn, "", a)
 			if err != nil {
 				h.logger.Error(err)
 			}
@@ -61,10 +61,10 @@ func Start(a *armor.Armor) {
 		}
 
 		// Paths
-		for name, path := range host.Paths {
-			g := host.Echo.Group(name)
+		for pn, path := range host.Paths {
+			g := host.Echo.Group(pn)
 			for name, pg := range path.Plugins {
-				p, err := plugin.Decode(name, pg, a)
+				p, err := plugin.Decode(name, pg, hn, pn, a)
 				if err != nil {
 					h.logger.Error(err)
 				}
@@ -94,12 +94,12 @@ func Start(a *armor.Armor) {
 	if a.TLS != nil {
 		go func() {
 			if err := h.startTLS(a, e); err != nil {
-				a.Logger.Fatal(err)
+				panic(err)
 			}
 		}()
 	}
 	if err := e.Start(a.Address); err != nil {
-		a.Logger.Fatal(err)
+		panic(err)
 	}
 }
 

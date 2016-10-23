@@ -1,5 +1,6 @@
 +++
-title = "Static"
+title = "Static Middleware"
+description = "Static middleware for Echo"
 [menu.side]
   name = "Static"
   parent = "middleware"

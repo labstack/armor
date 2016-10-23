@@ -1,6 +1,6 @@
----
-title: Index
----
++++
+title = "Index"
++++
 
 # Fast and unfancy HTTP server framework for Go (Golang).
 

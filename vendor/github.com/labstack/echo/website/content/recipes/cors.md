@@ -1,11 +1,12 @@
----
-title: CORS
-menu:
-  side:
-    identifier: cors-middleware
-    parent: recipes
-    weight: 3
----
++++
+title = "CORS Recipe"
+description = "CORS recipe / example for Echo"
+[menu.side]
+  name = "CORS"
+  identifier = "cors-middleware"
+  parent = "recipes"
+  weight = 3
++++
 
 ## CORS Recipe
 

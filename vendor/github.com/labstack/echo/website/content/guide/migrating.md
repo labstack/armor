@@ -1,10 +1,11 @@
----
-title: Migrating
-menu:
-  side:
-    parent: guide
-    weight: 2
----
++++
+title = "Migrating"
+description = "Migrating from Echo v1 to v2"
+[menu.side]
+  name = "Migrating"
+  parent = "guide"
+  weight = 2
++++
 
 ## Migrating from v1
 

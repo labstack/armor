@@ -1,10 +1,11 @@
----
-title: Static Files
-menu:
-  side:
-    parent: guide
-    weight: 3
----
++++
+title = "Static Files"
+description = "Serving static files in Echo"
+[menu.side]
+  name = "Static Files"
+  parent = "guide"
+  weight = 3
++++
 
 Images, JavaScript, CSS, PDF, Fonts and so on...
 

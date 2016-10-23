@@ -1,5 +1,6 @@
 +++
-title = "Recover"
+title = "Recover Middleware"
+description = "Recover middleware for Echo"
 [menu.side]
   name = "Recover"
   parent = "middleware"

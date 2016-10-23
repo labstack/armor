@@ -1,10 +1,11 @@
----
-title: Customization
-menu:
-  side:
-    parent: guide
-    weight: 3
----
++++
+title = "Customization"
+description = "Customizing Echo"
+[menu.side]
+  name = "Customization"
+  parent = "guide"
+  weight = 3
++++
 
 ## Customization
 

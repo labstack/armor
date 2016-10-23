@@ -1,5 +1,6 @@
 +++
-title = "Logger"
+title = "Logger Middleware"
+description = "Logger middleware for Echo"
 [menu.side]
   name = "Logger"
   parent = "middleware"

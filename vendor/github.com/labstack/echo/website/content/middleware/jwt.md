@@ -1,5 +1,6 @@
 +++
-title = "JWT"
+title = "JWT Middleware"
+description = "JWT middleware for Echo"
 [menu.side]
   name = "JWT"
   parent = "middleware"

@@ -1,12 +1,13 @@
----
-title: CRUD
-menu:
-  side:
-    parent: recipes
-    weight: 2
----
++++
+title = "CRUD Recipe"
+description = "CRUD (Create, read, update and delete) recipe / example for Echo"
+[menu.side]
+  name = "CRUD"
+  parent = "recipes"
+  weight = 2
++++
 
-## CRUD Recipe
+## CRUD (Create, read, update and delete) Recipe
 
 ### Server
 

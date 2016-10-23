@@ -1,5 +1,6 @@
 +++
-title = "Secure"
+title = "Secure Middleware"
+description = "Secure middleware for Echo"
 [menu.side]
   name = "Secure"
   parent = "middleware"

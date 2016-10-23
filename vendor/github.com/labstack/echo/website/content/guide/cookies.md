@@ -1,5 +1,6 @@
 +++
 title = "Cookies"
+description = "Handling cookie in Echo"
 [menu.side]
   name = "Cookies"
   parent = "guide"

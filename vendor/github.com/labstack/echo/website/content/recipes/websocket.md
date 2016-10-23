@@ -1,10 +1,11 @@
----
-title: WebSocket
-menu:
-  side:
-    parent: recipes
-    weight: 5
----
++++
+title = "WebSocket Recipe"
+description = "WebSocket recipe / example for Echo"
+[menu.side]
+  name = "WebSocket"
+  parent = "recipes"
+  weight = 5
++++
 
 ## WebSocket Recipe
 

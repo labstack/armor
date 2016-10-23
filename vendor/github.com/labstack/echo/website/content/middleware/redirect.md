@@ -1,5 +1,6 @@
 +++
-title = "Redirect"
+title = "Redirect Middleware"
+description = "Redirect middleware for Echo"
 [menu.side]
   name = "Redirect"
   parent = "middleware"

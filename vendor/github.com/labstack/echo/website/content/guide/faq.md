@@ -1,10 +1,11 @@
----
-title: FAQ
-menu:
-  side:
-    parent: guide
-    weight: 20
----
++++
+title = "FAQ"
+description = "Frequently asked questions in Echo"
+[menu.side]
+  name = "FAQ"
+  parent = "guide"
+  weight = 20
++++
 
 ## FAQ
 

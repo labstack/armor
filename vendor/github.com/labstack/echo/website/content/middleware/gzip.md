@@ -1,5 +1,6 @@
 +++
-title = "Gzip"
+title = "Gzip Middleware"
+description = "Gzip middleware for Echo"
 [menu.side]
   name = "Gzip"
   parent = "middleware"

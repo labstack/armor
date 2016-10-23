@@ -1,10 +1,11 @@
----
-title: Embed Resources
-menu:
-  side:
-    parent: recipes
-    weight: 14
----
++++
+title = "Embed Resources Recipe"
+description = "Embed resources recipe / example for Echo"
+[menu.side]
+  name = "Embed Resources"
+  parent = "recipes"
+  weight = 14
++++
 
 ## Embed Resources Recipe
 

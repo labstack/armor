@@ -1,10 +1,11 @@
----
-title: JSONP
-menu:
-  side:
-    parent: recipes
-    weight: 6
----
++++
+title = "JSONP Recipe"
+description = "JSONP recipe / example for Echo"
+[menu.side]
+  name = "JSONP"
+  parent = "recipes"
+  weight = 6
++++
 
 ## JSONP Recipe
 

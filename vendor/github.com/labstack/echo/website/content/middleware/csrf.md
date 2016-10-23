@@ -1,5 +1,6 @@
 +++
-title = "CSRF"
+title = "CSRF Middleware"
+description = "CSRF middleware for Echo"
 [menu.side]
   name = "CSRF"
   parent = "middleware"

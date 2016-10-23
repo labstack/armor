@@ -2,13 +2,10 @@ package echo
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
-
-	"golang.org/x/net/websocket"
 
 	"reflect"
 	"strings"
@@ -250,27 +247,6 @@ func TestEchoMatch(t *testing.T) { // JFC
 	})
 }
 
-func TestEchoWebSocket(t *testing.T) {
-	e := New()
-	e.WebSocket("/ws", func(c Context) error {
-		c.WebSocket().Write([]byte("test"))
-		return nil
-	})
-	srv := httptest.NewServer(e)
-	defer srv.Close()
-	addr := srv.Listener.Addr().String()
-	origin := "http://localhost"
-	url := fmt.Sprintf("ws://%s/ws", addr)
-	ws, err := websocket.Dial(url, "", origin)
-	if assert.NoError(t, err) {
-		ws.Write([]byte("test\n"))
-		defer ws.Close()
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(ws)
-		assert.Equal(t, "test", buf.String())
-	}
-}
-
 func TestEchoURL(t *testing.T) {
 	e := New()
 	static := func(Context) error { return nil }
@@ -280,7 +256,7 @@ func TestEchoURL(t *testing.T) {
 	e.GET("/static/file", static)
 	e.GET("/users/:id", getUser)
 	g := e.Group("/group")
-	g.Get("/users/:uid/files/:fid", getFile)
+	g.GET("/users/:uid/files/:fid", getFile)
 
 	assert.Equal(t, "/static/file", e.URL(static))
 	assert.Equal(t, "/users/:id", e.URL(getUser))
@@ -344,7 +320,7 @@ func TestEchoGroup(t *testing.T) {
 			return next(c)
 		}
 	})
-	g1.Get("", h)
+	g1.GET("", h)
 
 	// Nested groups with middleware
 	g2 := e.Group("/group2")
@@ -361,7 +337,7 @@ func TestEchoGroup(t *testing.T) {
 			return next(c)
 		}
 	})
-	g3.Get("", h)
+	g3.GET("", h)
 
 	request(GET, "/users", e)
 	assert.Equal(t, "0", buf.String())
@@ -404,7 +380,7 @@ func TestEchoHTTPError(t *testing.T) {
 func TestEchoContext(t *testing.T) {
 	e := New()
 	c := e.AcquireContext()
-	assert.IsType(t, new(echoContext), c)
+	assert.IsType(t, new(context), c)
 	e.ReleaseContext(c)
 }
 

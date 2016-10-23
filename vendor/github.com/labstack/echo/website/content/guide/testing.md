@@ -1,10 +1,11 @@
----
-title: Testing
-menu:
-  side:
-    parent: guide
-    weight: 9
----
++++
+title = "Testing"
+description = "Testing handler and middleware in Echo"
+[menu.side]
+  name = "Testing"
+  parent = "guide"
+  weight = 9
++++
 
 ## Testing
 

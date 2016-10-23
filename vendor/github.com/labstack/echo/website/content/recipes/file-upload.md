@@ -1,10 +1,11 @@
----
-title: File Upload
-menu:
-  side:
-    parent: recipes
-    weight: 7
----
++++
+title = "File Upload Recipe"
+description = "File upload recipe / example for Echo"
+[menu.side]
+  name = "File Upload"
+  parent = "recipes"
+  weight = 7
++++
 
 ## File Upload Recipe
 

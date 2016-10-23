@@ -81,7 +81,13 @@ func main() {
 		data = []byte(defaultConfig)
 	}
 	if err = json.Unmarshal(data, a); err != nil {
-		logger.Fatal(err)
+		if ute, ok := err.(*json.UnmarshalTypeError); ok {
+			logger.Fatalf("error parsing configuration file, type=type-error, expected=%v, got=%v, offset=%v", ute.Type, ute.Value, ute.Offset)
+		} else if se, ok := err.(*json.SyntaxError); ok {
+			logger.Fatalf("error parsing configuration file, type=syntax-error, offset=%v, error=%v", se.Offset, se.Error())
+		} else {
+			logger.Fatalf("error parsing configuration file, error=%v", err)
+		}
 	}
 
 	// Flags should override

@@ -1,6 +1,8 @@
 +++
 title = "Installation"
+description = "Installing Echo"
 [menu.side]
+  name = "Installation"
   parent = "guide"
   weight = 1
 +++

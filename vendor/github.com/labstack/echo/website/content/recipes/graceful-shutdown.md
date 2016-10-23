@@ -1,10 +1,11 @@
----
-title: Graceful Shutdown
-menu:
-  side:
-    parent: recipes
-    weight: 13
----
++++
+title = "Graceful Shutdown Recipe"
+description = "Graceful shutdown recipe / example for Echo"
+[menu.side]
+  name = "Graceful Shutdown"
+  parent = "recipes"
+  weight = 13
++++
 
 ## Graceful Shutdown Recipe
 

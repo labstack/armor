@@ -1,4 +1,4 @@
-VERSION = 0.1.4
+VERSION = 0.1.5
 
 build:
 	GOOS=linux GOARCH=amd64 go build -o build/armor-$(VERSION)_linux-64 github.com/labstack/armor/cmd/armor

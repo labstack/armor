@@ -1,10 +1,11 @@
----
-title: Streaming Response
-menu:
-  side:
-    parent: recipes
-    weight: 9
----
++++
+title = "Streaming Response Recipe"
+description = "Streaming response recipe / example for Echo"
+[menu.side]
+  name = "Streaming Response"
+  parent = "recipes"
+  weight = 3
++++
 
 ## Streaming Response Recipe
 

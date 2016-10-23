@@ -1,18 +1,17 @@
 hash: 05cbf0db3fede52bfdb03ebe2eb7b1661c572e578bb1e6317fd2124664e31194
-updated: 2016-10-01T21:10:23.663052058-07:00
+updated: 2016-10-22T16:39:27.777778978-07:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: 24c63f56522a87ec5339cc3567883f1039378fdb
 - name: github.com/fsnotify/fsnotify
-  version: 55579be41eb3989c68f4ade2461b8fef2abaa18c
+  version: bd2828f9f176e52d7222e565abb2d338d3f3c103
 - name: github.com/golang/protobuf
-  version: df1d3ca07d2d07bba352d5b73c4313b4e2a6203e
+  version: 98fa357170587e470c5f27d3c3ea0947b71eb455
   subpackages:
   - proto
 - name: github.com/labstack/echo
-  version: 9c864319d321db96e2cb82f3140e18be4467261b
+  version: 4760f4cedfd67244e94b23e280b374af874d75bd
   subpackages:
-  - context
   - middleware
 - name: github.com/labstack/gommon
   version: f3b1a1b3bd4726161e1200863d278df7da5e66ff
@@ -26,13 +25,14 @@ imports:
 - name: github.com/mattn/go-isatty
   version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
 - name: github.com/miekg/dns
-  version: db96a2b759cdef4f11a34506a42eb8d1290c598e
+  version: 58f52c57ce9df13460ac68200cef30a008b9c468
 - name: github.com/mitchellh/mapstructure
-  version: ca63d7c062ee3c9f34db231e352b60012b4fd0c1
+  version: f3009df150dadf309fdee4a54ed65c124afad715
 - name: github.com/nats-io/nats
-  version: 904e847fa3d16dff97348235a81fc744afa71acf
+  version: aab6caaf3a868d3f1a8cd87b7c34b364306df278
   subpackages:
   - encoders/builtin
+  - util
 - name: github.com/nats-io/nuid
   version: 289cccf02c178dc782430d534e3c1f5b72af807f
 - name: github.com/rsc/letsencrypt
@@ -42,21 +42,21 @@ imports:
 - name: github.com/valyala/fasttemplate
   version: 3b874956e03f1636d171bda64b130f9135f42cff
 - name: github.com/xenolf/lego
-  version: f3cd0bfdeebbf2fff1893beafc156f979c3c1e41
+  version: e953bbc8b95ad7d2f7172ae6732e71069be48957
   subpackages:
   - acme
 - name: golang.org/x/crypto
-  version: 568507f56e5b05b3c219ffd7fba12655c07bcc86
+  version: 3ded668c5379f6951fb0de06174442072e5447d3
   subpackages:
   - ocsp
 - name: golang.org/x/net
-  version: cd95c68ba21fc7ee16ee38cc420473e3d8c4afd8
+  version: daba796358cd2742b75aae05761f1b898c9f6a5c
   subpackages:
   - context
   - publicsuffix
   - websocket
 - name: golang.org/x/sys
-  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
+  version: 002cbb5f952456d0c50e0d2aff17ea5eca716979
   subpackages:
   - unix
 - name: golang.org/x/time

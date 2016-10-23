@@ -1,10 +1,11 @@
----
-title: Google App Engine
-menu:
-  side:
-    parent: recipes
-    weight: 12
----
++++
+title = "Google App Engine Recipe"
+description = "Google App Engine recipe / example for Echo"
+[menu.side]
+  name = "Google App Engine"
+  parent = "recipes"
+  weight = 12
++++
 
 ## Google App Engine Recipe
 

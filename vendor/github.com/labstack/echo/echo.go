@@ -30,7 +30,9 @@ Example:
 	    e.GET("/", hello)
 
 	    // Start server
-	    e.Start(":1323")
+	    if err := e.Start(":1323"); err != nil {
+			panic(err)
+		}
 	}
 
 Learn more at https://echo.labstack.com
@@ -52,9 +54,6 @@ import (
 	"time"
 
 	"github.com/rsc/letsencrypt"
-
-	"golang.org/x/net/context"
-	"golang.org/x/net/websocket"
 
 	"github.com/labstack/gommon/color"
 	glog "github.com/labstack/gommon/log"
@@ -119,6 +118,9 @@ type (
 	Renderer interface {
 		Render(io.Writer, string, interface{}, Context) error
 	}
+
+	// Map defines a generic map of type `map[string]interface{}`.
+	Map map[string]interface{}
 )
 
 // HTTP methods
@@ -263,10 +265,10 @@ func New() (e *Echo) {
 
 // NewContext returns a Context instance.
 func (e *Echo) NewContext(r *http.Request, w http.ResponseWriter) Context {
-	return &echoContext{
-		context:  context.Background(),
+	return &context{
 		request:  r,
 		response: NewResponse(w, e),
+		store:    make(Map),
 		echo:     e,
 		pvalues:  make([]string, *e.maxParam),
 		handler:  NotFoundHandler,
@@ -383,7 +385,7 @@ func (e *Echo) Match(methods []string, path string, handler HandlerFunc, middlew
 // provided root directory.
 func (e *Echo) Static(prefix, root string) {
 	e.GET(prefix+"*", func(c Context) error {
-		return c.File(path.Join(root, c.P(0)))
+		return c.File(path.Join(root, c.Param("*")))
 	})
 }
 
@@ -392,20 +394,6 @@ func (e *Echo) File(path, file string) {
 	e.GET(path, func(c Context) error {
 		return c.File(file)
 	})
-}
-
-// WebSocket registers a new WebSocket route for a path with matching handler in
-// the router with optional route-level middleware.
-func (e *Echo) WebSocket(path string, h HandlerFunc, m ...MiddlewareFunc) {
-	e.GET(path, func(c Context) (err error) {
-		websocket.Handler(func(ws *websocket.Conn) {
-			defer ws.Close()
-			c.SetWebSocket(ws)
-			c.Response().Status = http.StatusSwitchingProtocols
-			err = h(c)
-		}).ServeHTTP(c.Response(), c.Request())
-		return
-	}, m...)
 }
 
 func (e *Echo) add(method, path string, handler HandlerFunc, middleware ...MiddlewareFunc) {
@@ -417,7 +405,7 @@ func (e *Echo) add(method, path string, handler HandlerFunc, middleware ...Middl
 			h = middleware[i](h)
 		}
 		return h(c)
-	}, e)
+	})
 	r := Route{
 		Method:  method,
 		Path:    path,
@@ -486,15 +474,15 @@ func (e *Echo) ReleaseContext(c Context) {
 
 // ServeHTTP implements `http.Handler` interface, which serves HTTP requests.
 func (e *Echo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	c := e.pool.Get().(*echoContext)
+	c := e.pool.Get().(*context)
 	c.Reset(r, w)
 
 	// Middleware
-	h := func(Context) error {
+	h := func(c Context) error {
 		method := r.Method
 		path := r.URL.Path
 		e.router.Find(method, path, c)
-		h := c.handler
+		h := c.Handler()
 		for i := len(e.middleware) - 1; i >= 0; i-- {
 			h = e.middleware[i](h)
 		}
@@ -524,10 +512,6 @@ func (e *Echo) config(gs *graceful.Server, s *http.Server, address string) {
 	if gs == e.gracefulTLS && !e.DisableHTTP2 {
 		e.TLSConfig.NextProtos = append(e.TLSConfig.NextProtos, "h2")
 	}
-	// Global log
-	slog.SetOutput(e.Logger.Output())
-	slog.SetPrefix(e.Logger.Prefix() + ": ")
-	slog.SetFlags(0)
 }
 
 // Start starts the HTTP server.

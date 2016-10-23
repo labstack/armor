@@ -22,6 +22,8 @@ type (
 	Base struct {
 		name       string
 		Middleware echo.MiddlewareFunc `json:"-"`
+		Host       string              `json:"-"`
+		Path       string              `json:"-"`
 		Armor      *armor.Armor        `json:"-"`
 		Logger     *log.Logger         `json:"-"`
 	}
@@ -33,9 +35,11 @@ func (b *Base) Name() string {
 
 // Decode searches the plugin by name, decodes the provided map into plugin and
 // calls Plugin#Initialize().
-func Decode(name string, i interface{}, a *armor.Armor) (p Plugin, err error) {
+func Decode(name string, i interface{}, host string, path string, a *armor.Armor) (p Plugin, err error) {
 	base := Base{
 		name:   name,
+		Host:   host,
+		Path:   path,
 		Armor:  a,
 		Logger: a.Logger,
 	}

@@ -1,10 +1,11 @@
----
-title: Error Handling
-menu:
-  side:
-    parent: guide
-    weight: 8
----
++++
+title = "Error Handling"
+description = "Error handling in Echo"
+[menu.side]
+  name = "Error Handling"
+  parent = "guide"
+  weight = 8
++++
 
 ## Error Handling
 

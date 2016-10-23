@@ -1,11 +1,12 @@
----
-title: JWT
-menu:
-  side:
-    identifier: jwt-recipe
-    parent: recipes
-    weight: 11
----
++++
+title = "JWT Recipe"
+description = "JWT recipe / example for Echo"
+[menu.side]
+  name = "JWT"
+  identifier = "jwt-recipe"
+  parent = "recipes"
+  weight = 11
++++
 
 ## JWT Recipe
 

@@ -1,10 +1,11 @@
----
-title: Subdomains
-menu:
-  side:
-    parent: recipes
-    weight: 10
----
++++
+title = "Subdomains Recipe"
+description = "Subdomains recipe / example for Echo"
+[menu.side]
+  name = "Subdomains"
+  parent = "recipes"
+  weight = 10
++++
 
 ## Subdomains Recipe
 

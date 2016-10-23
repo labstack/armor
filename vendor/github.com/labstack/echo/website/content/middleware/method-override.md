@@ -1,5 +1,6 @@
 +++
-title = "Method Override"
+title = "MethodOverride Middleware"
+description = "Method override middleware for Echo"
 [menu.side]
   name = "MethodOverride"
   parent = "middleware"

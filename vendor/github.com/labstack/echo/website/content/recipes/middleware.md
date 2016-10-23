@@ -1,11 +1,11 @@
----
-title: Middleware
-menu:
-  side:
-    identifier: "recipes-middleware"
-    parent: recipes
-    weight: 3
----
++++
+title = "Middleware Recipe"
+description = "Middleware recipe / example for Echo"
+[menu.side]
+  name = "Middleware"
+  parent = "recipes"
+  weight = 3
++++
 
 ## Middleware Recipe
 

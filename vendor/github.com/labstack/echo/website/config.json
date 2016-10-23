@@ -1,13 +1,13 @@
 {
   "baseurl": "https://echo.labstack.com",
   "languageCode": "en-us",
-  "title": "Fast and unfancy HTTP server framework for Go (Golang) - LabStack Echo",
+  "title": "Echo - Fast and unfancy HTTP server framework for Go (Golang)",
   "canonifyurls": true,
   "googleAnalytics": "UA-85059636-2",
   "permalinks": {
-    "guide": "/guide/:title",
-    "middleware": "/middleware/:title",
-    "recipes": "/recipes/:title"
+    "guide": "/guide/:filename",
+    "middleware": "/middleware/:filename",
+    "recipes": "/recipes/:filename"
   },
   "menu": {
     "side": [{
@@ -37,6 +37,7 @@
     }]
   },
   "params": {
-    "description": "Golang micro web framework, High performance, Minimalistic and Fast."
+    "image": "https://echo.labstack.com/images/logo.png",
+    "description": "Echo is micro web framework for Go (Golang), high performance, minimalistic and fast."
   }
 }

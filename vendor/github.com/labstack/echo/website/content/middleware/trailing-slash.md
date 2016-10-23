@@ -1,5 +1,6 @@
 +++
-title = "Trailing Slash"
+title = "TrailingSlash Middleware"
+description = "Trailing slash middleware for Echo"
 [menu.side]
   name = "TrailingSlash"
   parent = "middleware"

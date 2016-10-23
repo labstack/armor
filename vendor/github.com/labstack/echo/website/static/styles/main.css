@@ -11,6 +11,10 @@ textarea:focus, input:focus{
     outline: none;
 }
 
+blockquote {
+    margin-left: 0;
+}
+
 /* Theme */
 .w3-theme-l5 {color:#000 !important; background-color:#edfcff !important}
 .w3-theme-l4 {color:#000 !important; background-color:#c3f5ff !important}

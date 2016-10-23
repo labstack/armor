@@ -1,5 +1,6 @@
 +++
-title = "CORS"
+title = "CORS Middleware"
+description = "CORS middleware for Echo"
 [menu.side]
   name = "CORS"
   parent = "middleware"

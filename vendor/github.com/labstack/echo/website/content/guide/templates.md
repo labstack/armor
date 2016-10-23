@@ -1,10 +1,11 @@
----
-title: Templates
-menu:
-  side:
-    parent: guide
-    weight: 3
----
++++
+title = "Templates"
+description = "How to use templates in Echo"
+[menu.side]
+  name = "Templates"
+  parent = "guide"
+  weight = 3
++++
 
 ## Templates
 

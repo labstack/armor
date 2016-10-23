@@ -1,5 +1,6 @@
 +++
 title = "Overview"
+description = "Overview of Echo middleware"
 [menu.side]
   name = "Overview"
   parent = "middleware"
