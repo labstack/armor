@@ -12,7 +12,7 @@ type (
 	}
 )
 
-func (*Secure) Initialize() (err error) {
+func (*Secure) Init() (err error) {
 	return
 }
 
@@ -22,7 +22,4 @@ func (*Secure) Priority() int {
 
 func (s *Secure) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return s.Middleware(next)
-}
-
-func (*Secure) Terminate() {
 }

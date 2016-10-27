@@ -93,6 +93,3 @@ package plugin
 // 		return c.NoContent(http.StatusOK)
 // 	}
 // }
-//
-// func (*NATS) Terminate() {
-// }

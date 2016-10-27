@@ -22,7 +22,6 @@ func Start(a *armor.Armor) {
 		logger: a.Logger,
 	}
 	e := echo.New()
-	h.logger.SetLevel(log.ERROR)
 	e.Logger = h.logger
 
 	// Internal

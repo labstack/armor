@@ -12,7 +12,7 @@ type (
 	}
 )
 
-func (g *Gzip) Initialize() (err error) {
+func (g *Gzip) Init() (err error) {
 	g.Middleware = middleware.GzipWithConfig(g.GzipConfig)
 	return
 }
@@ -23,7 +23,4 @@ func (*Gzip) Priority() int {
 
 func (g *Gzip) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return g.Middleware(next)
-}
-
-func (*Gzip) Terminate() {
 }

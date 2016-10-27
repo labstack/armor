@@ -17,7 +17,7 @@ type (
 	}
 )
 
-func (s *AddTrailingSlash) Initialize() (err error) {
+func (s *AddTrailingSlash) Init() (err error) {
 	s.Middleware = middleware.AddTrailingSlashWithConfig(s.TrailingSlashConfig)
 	return
 }
@@ -30,10 +30,7 @@ func (s *AddTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return s.Middleware(next)
 }
 
-func (*AddTrailingSlash) Terminate() {
-}
-
-func (s *RemoveTrailingSlash) Initialize() (err error) {
+func (s *RemoveTrailingSlash) Init() (err error) {
 	s.Middleware = middleware.RemoveTrailingSlashWithConfig(s.TrailingSlashConfig)
 	return
 }
@@ -44,7 +41,4 @@ func (*RemoveTrailingSlash) Priority() int {
 
 func (s *RemoveTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return s.Middleware(next)
-}
-
-func (*RemoveTrailingSlash) Terminate() {
 }

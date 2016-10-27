@@ -12,7 +12,7 @@ type (
 	}
 )
 
-func (l *BodyLimit) Initialize() (err error) {
+func (l *BodyLimit) Init() (err error) {
 	l.Middleware = middleware.BodyLimitWithConfig(l.BodyLimitConfig)
 	return
 }
@@ -23,7 +23,4 @@ func (*BodyLimit) Priority() int {
 
 func (l *BodyLimit) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return l.Middleware(next)
-}
-
-func (*BodyLimit) Terminate() {
 }

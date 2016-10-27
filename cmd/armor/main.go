@@ -45,6 +45,7 @@ _______________O/______________________________
 func main() {
 	// Initialize
 	logger := log.New("armor")
+	logger.SetLevel(log.ERROR)
 	a := &armor.Armor{
 		Logger: logger,
 	}

@@ -384,9 +384,15 @@ func (e *Echo) Match(methods []string, path string, handler HandlerFunc, middlew
 // Static registers a new route with path prefix to serve static files from the
 // provided root directory.
 func (e *Echo) Static(prefix, root string) {
-	e.GET(prefix+"*", func(c Context) error {
+	h := func(c Context) error {
 		return c.File(path.Join(root, c.Param("*")))
-	})
+	}
+	e.GET(prefix, h)
+	if prefix == "/" {
+		e.GET(prefix+"*", h)
+	} else {
+		e.GET(prefix+"/*", h)
+	}
 }
 
 // File registers a new route with path to serve a static file.
@@ -594,6 +600,7 @@ func WrapMiddleware(m func(http.Handler) http.Handler) MiddlewareFunc {
 	return func(next HandlerFunc) HandlerFunc {
 		return func(c Context) (err error) {
 			m(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				c.SetRequest(r)
 				err = next(c)
 			})).ServeHTTP(c.Response(), c.Request())
 			return

@@ -13,7 +13,7 @@ type (
 	}
 )
 
-func (*Header) Initialize() (err error) {
+func (*Header) Init() (err error) {
 	return
 }
 
@@ -35,7 +35,4 @@ func (h *Header) Process(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		return next(c)
 	}
-}
-
-func (*Header) Terminate() {
 }

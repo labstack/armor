@@ -12,7 +12,7 @@ type (
 	}
 )
 
-func (c *CORS) Initialize() (err error) {
+func (c *CORS) Init() (err error) {
 	c.Middleware = middleware.CORSWithConfig(c.CORSConfig)
 	return
 }
@@ -23,7 +23,4 @@ func (*CORS) Priority() int {
 
 func (c *CORS) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return c.Middleware(next)
-}
-
-func (*CORS) Terminate() {
 }

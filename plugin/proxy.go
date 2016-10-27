@@ -44,7 +44,7 @@ type (
 	}
 )
 
-func (p *Proxy) Initialize() (err error) {
+func (p *Proxy) Init() (err error) {
 	for _, t := range p.Targets {
 		t.url, err = url.Parse(t.URL)
 		if err != nil {
@@ -137,9 +137,6 @@ func (p *Proxy) Process(echo.HandlerFunc) echo.HandlerFunc {
 		// 	_, err = io.Copy(res, outRes.Body)
 		return
 	}
-}
-
-func (*Proxy) Terminate() {
 }
 
 func (r *Random) Next(i int) *Target {

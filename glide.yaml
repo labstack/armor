@@ -5,6 +5,10 @@ import:
   subpackages:
   - middleware
 - package: github.com/labstack/gommon
+  version: v0.1.0
   subpackages:
   - log
 - package: github.com/mitchellh/mapstructure
+- package: github.com/valyala/fasttemplate
+- package: github.com/stretchr/testify
+  version: ^1.1.4

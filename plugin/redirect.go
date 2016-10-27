@@ -39,7 +39,7 @@ type (
 	}
 )
 
-func (*Redirect) Initialize() (err error) {
+func (*Redirect) Init() (err error) {
 	return
 }
 
@@ -51,10 +51,7 @@ func (r *Redirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (*Redirect) Terminate() {
-}
-
-func (r *HTTPSRedirect) Initialize() (err error) {
+func (r *HTTPSRedirect) Init() (err error) {
 	r.Middleware = middleware.HTTPSRedirectWithConfig(r.RedirectConfig)
 	return
 }
@@ -67,10 +64,7 @@ func (r *HTTPSRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (*HTTPSRedirect) Terminate() {
-}
-
-func (r *HTTPSWWWRedirect) Initialize() (err error) {
+func (r *HTTPSWWWRedirect) Init() (err error) {
 	r.Middleware = middleware.HTTPSWWWRedirectWithConfig(r.RedirectConfig)
 	return
 }
@@ -83,10 +77,7 @@ func (r *HTTPSWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (*HTTPSWWWRedirect) Terminate() {
-}
-
-func (r *HTTPSNonWWWRedirect) Initialize() (err error) {
+func (r *HTTPSNonWWWRedirect) Init() (err error) {
 	r.Middleware = middleware.HTTPSNonWWWRedirectWithConfig(r.RedirectConfig)
 	return
 }
@@ -99,10 +90,7 @@ func (r *HTTPSNonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (*HTTPSNonWWWRedirect) Terminate() {
-}
-
-func (r *WWWRedirect) Initialize() (err error) {
+func (r *WWWRedirect) Init() (err error) {
 	r.Middleware = middleware.WWWRedirectWithConfig(r.RedirectConfig)
 	return
 }
@@ -115,10 +103,7 @@ func (r *WWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (*WWWRedirect) Terminate() {
-}
-
-func (r *NonWWWRedirect) Initialize() (err error) {
+func (r *NonWWWRedirect) Init() (err error) {
 	r.Middleware = middleware.NonWWWRedirectWithConfig(r.RedirectConfig)
 	return
 }
@@ -129,7 +114,4 @@ func (*NonWWWRedirect) Priority() int {
 
 func (r *NonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
-}
-
-func (*NonWWWRedirect) Terminate() {
 }

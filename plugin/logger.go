@@ -12,7 +12,7 @@ type (
 	}
 )
 
-func (l *Logger) Initialize() (err error) {
+func (l *Logger) Init() (err error) {
 	l.Middleware = middleware.LoggerWithConfig(l.LoggerConfig)
 	return
 }
@@ -23,7 +23,4 @@ func (*Logger) Priority() int {
 
 func (l *Logger) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return l.Middleware(next)
-}
-
-func (*Logger) Terminate() {
 }
