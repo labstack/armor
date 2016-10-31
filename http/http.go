@@ -33,8 +33,8 @@ func Start(a *armor.Armor) {
 	})
 
 	// Global plugins
-	for name, plug := range a.Plugins {
-		p, err := plugin.Decode(name, plug, a)
+	for _, pi := range a.Plugins {
+		p, err := plugin.Decode(pi, a)
 		if err != nil {
 			h.logger.Error(err)
 		}
@@ -50,8 +50,8 @@ func Start(a *armor.Armor) {
 		host.Name = hn
 		host.Echo = echo.New()
 
-		for name, plug := range host.Plugins {
-			p, err := plugin.Decode(name, plug, a)
+		for _, pi := range host.Plugins {
+			p, err := plugin.Decode(pi, a)
 			if err != nil {
 				h.logger.Error(err)
 			}
@@ -64,11 +64,10 @@ func Start(a *armor.Armor) {
 
 		// Paths
 		for pn, path := range host.Paths {
-			path.Name = pn
 			g := host.Echo.Group(pn)
 
-			for name, plug := range path.Plugins {
-				p, err := plugin.Decode(name, plug, a)
+			for _, pi := range path.Plugins {
+				p, err := plugin.Decode(pi, a)
 				if err != nil {
 					h.logger.Error(err)
 				}
@@ -76,12 +75,11 @@ func Start(a *armor.Armor) {
 			}
 
 			// NOP handlers to trigger plugins
+			g.Any("", echo.NotFoundHandler)
 			if pn == "/" {
-				g.Any("", echo.NotFoundHandler)
 				g.Any("*", echo.NotFoundHandler)
 			} else {
-				g.Any(pn, echo.NotFoundHandler)
-				g.Any(pn+"/*", echo.NotFoundHandler)
+				g.Any("/*", echo.NotFoundHandler)
 			}
 		}
 	}

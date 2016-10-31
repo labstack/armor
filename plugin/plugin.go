@@ -42,7 +42,8 @@ var (
 
 // Decode searches the plugin by name, decodes the provided map into plugin and
 // calls Plugin#Init().
-func Decode(name string, i interface{}, a *armor.Armor) (p Plugin, err error) {
+func Decode(pi armor.Plugin, a *armor.Armor) (p Plugin, err error) {
+	name := pi["name"].(string)
 	base := Base{
 		name:   name,
 		Armor:  a,
@@ -55,7 +56,7 @@ func Decode(name string, i interface{}, a *armor.Armor) (p Plugin, err error) {
 		TagName: "json",
 		Result:  p,
 	})
-	if err = dec.Decode(i); err != nil {
+	if err = dec.Decode(pi); err != nil {
 		return
 	}
 	return p, p.Init()

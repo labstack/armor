@@ -2,8 +2,8 @@ package plugin
 
 import (
 	"fmt"
-	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/labstack/echo"
 )
@@ -28,9 +28,6 @@ type (
 		// Enable directory browsing.
 		// Optional. Default value false.
 		Browse bool `json:"browse"`
-
-		// Templates
-		indexTemplate *Template
 	}
 )
 
@@ -43,8 +40,6 @@ func (s *Static) Init() (err error) {
 		s.Index = "index.html"
 	}
 
-	s.indexTemplate = NewTemplate(s.Index)
-
 	return
 }
 
@@ -54,59 +49,38 @@ func (*Static) Priority() int {
 
 func (s *Static) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		fs := http.Dir(s.Root)
-		name := c.Param("*")
-		file, err := fs.Open(name)
+		p := c.Param("*")
+		if p == "" {
+			p = c.Request().URL.Path // For hosts with no paths defined
+		}
+		name := filepath.Join(s.Root, p)
+		fi, err := os.Stat(name)
 
 		if err != nil {
 			if os.IsNotExist(err) {
 				if s.HTML5 {
-					return s.serveIndex(c, fs)
+					return c.File(filepath.Join(s.Root, s.Index))
 				}
 				return echo.ErrNotFound
 			}
 			return err
 		}
 
-		defer file.Close()
-
-		fi, err := file.Stat()
-		if err != nil {
-			return err
-		}
 		if fi.IsDir() {
 			if s.Browse {
-				return s.listDir(file, c.Response())
+				return s.listDir(name, c.Response())
 			}
-			return s.serveIndex(c, fs)
+			return c.File(filepath.Join(name, s.Index))
 		}
-		http.ServeContent(c.Response(), c.Request(), fi.Name(), fi.ModTime(), file)
-		return nil
+		return c.File(name)
 	}
 }
 
-func (s *Static) serveIndex(c echo.Context, fs http.Dir) error {
-	i, err := s.indexTemplate.Execute(c)
+func (s *Static) listDir(name string, res *echo.Response) error {
+	dir, err := os.Open(name)
 	if err != nil {
 		return err
 	}
-	file, err := fs.Open(i)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return echo.ErrNotFound
-		}
-		return err
-	}
-	defer file.Close()
-	fi, err := file.Stat()
-	if err != nil {
-		return err
-	}
-	http.ServeContent(c.Response(), c.Request(), i, fi.ModTime(), file)
-	return nil
-}
-
-func (s *Static) listDir(dir http.File, res *echo.Response) error {
 	dirs, err := dir.Readdir(-1)
 	if err != nil {
 		return err

@@ -20,8 +20,7 @@ func TestStatic(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	// File found
-	c.SetParamNames("*")
-	c.SetParamValues("/images/walle.png")
+	req.URL.Path = "/images/walle.png"
 	h := s.Process(echo.NotFoundHandler)
 	if assert.NoError(t, h(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
@@ -29,18 +28,16 @@ func TestStatic(t *testing.T) {
 	}
 
 	// File not found
+	req.URL.Path = "/none"
 	rec.Body.Reset()
-	c.SetParamNames("*")
-	c.SetParamValues("none")
 	h = s.Process(echo.NotFoundHandler)
 	he := h(c).(*echo.HTTPError)
 	assert.Equal(t, http.StatusNotFound, he.Code)
 
 	// HTML5
+	req.URL.Path = "/random"
 	rec.Body.Reset()
 	s.HTML5 = true
-	c.SetParamNames("*")
-	c.SetParamValues("random")
 	h = s.Process(echo.NotFoundHandler)
 	if assert.NoError(t, h(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
@@ -48,10 +45,9 @@ func TestStatic(t *testing.T) {
 	}
 
 	// Browse
+	req.URL.Path = "/"
 	rec.Body.Reset()
 	s.Browse = true
-	c.SetParamNames("*")
-	c.SetParamValues("")
 	h = s.Process(echo.NotFoundHandler)
 	if assert.NoError(t, h(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)

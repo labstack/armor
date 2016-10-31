@@ -18,7 +18,7 @@ Name | Type | Description
 `read_timeout` | number | Maximum duration in seconds before timing out read of the request
 `write_timeout` | number | Maximum duration before timing out write of the response
 `tls` | object | TLS configuration
-`plugins` | object | Global plugins
+`plugins` | array | Global plugins
 `hosts` | object | Virtual hosts
 
 ### `tls`
@@ -37,14 +37,14 @@ Name | Type | Description
 :--- | :--- | :----------
 `cert_file` | string | Certificate file
 `key_file` | string | Key file
-`plugins` | object | Host plugins
+`plugins` | array | Host plugins
 `paths` | object | Paths
 
 ### `paths`
 
 Name | Type | Description
 :--- | :--- | :----------
-`plugins` | object | Path plugins
+`plugins` | array | Path plugins
 
 ### [Plugins]({{< ref "plugins/redirect.md">}})
 
@@ -52,14 +52,14 @@ Name | Type | Description
 
 ```js
 {
-  "address": ":8080",
-  "plugins": {
-    "logger": {},
-    "static": {
-      "browse": true,
-      "root": "."
-    }
-  }
+    "address": ":8080",
+    "plugins": [{
+        "name": "logger"
+    }, {
+        "name": "static",
+        "browse": true,
+        "root": "."
+    }]
 }
 ```
 
@@ -67,59 +67,60 @@ Name | Type | Description
 
   ```js
   {
-    "address": ":80",
-    "tls": {
-      "auto": true
-    },
-    "plugins": {
-      "https-redirect": {},
-      "remove-trailing-slash": {
-        "redirect_code": 301
+      "address": ":80",
+      "tls": {
+          "auto": true
       },
-      "logger": {},
-      "gzip": {}
-    },
-    "hosts": {
-      "api.labstack.com": {
-        "plugins": {
-            "cors": {},
-            "proxy": {
-                "targets": [{
-                    "url": "http://api.ls"
-                }]
-            }
-        }
+      "plugins": {
+          "https-redirect": {},
+          "remove-trailing-slash": {
+            "redirect_code": 301
+          },
+          "logger": {},
+          "gzip": {}
       },
-      "labstack.com": {
-        "plugins": {
-          "non-www-redirect": {},
-          "static": {
-            "root": "/var/www/web",
-            "html5": true
+      "hosts": {
+          "labstack.com": {
+              "paths": {
+                  "/": {
+                      "plugins": [{
+                          "name": "static",
+                          "root": "/var/www/web",
+                          "html5": true
+                      }]
+                  },
+                  "/up": {
+                      "plugins": [{
+                          "name": "file",
+                          "path": "/var/www/web/up/index.html"
+                      }]
+                  }
+              }
+          },
+          "api.labstack.com": {
+              "plugins": [{
+                  "name": "https-redirect"
+              }, {
+                  "name": "cors"
+              }, {
+                  "name": "proxy",
+                  "targets": [{
+                      "url": "http://api.ls"
+                  }]
+              }]
+          },
+          "armor.labstack.com": {
+              "plugins": [{
+                  "name": "static",
+                  "root": "/var/www/armor"
+              }]
+          },
+          "echo.labstack.com": {
+              "plugins": [{
+                  "name": "static",
+                  "root": "/var/www/echo"
+              }]
           }
-        }
-      },
-      "blog.labstack.com": {
-        "plugins": {
-          "static": {
-            "root": "/var/www/blog"
-          }
-        }
-      },
-      "armor.labstack.com": {
-        "plugins": {
-          "static": {
-            "root": "/var/www/armor"
-          }
-        }
-      },
-      "echo.labstack.com": {
-        "plugins": {
-          "static": {
-            "root": "/var/www/echo"
-          }
-        }
       }
-    }
   }
   ```

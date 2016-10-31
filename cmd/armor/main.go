@@ -32,13 +32,13 @@ _______________O/______________________________
 `
 	defaultConfig = `{
     "address": ":8080",
-    "plugins": {
-      "logger": {},
-      "static": {
-        "browse": true,
-        "root": "."
-      }
-    }
+    "plugins": [{
+			"name": "logger"
+		}, {
+			"name": "static",
+			"browse": true,
+			"root": "."
+		}]
   }`
 )
 
