@@ -28,6 +28,9 @@ type (
 		// Enable directory browsing.
 		// Optional. Default value false.
 		Browse bool `json:"browse"`
+
+		// Templates
+		indexTemplate *Template
 	}
 )
 
@@ -39,6 +42,8 @@ func (s *Static) Init() (err error) {
 	if s.Index == "" {
 		s.Index = "index.html"
 	}
+
+	s.indexTemplate = NewTemplate(s.Index)
 
 	return
 }
@@ -56,7 +61,7 @@ func (s *Static) Process(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			if os.IsNotExist(err) {
 				if s.HTML5 {
-					return s.serveIndex(c.Request(), c.Response(), fs)
+					return s.serveIndex(c, fs)
 				}
 				return echo.ErrNotFound
 			}
@@ -69,16 +74,23 @@ func (s *Static) Process(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			return err
 		}
-		if fi.IsDir() && s.Browse {
-			return s.listDir(file, c.Response())
+		if fi.IsDir() {
+			if s.Browse {
+				return s.listDir(file, c.Response())
+			}
+			return s.serveIndex(c, fs)
 		}
 		http.ServeContent(c.Response(), c.Request(), fi.Name(), fi.ModTime(), file)
 		return nil
 	}
 }
 
-func (s *Static) serveIndex(req *http.Request, res *echo.Response, fs http.Dir) error {
-	file, err := fs.Open(s.Index)
+func (s *Static) serveIndex(c echo.Context, fs http.Dir) error {
+	i, err := s.indexTemplate.Execute(c)
+	if err != nil {
+		return err
+	}
+	file, err := fs.Open(i)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return echo.ErrNotFound
@@ -90,7 +102,7 @@ func (s *Static) serveIndex(req *http.Request, res *echo.Response, fs http.Dir) 
 	if err != nil {
 		return err
 	}
-	http.ServeContent(res, req, s.Index, fi.ModTime(), file)
+	http.ServeContent(c.Response(), c.Request(), i, fi.ModTime(), file)
 	return nil
 }
 

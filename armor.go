@@ -29,6 +29,7 @@ type (
 	}
 
 	Host struct {
+		Name     string                 `json:"-"`
 		CertFile string                 `json:"cert_file"`
 		KeyFile  string                 `json:"key_file"`
 		Plugins  map[string]interface{} `json:"plugins"`
@@ -37,10 +38,11 @@ type (
 	}
 
 	Path struct {
+		Name    string                 `json:"-"`
 		Plugins map[string]interface{} `json:"plugins"`
 	}
 )
 
 const (
-	Version = "0.1.5"
+	Version = "0.1.6"
 )

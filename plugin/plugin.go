@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"path"
 	"strings"
 	"sync"
 
@@ -26,8 +27,6 @@ type (
 	Base struct {
 		name       string
 		Middleware echo.MiddlewareFunc `json:"-"`
-		Host       string              `json:"-"`
-		Path       string              `json:"-"`
 		Armor      *armor.Armor        `json:"-"`
 		Logger     *log.Logger         `json:"-"`
 	}
@@ -43,11 +42,9 @@ var (
 
 // Decode searches the plugin by name, decodes the provided map into plugin and
 // calls Plugin#Init().
-func Decode(name string, i interface{}, host string, path string, a *armor.Armor) (p Plugin, err error) {
+func Decode(name string, i interface{}, a *armor.Armor) (p Plugin, err error) {
 	base := Base{
 		name:   name,
-		Host:   host,
-		Path:   path,
 		Armor:  a,
 		Logger: a.Logger,
 	}
@@ -132,6 +129,8 @@ func (t *Template) Execute(c echo.Context) (string, error) {
 			return buf.Write([]byte(c.Request().URL.Path))
 		case "uri":
 			return buf.Write([]byte(c.Request().RequestURI))
+		case "dir":
+			return buf.Write([]byte(path.Dir(c.Param("*"))))
 		default:
 			switch {
 			case strings.HasPrefix(tag, "header:"):

@@ -33,8 +33,8 @@ func Start(a *armor.Armor) {
 	})
 
 	// Global plugins
-	for name, pg := range a.Plugins {
-		p, err := plugin.Decode(name, pg, "", "", a)
+	for name, plug := range a.Plugins {
+		p, err := plugin.Decode(name, plug, a)
 		if err != nil {
 			h.logger.Error(err)
 		}
@@ -47,9 +47,11 @@ func Start(a *armor.Armor) {
 
 	// Hosts
 	for hn, host := range a.Hosts {
+		host.Name = hn
 		host.Echo = echo.New()
-		for name, pg := range host.Plugins {
-			p, err := plugin.Decode(name, pg, hn, "", a)
+
+		for name, plug := range host.Plugins {
+			p, err := plugin.Decode(name, plug, a)
 			if err != nil {
 				h.logger.Error(err)
 			}
@@ -62,16 +64,24 @@ func Start(a *armor.Armor) {
 
 		// Paths
 		for pn, path := range host.Paths {
-			if pn == "/" {
-				pn = ""
-			}
+			path.Name = pn
 			g := host.Echo.Group(pn)
-			for name, pg := range path.Plugins {
-				p, err := plugin.Decode(name, pg, hn, pn, a)
+
+			for name, plug := range path.Plugins {
+				p, err := plugin.Decode(name, plug, a)
 				if err != nil {
 					h.logger.Error(err)
 				}
 				g.Use(p.Process)
+			}
+
+			// NOP handlers to trigger plugins
+			if pn == "/" {
+				g.Any("", echo.NotFoundHandler)
+				g.Any("*", echo.NotFoundHandler)
+			} else {
+				g.Any(pn, echo.NotFoundHandler)
+				g.Any(pn+"/*", echo.NotFoundHandler)
 			}
 		}
 	}
@@ -81,10 +91,12 @@ func Start(a *armor.Armor) {
 		req := c.Request()
 		res := c.Response()
 		host := a.Hosts[req.Host]
+
 		if host == nil {
 			return echo.ErrNotFound
 		}
 		host.Echo.ServeHTTP(res, req)
+
 		return
 	})
 
@@ -120,6 +132,7 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 		}
 		return a.TLS.Certificates[clientHello.ServerName], nil
 	}
+
 	for name, host := range a.Hosts {
 		if host.CertFile == "" || host.KeyFile == "" {
 			continue
@@ -130,5 +143,6 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 		}
 		a.TLS.Certificates[name] = &cert
 	}
+
 	return e.StartTLS(a.TLS.Address, a.TLS.CertFile, a.TLS.KeyFile)
 }

@@ -1,16 +1,16 @@
 hash: 211805f423a2717ce3ce531d6450132bb24f738c830676ad6c51f9bd81281900
-updated: 2016-10-26T16:23:46.620155752-07:00
+updated: 2016-10-30T15:21:18.719869836-07:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: 24c63f56522a87ec5339cc3567883f1039378fdb
 - name: github.com/fsnotify/fsnotify
-  version: bd2828f9f176e52d7222e565abb2d338d3f3c103
+  version: fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197
 - name: github.com/golang/protobuf
   version: 98fa357170587e470c5f27d3c3ea0947b71eb455
   subpackages:
   - proto
 - name: github.com/labstack/echo
-  version: 8067b8eaf7c34c93548cde72427a77e18ca4e2fb
+  version: 891d8519d7db8bbd3a1729abe8e608cc857d8092
   subpackages:
   - middleware
 - name: github.com/labstack/gommon
@@ -32,20 +32,22 @@ imports:
   version: 76104d26167d38b6a0010f42bfc8ec5487742e8b
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert
 - name: github.com/tylerb/graceful
   version: 50a48b6e73fcc75b45e22c05b79629a67c79e938
 - name: github.com/valyala/fasttemplate
   version: 3b874956e03f1636d171bda64b130f9135f42cff
 - name: github.com/xenolf/lego
-  version: 4bb8bea031eb805f361c04ca222f266b9e7feced
+  version: 72914df00f027074ea70c878dde401f02fa22f09
   subpackages:
   - acme
 - name: golang.org/x/crypto
-  version: ca7e7f10cb9fd9c1a6ff7f60436c086d73714180
+  version: b2fa06b6af4b7c9bfeb8569ab7b17f04550717bf
   subpackages:
   - ocsp
 - name: golang.org/x/net
-  version: 65dfc08770ce66f74becfdff5f8ab01caef4e946
+  version: 73058b0420c0c24a7f9ec3eb6f624ac85d2ed035
   subpackages:
   - context
   - publicsuffix
@@ -55,7 +57,7 @@ imports:
   subpackages:
   - unix
 - name: golang.org/x/time
-  version: 711ca1cb87636abec28122ef3bc6a77269d433f3
+  version: f51c12702a4d776e4c1fa9b0fabab841babae631
   subpackages:
   - rate
 - name: gopkg.in/square/go-jose.v1
@@ -63,4 +65,12 @@ imports:
   subpackages:
   - cipher
   - json
-testImports: []
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib

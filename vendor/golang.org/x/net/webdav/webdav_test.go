@@ -48,7 +48,7 @@ func TestPrefix(t *testing.T) {
 			req.Header.Add(headers[0], headers[1])
 			headers = headers[2:]
 		}
-		res, err := http.DefaultClient.Do(req)
+		res, err := http.DefaultTransport.RoundTrip(req)
 		if err != nil {
 			return nil, err
 		}
@@ -198,6 +198,44 @@ func TestPrefix(t *testing.T) {
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("prefix=%-9q find:\ngot  %v\nwant %v", prefix, got, want)
 			continue
+		}
+	}
+}
+
+func TestEscapeXML(t *testing.T) {
+	// These test cases aren't exhaustive, and there is more than one way to
+	// escape e.g. a quot (as "&#34;" or "&quot;") or an apos. We presume that
+	// the encoding/xml package tests xml.EscapeText more thoroughly. This test
+	// here is just a sanity check for this package's escapeXML function, and
+	// its attempt to provide a fast path (and avoid a bytes.Buffer allocation)
+	// when escaping filenames is obviously a no-op.
+	testCases := map[string]string{
+		"":              "",
+		" ":             " ",
+		"&":             "&amp;",
+		"*":             "*",
+		"+":             "+",
+		",":             ",",
+		"-":             "-",
+		".":             ".",
+		"/":             "/",
+		"0":             "0",
+		"9":             "9",
+		":":             ":",
+		"<":             "&lt;",
+		">":             "&gt;",
+		"A":             "A",
+		"_":             "_",
+		"a":             "a",
+		"~":             "~",
+		"\u0201":        "\u0201",
+		"&amp;":         "&amp;amp;",
+		"foo&<b/ar>baz": "foo&amp;&lt;b/ar&gt;baz",
+	}
+
+	for in, want := range testCases {
+		if got := escapeXML(in); got != want {
+			t.Errorf("in=%q: got %q, want %q", in, got, want)
 		}
 	}
 }

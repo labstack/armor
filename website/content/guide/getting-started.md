@@ -41,7 +41,7 @@ Type `armor` in your terminal
 |   _   ||   |  | || ||_|| ||       ||   |  | |
 |__| |__||___|  |_||_|   |_||_______||___|  |_|
 
-                                      v0.1.5
+                                      v0.1.6
 
 Uncomplicated HTTP server, supports HTTP/2 and auto TLS
       https://github.com/labstack/armor
