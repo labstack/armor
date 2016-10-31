@@ -33,7 +33,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math"
 	"net"
 	"net/http"
 	"net/textproto"
@@ -129,24 +128,14 @@ func (s *Server) maxConcurrentStreams() uint32 {
 	return defaultMaxStreams
 }
 
-// List of funcs for ConfigureServer to run. Both h1 and h2 are guaranteed
-// to be non-nil.
-var configServerFuncs []func(h1 *http.Server, h2 *Server) error
-
 // ConfigureServer adds HTTP/2 support to a net/http Server.
 //
 // The configuration conf may be nil.
 //
 // ConfigureServer must be called before s begins serving.
 func ConfigureServer(s *http.Server, conf *Server) error {
-	if s == nil {
-		panic("nil *http.Server")
-	}
 	if conf == nil {
 		conf = new(Server)
-	}
-	if err := configureServer18(s, conf); err != nil {
-		return err
 	}
 
 	if s.TLSConfig == nil {
@@ -213,13 +202,6 @@ func ConfigureServer(s *http.Server, conf *Server) error {
 	return nil
 }
 
-// h1ServerShutdownChan if non-nil provides a func to return a channel
-// that will be closed when the provided *http.Server wants to shut
-// down. This is initialized via an init func in net/http (via its
-// mangled name from x/tools/cmd/bundle). This is only used when http2
-// is bundled into std for now.
-var h1ServerShutdownChan func(*http.Server) <-chan struct{}
-
 // ServeConnOpts are options for the Server.ServeConn method.
 type ServeConnOpts struct {
 	// BaseConfig optionally sets the base configuration
@@ -280,11 +262,9 @@ func (s *Server) ServeConn(c net.Conn, opts *ServeConnOpts) {
 		streams:           make(map[uint32]*stream),
 		readFrameCh:       make(chan readFrameResult),
 		wantWriteFrameCh:  make(chan FrameWriteRequest, 8),
-		wantStartPushCh:   make(chan startPushRequest, 8),
 		wroteFrameCh:      make(chan frameWriteResult, 1), // buffered; one send in writeFrameAsync
 		bodyReadCh:        make(chan bodyReadMsg),         // buffering doesn't matter either way
 		doneServing:       make(chan struct{}),
-		clientMaxStreams:  math.MaxUint32, // Section 6.5.2: "Initially, there is no limit to this value"
 		advMaxStreams:     s.maxConcurrentStreams(),
 		initialWindowSize: initialWindowSize,
 		maxFrameSize:      initialMaxFrameSize,
@@ -381,7 +361,6 @@ type serverConn struct {
 	doneServing      chan struct{}          // closed when serverConn.serve ends
 	readFrameCh      chan readFrameResult   // written by serverConn.readFrames
 	wantWriteFrameCh chan FrameWriteRequest // from handlers -> serve
-	wantStartPushCh  chan startPushRequest  // from handlers -> serve
 	wroteFrameCh     chan frameWriteResult  // from writeFrameAsync -> serve, tickles more frame writes
 	bodyReadCh       chan bodyReadMsg       // from handlers -> serve
 	testHookCh       chan func(int)         // code to run on the serve loop
@@ -399,21 +378,17 @@ type serverConn struct {
 	unackedSettings       int    // how many SETTINGS have we sent without ACKs?
 	clientMaxStreams      uint32 // SETTINGS_MAX_CONCURRENT_STREAMS from client (our PUSH_PROMISE limit)
 	advMaxStreams         uint32 // our SETTINGS_MAX_CONCURRENT_STREAMS advertised the client
-	curClientStreams      uint32 // number of open streams initiated by the client
-	curPushedStreams      uint32 // number of open streams initiated by server push
-	maxStreamID           uint32 // max ever seen from client
-	maxPushPromiseID      uint32 // ID of the last push promise, or 0 if there have been no pushes
+	curOpenStreams        uint32 // client's number of open streams
+	maxStreamID           uint32 // max ever seen
 	streams               map[uint32]*stream
 	initialWindowSize     int32
 	maxFrameSize          int32
 	headerTableSize       uint32
 	peerMaxHeaderListSize uint32            // zero means unknown (default)
 	canonHeader           map[string]string // http2-lower-case -> Go-Canonical-Case
-	writingFrame          bool              // started writing a frame (on serve goroutine or separate)
-	writingFrameAsync     bool              // started a frame on its own goroutine but haven't heard back on wroteFrameCh
+	writingFrame          bool              // started write goroutine but haven't heard back on wroteFrameCh
 	needsFrameFlush       bool              // last frame write wasn't a flush
 	inGoAway              bool              // we've started to or sent GOAWAY
-	inFrameScheduleLoop   bool              // whether we're in the scheduleFrameWrite loop
 	needToSendGoAway      bool              // we need to schedule a GOAWAY frame write
 	goAwayCode            ErrCode
 	shutdownTimerCh       <-chan time.Time // nil until used
@@ -482,7 +457,7 @@ func (sc *serverConn) HeaderEncoder() (*hpack.Encoder, *bytes.Buffer) {
 
 func (sc *serverConn) state(streamID uint32) (streamState, *stream) {
 	sc.serveG.check()
-	// http://tools.ietf.org/html/rfc7540#section-5.1
+	// http://http2.github.io/http2-spec/#rfc.section.5.1
 	if st, ok := sc.streams[streamID]; ok {
 		return st.state, st
 	}
@@ -717,11 +692,6 @@ func (sc *serverConn) serve() {
 		sc.idleTimerCh = sc.idleTimer.C
 	}
 
-	var gracefulShutdownCh <-chan struct{}
-	if sc.hs != nil && h1ServerShutdownChan != nil {
-		gracefulShutdownCh = h1ServerShutdownChan(sc.hs)
-	}
-
 	go sc.readFrames() // closed by defer sc.conn.Close above
 
 	settingsTimer := time.NewTimer(firstSettingsTimeout)
@@ -731,8 +701,6 @@ func (sc *serverConn) serve() {
 		select {
 		case wr := <-sc.wantWriteFrameCh:
 			sc.writeFrame(wr)
-		case spr := <-sc.wantStartPushCh:
-			sc.startPush(spr)
 		case res := <-sc.wroteFrameCh:
 			sc.wroteFrame(res)
 		case res := <-sc.readFrameCh:
@@ -749,9 +717,6 @@ func (sc *serverConn) serve() {
 		case <-settingsTimer.C:
 			sc.logf("timeout waiting for SETTINGS frames from %v", sc.conn.RemoteAddr())
 			return
-		case <-gracefulShutdownCh:
-			gracefulShutdownCh = nil
-			sc.goAwayIn(ErrCodeNo, 0)
 		case <-sc.shutdownTimerCh:
 			sc.vlogf("GOAWAY close timer fired; closing conn from %v", sc.conn.RemoteAddr())
 			return
@@ -760,10 +725,6 @@ func (sc *serverConn) serve() {
 			sc.goAway(ErrCodeNo)
 		case fn := <-sc.testHookCh:
 			fn(loopNum)
-		}
-
-		if sc.inGoAway && sc.curClientStreams == 0 && !sc.needToSendGoAway && !sc.writingFrame {
-			return
 		}
 	}
 }
@@ -920,26 +881,13 @@ func (sc *serverConn) startFrameWrite(wr FrameWriteRequest) {
 			panic(fmt.Sprintf("internal error: attempt to send a write %v on a closed stream", wr))
 		}
 	}
-	if wpp, ok := wr.write.(*writePushPromise); ok {
-		var err error
-		wpp.promisedID, err = wpp.allocatePromisedID()
-		if err != nil {
-			sc.writingFrameAsync = false
-			if wr.done != nil {
-				wr.done <- err
-			}
-			return
-		}
-	}
 
 	sc.writingFrame = true
 	sc.needsFrameFlush = true
 	if wr.write.staysWithinBuffer(sc.bw.Available()) {
-		sc.writingFrameAsync = false
 		err := wr.write.writeFrame(sc)
 		sc.wroteFrame(frameWriteResult{wr, err})
 	} else {
-		sc.writingFrameAsync = true
 		go sc.writeFrameAsync(wr)
 	}
 }
@@ -957,7 +905,6 @@ func (sc *serverConn) wroteFrame(res frameWriteResult) {
 		panic("internal error: expected to be already writing a frame")
 	}
 	sc.writingFrame = false
-	sc.writingFrameAsync = false
 
 	wr := res.wr
 	st := wr.stream
@@ -1017,61 +964,47 @@ func (sc *serverConn) wroteFrame(res frameWriteResult) {
 // flush the write buffer.
 func (sc *serverConn) scheduleFrameWrite() {
 	sc.serveG.check()
-	if sc.writingFrame || sc.inFrameScheduleLoop {
+	if sc.writingFrame {
 		return
 	}
-	sc.inFrameScheduleLoop = true
-	for !sc.writingFrameAsync {
-		if sc.needToSendGoAway {
-			sc.needToSendGoAway = false
-			sc.startFrameWrite(FrameWriteRequest{
-				write: &writeGoAway{
-					maxStreamID: sc.maxStreamID,
-					code:        sc.goAwayCode,
-				},
-			})
-			continue
-		}
-		if sc.needToSendSettingsAck {
-			sc.needToSendSettingsAck = false
-			sc.startFrameWrite(FrameWriteRequest{write: writeSettingsAck{}})
-			continue
-		}
-		if !sc.inGoAway || sc.goAwayCode == ErrCodeNo {
-			if wr, ok := sc.writeSched.Pop(); ok {
-				sc.startFrameWrite(wr)
-				continue
-			}
-		}
-		if sc.needsFrameFlush {
-			sc.startFrameWrite(FrameWriteRequest{write: flushFrameWriter{}})
-			sc.needsFrameFlush = false // after startFrameWrite, since it sets this true
-			continue
-		}
-		break
+	if sc.needToSendGoAway {
+		sc.needToSendGoAway = false
+		sc.startFrameWrite(FrameWriteRequest{
+			write: &writeGoAway{
+				maxStreamID: sc.maxStreamID,
+				code:        sc.goAwayCode,
+			},
+		})
+		return
 	}
-	sc.inFrameScheduleLoop = false
+	if sc.needToSendSettingsAck {
+		sc.needToSendSettingsAck = false
+		sc.startFrameWrite(FrameWriteRequest{write: writeSettingsAck{}})
+		return
+	}
+	if !sc.inGoAway {
+		if wr, ok := sc.writeSched.Pop(); ok {
+			sc.startFrameWrite(wr)
+			return
+		}
+	}
+	if sc.needsFrameFlush {
+		sc.startFrameWrite(FrameWriteRequest{write: flushFrameWriter{}})
+		sc.needsFrameFlush = false // after startFrameWrite, since it sets this true
+		return
+	}
 }
 
 func (sc *serverConn) goAway(code ErrCode) {
 	sc.serveG.check()
-	var forceCloseIn time.Duration
-	if code != ErrCodeNo {
-		forceCloseIn = 250 * time.Millisecond
-	} else {
-		// TODO: configurable
-		forceCloseIn = 1 * time.Second
-	}
-	sc.goAwayIn(code, forceCloseIn)
-}
-
-func (sc *serverConn) goAwayIn(code ErrCode, forceCloseIn time.Duration) {
-	sc.serveG.check()
 	if sc.inGoAway {
 		return
 	}
-	if forceCloseIn != 0 {
-		sc.shutDownIn(forceCloseIn)
+	if code != ErrCodeNo {
+		sc.shutDownIn(250 * time.Millisecond)
+	} else {
+		// TODO: configurable
+		sc.shutDownIn(1 * time.Second)
 	}
 	sc.inGoAway = true
 	sc.needToSendGoAway = true
@@ -1271,12 +1204,8 @@ func (sc *serverConn) closeStream(st *stream, err error) {
 		panic(fmt.Sprintf("invariant; can't close stream in state %v", st.state))
 	}
 	st.state = stateClosed
-	if st.isPushed() {
-		sc.curPushedStreams--
-	} else {
-		sc.curClientStreams--
-	}
-	if sc.curClientStreams+sc.curPushedStreams == 0 {
+	sc.curOpenStreams--
+	if sc.curOpenStreams == 0 {
 		sc.setConnState(http.StateIdle)
 	}
 	delete(sc.streams, st.id)
@@ -1459,11 +1388,6 @@ func (sc *serverConn) processData(f *DataFrame) error {
 	return nil
 }
 
-// isPushed reports whether the stream is server-initiated.
-func (st *stream) isPushed() bool {
-	return st.id%2 == 0
-}
-
 // endStream closes a Request.Body's pipe. It is called when a DATA
 // frame says a request body is over (or after trailers).
 func (st *stream) endStream() {
@@ -1493,12 +1417,12 @@ func (st *stream) copyTrailersToHandlerRequest() {
 
 func (sc *serverConn) processHeaders(f *MetaHeadersFrame) error {
 	sc.serveG.check()
-	id := f.StreamID
+	id := f.Header().StreamID
 	if sc.inGoAway {
 		// Ignore.
 		return nil
 	}
-	// http://tools.ietf.org/html/rfc7540#section-5.1.1
+	// http://http2.github.io/http2-spec/#rfc.section.5.1.1
 	// Streams initiated by a client MUST use odd-numbered stream
 	// identifiers. [...] An endpoint that receives an unexpected
 	// stream identifier MUST respond with a connection error
@@ -1510,7 +1434,8 @@ func (sc *serverConn) processHeaders(f *MetaHeadersFrame) error {
 	// send a trailer for an open one. If we already have a stream
 	// open, let it process its own HEADERS frame (trailers at this
 	// point, if it's valid).
-	if st := sc.streams[f.StreamID]; st != nil {
+	st := sc.streams[f.Header().StreamID]
+	if st != nil {
 		return st.processTrailerHeaders(f)
 	}
 
@@ -1528,31 +1453,48 @@ func (sc *serverConn) processHeaders(f *MetaHeadersFrame) error {
 		sc.idleTimer.Stop()
 	}
 
-	// http://tools.ietf.org/html/rfc7540#section-5.1.2
-	// [...] Endpoints MUST NOT exceed the limit set by their peer. An
-	// endpoint that receives a HEADERS frame that causes their
-	// advertised concurrent stream limit to be exceeded MUST treat
-	// this as a stream error (Section 5.4.2) of type PROTOCOL_ERROR
-	// or REFUSED_STREAM.
-	if sc.curClientStreams+1 > sc.advMaxStreams {
+	ctx, cancelCtx := contextWithCancel(sc.baseCtx)
+	st = &stream{
+		sc:        sc,
+		id:        id,
+		state:     stateOpen,
+		ctx:       ctx,
+		cancelCtx: cancelCtx,
+	}
+	if f.StreamEnded() {
+		st.state = stateHalfClosedRemote
+	}
+	st.cw.Init()
+
+	st.flow.conn = &sc.flow // link to conn-level counter
+	st.flow.add(sc.initialWindowSize)
+	st.inflow.conn = &sc.inflow      // link to conn-level counter
+	st.inflow.add(initialWindowSize) // TODO: update this when we send a higher initial window size in the initial settings
+
+	sc.streams[id] = st
+	sc.writeSched.OpenStream(st.id, OpenStreamOptions{})
+	sc.curOpenStreams++
+	if sc.curOpenStreams == 1 {
+		sc.setConnState(http.StateActive)
+	}
+	if sc.curOpenStreams > sc.advMaxStreams {
+		// "Endpoints MUST NOT exceed the limit set by their
+		// peer. An endpoint that receives a HEADERS frame
+		// that causes their advertised concurrent stream
+		// limit to be exceeded MUST treat this as a stream
+		// error (Section 5.4.2) of type PROTOCOL_ERROR or
+		// REFUSED_STREAM."
 		if sc.unackedSettings == 0 {
 			// They should know better.
-			return streamError(id, ErrCodeProtocol)
+			return streamError(st.id, ErrCodeProtocol)
 		}
 		// Assume it's a network race, where they just haven't
 		// received our last SETTINGS update. But actually
 		// this can't happen yet, because we don't yet provide
 		// a way for users to adjust server parameters at
 		// runtime.
-		return streamError(id, ErrCodeRefusedStream)
+		return streamError(st.id, ErrCodeRefusedStream)
 	}
-
-	initialState := stateOpen
-	if f.StreamEnded() {
-		initialState = stateHalfClosedRemote
-	}
-	st := sc.newStream(id, 0, initialState)
-
 	if f.HasPriority() {
 		if err := checkPriority(f.StreamID, f.Priority); err != nil {
 			return err
@@ -1575,17 +1517,19 @@ func (sc *serverConn) processHeaders(f *MetaHeadersFrame) error {
 	if f.Truncated {
 		// Their header list was too long. Send a 431 error.
 		handler = handleHeaderListTooLong
-	} else if err := checkValidHTTP2RequestHeaders(req.Header); err != nil {
+	} else if err := checkValidHTTP2Request(req); err != nil {
 		handler = new400Handler(err)
 	}
 
 	// The net/http package sets the read deadline from the
 	// http.Server.ReadTimeout during the TLS handshake, but then
 	// passes the connection off to us with the deadline already
-	// set. Disarm it here after the request headers are read,
-	// similar to how the http1 server works. Here it's
-	// technically more like the http1 Server's ReadHeaderTimeout
-	// (in Go 1.8), though. That's a more sane option anyway.
+	// set. Disarm it here after the request headers are read, similar
+	// to how the http1 server works.
+	// Unlike http1, though, we never re-arm it yet, though.
+	// TODO(bradfitz): figure out golang.org/issue/14204
+	// (IdleTimeout) and how this relates. Maybe the default
+	// IdleTimeout is ReadTimeout.
 	if sc.hs.ReadTimeout != 0 {
 		sc.conn.SetReadDeadline(time.Time{})
 	}
@@ -1646,56 +1590,21 @@ func (sc *serverConn) processPriority(f *PriorityFrame) error {
 	return nil
 }
 
-func (sc *serverConn) newStream(id, pusherID uint32, state streamState) *stream {
-	sc.serveG.check()
-	if id == 0 {
-		panic("internal error: cannot create stream with id 0")
-	}
-
-	ctx, cancelCtx := contextWithCancel(sc.baseCtx)
-	st := &stream{
-		sc:        sc,
-		id:        id,
-		state:     state,
-		ctx:       ctx,
-		cancelCtx: cancelCtx,
-	}
-	st.cw.Init()
-	st.flow.conn = &sc.flow // link to conn-level counter
-	st.flow.add(sc.initialWindowSize)
-	st.inflow.conn = &sc.inflow      // link to conn-level counter
-	st.inflow.add(initialWindowSize) // TODO: update this when we send a higher initial window size in the initial settings
-
-	sc.streams[id] = st
-	sc.writeSched.OpenStream(st.id, OpenStreamOptions{PusherID: pusherID})
-	if st.isPushed() {
-		sc.curPushedStreams++
-	} else {
-		sc.curClientStreams++
-	}
-	if sc.curClientStreams+sc.curPushedStreams == 1 {
-		sc.setConnState(http.StateActive)
-	}
-
-	return st
-}
-
 func (sc *serverConn) newWriterAndRequest(st *stream, f *MetaHeadersFrame) (*responseWriter, *http.Request, error) {
 	sc.serveG.check()
 
-	rp := requestParam{
-		method:    f.PseudoValue("method"),
-		scheme:    f.PseudoValue("scheme"),
-		authority: f.PseudoValue("authority"),
-		path:      f.PseudoValue("path"),
-	}
+	method := f.PseudoValue("method")
+	path := f.PseudoValue("path")
+	scheme := f.PseudoValue("scheme")
+	authority := f.PseudoValue("authority")
 
-	isConnect := rp.method == "CONNECT"
+	isConnect := method == "CONNECT"
 	if isConnect {
-		if rp.path != "" || rp.scheme != "" || rp.authority == "" {
+		if path != "" || scheme != "" || authority == "" {
 			return nil, nil, streamError(f.StreamID, ErrCodeProtocol)
 		}
-	} else if rp.method == "" || rp.path == "" || (rp.scheme != "https" && rp.scheme != "http") {
+	} else if method == "" || path == "" ||
+		(scheme != "https" && scheme != "http") {
 		// See 8.1.2.6 Malformed Requests and Responses:
 		//
 		// Malformed requests or responses that are detected
@@ -1710,64 +1619,36 @@ func (sc *serverConn) newWriterAndRequest(st *stream, f *MetaHeadersFrame) (*res
 	}
 
 	bodyOpen := !f.StreamEnded()
-	if rp.method == "HEAD" && bodyOpen {
+	if method == "HEAD" && bodyOpen {
 		// HEAD requests can't have bodies
 		return nil, nil, streamError(f.StreamID, ErrCodeProtocol)
 	}
-
-	rp.header = make(http.Header)
-	for _, hf := range f.RegularFields() {
-		rp.header.Add(sc.canonicalHeader(hf.Name), hf.Value)
-	}
-	if rp.authority == "" {
-		rp.authority = rp.header.Get("Host")
-	}
-
-	rw, req, err := sc.newWriterAndRequestNoBody(st, rp)
-	if err != nil {
-		return nil, nil, err
-	}
-	if bodyOpen {
-		st.reqBuf = getRequestBodyBuf()
-		req.Body.(*requestBody).pipe = &pipe{
-			b: &fixedBuffer{buf: st.reqBuf},
-		}
-
-		if vv, ok := rp.header["Content-Length"]; ok {
-			req.ContentLength, _ = strconv.ParseInt(vv[0], 10, 64)
-		} else {
-			req.ContentLength = -1
-		}
-	}
-	return rw, req, nil
-}
-
-type requestParam struct {
-	method                  string
-	scheme, authority, path string
-	header                  http.Header
-}
-
-func (sc *serverConn) newWriterAndRequestNoBody(st *stream, rp requestParam) (*responseWriter, *http.Request, error) {
-	sc.serveG.check()
-
 	var tlsState *tls.ConnectionState // nil if not scheme https
-	if rp.scheme == "https" {
+
+	if scheme == "https" {
 		tlsState = sc.tlsState
 	}
 
-	needsContinue := rp.header.Get("Expect") == "100-continue"
+	header := make(http.Header)
+	for _, hf := range f.RegularFields() {
+		header.Add(sc.canonicalHeader(hf.Name), hf.Value)
+	}
+
+	if authority == "" {
+		authority = header.Get("Host")
+	}
+	needsContinue := header.Get("Expect") == "100-continue"
 	if needsContinue {
-		rp.header.Del("Expect")
+		header.Del("Expect")
 	}
 	// Merge Cookie headers into one "; "-delimited value.
-	if cookies := rp.header["Cookie"]; len(cookies) > 1 {
-		rp.header.Set("Cookie", strings.Join(cookies, "; "))
+	if cookies := header["Cookie"]; len(cookies) > 1 {
+		header.Set("Cookie", strings.Join(cookies, "; "))
 	}
 
 	// Setup Trailers
 	var trailer http.Header
-	for _, v := range rp.header["Trailer"] {
+	for _, v := range header["Trailer"] {
 		for _, key := range strings.Split(v, ",") {
 			key = http.CanonicalHeaderKey(strings.TrimSpace(key))
 			switch key {
@@ -1782,42 +1663,53 @@ func (sc *serverConn) newWriterAndRequestNoBody(st *stream, rp requestParam) (*r
 			}
 		}
 	}
-	delete(rp.header, "Trailer")
-
-	var url_ *url.URL
-	var requestURI string
-	if rp.method == "CONNECT" {
-		url_ = &url.URL{Host: rp.authority}
-		requestURI = rp.authority // mimic HTTP/1 server behavior
-	} else {
-		var err error
-		url_, err = url.ParseRequestURI(rp.path)
-		if err != nil {
-			return nil, nil, streamError(st.id, ErrCodeProtocol)
-		}
-		requestURI = rp.path
-	}
+	delete(header, "Trailer")
 
 	body := &requestBody{
 		conn:          sc,
 		stream:        st,
 		needsContinue: needsContinue,
 	}
+	var url_ *url.URL
+	var requestURI string
+	if isConnect {
+		url_ = &url.URL{Host: authority}
+		requestURI = authority // mimic HTTP/1 server behavior
+	} else {
+		var err error
+		url_, err = url.ParseRequestURI(path)
+		if err != nil {
+			return nil, nil, streamError(f.StreamID, ErrCodeProtocol)
+		}
+		requestURI = path
+	}
 	req := &http.Request{
-		Method:     rp.method,
+		Method:     method,
 		URL:        url_,
 		RemoteAddr: sc.remoteAddrStr,
-		Header:     rp.header,
+		Header:     header,
 		RequestURI: requestURI,
 		Proto:      "HTTP/2.0",
 		ProtoMajor: 2,
 		ProtoMinor: 0,
 		TLS:        tlsState,
-		Host:       rp.authority,
+		Host:       authority,
 		Body:       body,
 		Trailer:    trailer,
 	}
 	req = requestWithContext(req, st.ctx)
+	if bodyOpen {
+		st.reqBuf = getRequestBodyBuf()
+		body.pipe = &pipe{
+			b: &fixedBuffer{buf: st.reqBuf},
+		}
+
+		if vv, ok := header["Content-Length"]; ok {
+			req.ContentLength, _ = strconv.ParseInt(vv[0], 10, 64)
+		} else {
+			req.ContentLength = -1
+		}
+	}
 
 	rws := responseWriterStatePool.Get().(*responseWriterState)
 	bwSave := rws.bw
@@ -2375,194 +2267,6 @@ func (w *responseWriter) handlerDone() {
 	responseWriterStatePool.Put(rws)
 }
 
-// Push errors.
-var (
-	ErrRecursivePush    = errors.New("http2: recursive push not allowed")
-	ErrPushLimitReached = errors.New("http2: push would exceed peer's SETTINGS_MAX_CONCURRENT_STREAMS")
-)
-
-// pushOptions is the internal version of http.PushOptions, which we
-// cannot include here because it's only defined in Go 1.8 and later.
-type pushOptions struct {
-	Method string
-	Header http.Header
-}
-
-func (w *responseWriter) push(target string, opts pushOptions) error {
-	st := w.rws.stream
-	sc := st.sc
-	sc.serveG.checkNotOn()
-
-	// No recursive pushes: "PUSH_PROMISE frames MUST only be sent on a peer-initiated stream."
-	// http://tools.ietf.org/html/rfc7540#section-6.6
-	if st.isPushed() {
-		return ErrRecursivePush
-	}
-
-	// Default options.
-	if opts.Method == "" {
-		opts.Method = "GET"
-	}
-	if opts.Header == nil {
-		opts.Header = http.Header{}
-	}
-	wantScheme := "http"
-	if w.rws.req.TLS != nil {
-		wantScheme = "https"
-	}
-
-	// Validate the request.
-	u, err := url.Parse(target)
-	if err != nil {
-		return err
-	}
-	if u.Scheme == "" {
-		if !strings.HasPrefix(target, "/") {
-			return fmt.Errorf("target must be an absolute URL or an absolute path: %q", target)
-		}
-		u.Scheme = wantScheme
-		u.Host = w.rws.req.Host
-	} else {
-		if u.Scheme != wantScheme {
-			return fmt.Errorf("cannot push URL with scheme %q from request with scheme %q", u.Scheme, wantScheme)
-		}
-		if u.Host == "" {
-			return errors.New("URL must have a host")
-		}
-	}
-	for k := range opts.Header {
-		if strings.HasPrefix(k, ":") {
-			return fmt.Errorf("promised request headers cannot include psuedo header %q", k)
-		}
-		// These headers are meaningful only if the request has a body,
-		// but PUSH_PROMISE requests cannot have a body.
-		// http://tools.ietf.org/html/rfc7540#section-8.2
-		// Also disallow Host, since the promised URL must be absolute.
-		switch strings.ToLower(k) {
-		case "content-length", "content-encoding", "trailer", "te", "expect", "host":
-			return fmt.Errorf("promised request headers cannot include %q", k)
-		}
-	}
-	if err := checkValidHTTP2RequestHeaders(opts.Header); err != nil {
-		return err
-	}
-
-	// The RFC effectively limits promised requests to GET and HEAD:
-	// "Promised requests MUST be cacheable [GET, HEAD, or POST], and MUST be safe [GET or HEAD]"
-	// http://tools.ietf.org/html/rfc7540#section-8.2
-	if opts.Method != "GET" && opts.Method != "HEAD" {
-		return fmt.Errorf("method %q must be GET or HEAD", opts.Method)
-	}
-
-	msg := startPushRequest{
-		parent: st,
-		method: opts.Method,
-		url:    u,
-		header: cloneHeader(opts.Header),
-		done:   errChanPool.Get().(chan error),
-	}
-
-	select {
-	case <-sc.doneServing:
-		return errClientDisconnected
-	case <-st.cw:
-		return errStreamClosed
-	case sc.wantStartPushCh <- msg:
-	}
-
-	select {
-	case <-sc.doneServing:
-		return errClientDisconnected
-	case <-st.cw:
-		return errStreamClosed
-	case err := <-msg.done:
-		errChanPool.Put(msg.done)
-		return err
-	}
-}
-
-type startPushRequest struct {
-	parent *stream
-	method string
-	url    *url.URL
-	header http.Header
-	done   chan error
-}
-
-func (sc *serverConn) startPush(msg startPushRequest) {
-	sc.serveG.check()
-
-	// http://tools.ietf.org/html/rfc7540#section-6.6.
-	// PUSH_PROMISE frames MUST only be sent on a peer-initiated stream that
-	// is in either the "open" or "half-closed (remote)" state.
-	if msg.parent.state != stateOpen && msg.parent.state != stateHalfClosedRemote {
-		// responseWriter.Push checks that the stream is peer-initiaed.
-		msg.done <- errStreamClosed
-		return
-	}
-
-	// http://tools.ietf.org/html/rfc7540#section-6.6.
-	if !sc.pushEnabled {
-		msg.done <- http.ErrNotSupported
-		return
-	}
-
-	// PUSH_PROMISE frames must be sent in increasing order by stream ID, so
-	// we allocate an ID for the promised stream lazily, when the PUSH_PROMISE
-	// is written. Once the ID is allocated, we start the request handler.
-	allocatePromisedID := func() (uint32, error) {
-		sc.serveG.check()
-
-		// Check this again, just in case. Technically, we might have received
-		// an updated SETTINGS by the time we got around to writing this frame.
-		if !sc.pushEnabled {
-			return 0, http.ErrNotSupported
-		}
-		// http://tools.ietf.org/html/rfc7540#section-6.5.2.
-		if sc.curPushedStreams+1 > sc.clientMaxStreams {
-			return 0, ErrPushLimitReached
-		}
-
-		// http://tools.ietf.org/html/rfc7540#section-5.1.1.
-		// Streams initiated by the server MUST use even-numbered identifiers.
-		sc.maxPushPromiseID += 2
-		promisedID := sc.maxPushPromiseID
-
-		// http://tools.ietf.org/html/rfc7540#section-8.2.
-		// Strictly speaking, the new stream should start in "reserved (local)", then
-		// transition to "half closed (remote)" after sending the initial HEADERS, but
-		// we start in "half closed (remote)" for simplicity.
-		// See further comments at the definition of stateHalfClosedRemote.
-		promised := sc.newStream(promisedID, msg.parent.id, stateHalfClosedRemote)
-		rw, req, err := sc.newWriterAndRequestNoBody(promised, requestParam{
-			method:    msg.method,
-			scheme:    msg.url.Scheme,
-			authority: msg.url.Host,
-			path:      msg.url.RequestURI(),
-			header:    msg.header,
-		})
-		if err != nil {
-			// Should not happen, since we've already validated msg.url.
-			panic(fmt.Sprintf("newWriterAndRequestNoBody(%+v): %v", msg.url, err))
-		}
-
-		go sc.runHandler(rw, req, sc.handler.ServeHTTP)
-		return promisedID, nil
-	}
-
-	sc.writeFrame(FrameWriteRequest{
-		write: &writePushPromise{
-			streamID:           msg.parent.id,
-			method:             msg.method,
-			url:                msg.url,
-			h:                  msg.header,
-			allocatePromisedID: allocatePromisedID,
-		},
-		stream: msg.parent,
-		done:   msg.done,
-	})
-}
-
 // foreachHeaderElement splits v according to the "#rule" construction
 // in RFC 2616 section 2.1 and calls fn for each non-empty element.
 func foreachHeaderElement(v string, fn func(string)) {
@@ -2590,16 +2294,16 @@ var connHeaders = []string{
 	"Upgrade",
 }
 
-// checkValidHTTP2RequestHeaders checks whether h is a valid HTTP/2 request,
+// checkValidHTTP2Request checks whether req is a valid HTTP/2 request,
 // per RFC 7540 Section 8.1.2.2.
 // The returned error is reported to users.
-func checkValidHTTP2RequestHeaders(h http.Header) error {
-	for _, k := range connHeaders {
-		if _, ok := h[k]; ok {
-			return fmt.Errorf("request header %q is not valid in HTTP/2", k)
+func checkValidHTTP2Request(req *http.Request) error {
+	for _, h := range connHeaders {
+		if _, ok := req.Header[h]; ok {
+			return fmt.Errorf("request header %q is not valid in HTTP/2", h)
 		}
 	}
-	te := h["Te"]
+	te := req.Header["Te"]
 	if len(te) > 0 && (len(te) > 1 || (te[0] != "trailers" && te[0] != "")) {
 		return errors.New(`request header "TE" may only be "trailers" in HTTP/2`)
 	}

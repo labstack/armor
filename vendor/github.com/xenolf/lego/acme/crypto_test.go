@@ -24,7 +24,7 @@ func TestGenerateCSR(t *testing.T) {
 		t.Fatal("Error generating private key:", err)
 	}
 
-	csr, err := generateCsr(key, "fizz.buzz", nil, true)
+	csr, err := generateCsr(key, "fizz.buzz", nil)
 	if err != nil {
 		t.Error("Error generating CSR:", err)
 	}

@@ -339,7 +339,7 @@ func run(c *cli.Context) error {
 
 	if hasDomains {
 		// obtain a certificate, generating a new private key
-		cert, failures = client.ObtainCertificate(c.GlobalStringSlice("domains"), !c.Bool("no-bundle"), nil, c.Bool("must-staple"))
+		cert, failures = client.ObtainCertificate(c.GlobalStringSlice("domains"), !c.Bool("no-bundle"), nil)
 	} else {
 		// read the CSR
 		csr, err := readCSRFile(c.GlobalString("csr"))
@@ -452,7 +452,7 @@ func renew(c *cli.Context) error {
 
 	certRes.Certificate = certBytes
 
-	newCert, err := client.RenewCertificate(certRes, !c.Bool("no-bundle"), c.Bool("must-staple"))
+	newCert, err := client.RenewCertificate(certRes, !c.Bool("no-bundle"))
 	if err != nil {
 		logger().Fatalf("%s", err.Error())
 	}

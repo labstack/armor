@@ -20,8 +20,6 @@ import (
 	"strings"
 	"time"
 
-	"encoding/asn1"
-
 	"golang.org/x/crypto/ocsp"
 )
 
@@ -47,12 +45,6 @@ const (
 	OCSPUnknown = ocsp.Unknown
 	// OCSPServerFailed means that the OCSP responder failed to process the request.
 	OCSPServerFailed = ocsp.ServerFailed
-)
-
-// Constants for OCSP must staple
-var (
-	tlsFeatureExtensionOID = asn1.ObjectIdentifier{1, 3, 6, 1, 5, 5, 7, 1, 24}
-	ocspMustStapleFeature  = []byte{0x30, 0x03, 0x02, 0x01, 0x05}
 )
 
 // GetOCSPForCert takes a PEM encoded cert or cert bundle returning the raw OCSP response,
@@ -214,7 +206,7 @@ func generatePrivateKey(keyType KeyType) (crypto.PrivateKey, error) {
 	return nil, fmt.Errorf("Invalid KeyType: %s", keyType)
 }
 
-func generateCsr(privateKey crypto.PrivateKey, domain string, san []string, mustStaple bool) ([]byte, error) {
+func generateCsr(privateKey crypto.PrivateKey, domain string, san []string) ([]byte, error) {
 	template := x509.CertificateRequest{
 		Subject: pkix.Name{
 			CommonName: domain,
@@ -223,13 +215,6 @@ func generateCsr(privateKey crypto.PrivateKey, domain string, san []string, must
 
 	if len(san) > 0 {
 		template.DNSNames = san
-	}
-
-	if mustStaple {
-		template.Extensions = append(template.Extensions, pkix.Extension{
-			Id:    tlsFeatureExtensionOID,
-			Value: ocspMustStapleFeature,
-		})
 	}
 
 	return x509.CreateCertificateRequest(rand.Reader, &template, privateKey)
