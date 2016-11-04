@@ -11,13 +11,13 @@ import (
 
 func TestStatic(t *testing.T) {
 	e := echo.New()
+	req := httptest.NewRequest(echo.GET, "/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
 	s := &Static{
 		Root: "../_fixture",
 	}
 	s.Init()
-	req := httptest.NewRequest(echo.GET, "/", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
 
 	// File found
 	req.URL.Path = "/images/walle.png"
