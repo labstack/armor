@@ -41,12 +41,12 @@ Type `armor` in your terminal
 |   _   ||   |  | || ||_|| ||       ||   |  | |
 |__| |__||___|  |_||_|   |_||_______||___|  |_|
 
-                                      v0.2.1
+https://armor.labstack.com               v0.2.1
 
-Uncomplicated HTTP server, supports HTTP/2 and auto TLS
-      https://github.com/labstack/armor
-___________________O/___________________________
-                   O\
+Uncomplicated HTTP server, supports HTTP/2 and
+auto TLS
+_______________O/______________________________
+               O\
 
  ⇛ http server started on :8080
 ```
