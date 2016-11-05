@@ -1,7 +1,6 @@
 package armor
 
 import (
-	"crypto/tls"
 	"time"
 
 	"github.com/labstack/echo"
@@ -20,12 +19,11 @@ type (
 	}
 
 	TLS struct {
-		Address      string                      `json:"address"`
-		CertFile     string                      `json:"cert_file"`
-		KeyFile      string                      `json:"key_file"`
-		Auto         bool                        `json:"auto"`
-		CacheFile    string                      `json:"cache_file"`
-		Certificates map[string]*tls.Certificate `json:"-"`
+		Address   string `json:"address"`
+		CertFile  string `json:"cert_file"`
+		KeyFile   string `json:"key_file"`
+		Auto      bool   `json:"auto"`
+		CacheFile string `json:"cache_file"`
 	}
 
 	Host struct {

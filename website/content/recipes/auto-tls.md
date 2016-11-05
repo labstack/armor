@@ -28,20 +28,20 @@ be installed automatically.
 
 ```js
 {
+  "address": ":80",
   "tls": {
     "auto": true,
     "cache_file": "/var/www/le.cache"
   },
-  "plugins": {
-    "https-redirect": {}
-  },
+  "plugins": [{
+    "name": "https-redirect"
+  }],
   "hosts": {
     "test.lab.st": {
-      "plugins": {
-        "static": {
-          "root": "/var/www/test"
-        }
-      }
+      "plugins": [{
+        "name": "static",
+        "root": "/var/www/test"
+      }]
     }
   }
 }

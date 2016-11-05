@@ -9,11 +9,13 @@ import (
 	"github.com/labstack/armor/plugin"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
+	"github.com/rsc/letsencrypt"
 )
 
 type (
 	HTTP struct {
-		logger *log.Logger
+		tlsManager letsencrypt.Manager
+		logger     *log.Logger
 	}
 )
 
@@ -89,20 +91,12 @@ func Start(a *armor.Armor) {
 		req := c.Request()
 		res := c.Response()
 		host := a.Hosts[req.Host]
-
 		if host == nil {
 			return echo.ErrNotFound
 		}
 		host.Echo.ServeHTTP(res, req)
-
 		return
 	})
-
-	e.Server = &http.Server{
-		ReadTimeout:  a.ReadTimeout * time.Second,
-		WriteTimeout: a.WriteTimeout * time.Second,
-		Handler:      e,
-	}
 
 	if a.TLS != nil {
 		go func() {
@@ -111,24 +105,29 @@ func Start(a *armor.Armor) {
 			}
 		}()
 	}
-	if err := e.Start(a.Address); err != nil {
+	if err := h.start(a, e); err != nil {
 		h.logger.Fatal(err)
 	}
 }
 
 func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
-	if a.TLS.Auto {
-		e.TLSCacheFile = a.TLS.CacheFile
-		for host := range a.Hosts {
-			e.TLSHosts = append(e.TLSHosts, host)
-		}
-		return e.StartAutoTLS()
+	s := &http.Server{
+		Addr:         a.TLS.Address,
+		TLSConfig:    new(tls.Config),
+		ReadTimeout:  a.ReadTimeout * time.Second,
+		WriteTimeout: a.WriteTimeout * time.Second,
 	}
-	a.TLS.Certificates = make(map[string]*tls.Certificate)
-	e.TLSConfig.GetCertificate = func(clientHello *tls.ClientHelloInfo) (*tls.Certificate, error) {
-		if a.TLS.Auto {
+
+	if a.TLS.Auto {
+		s.Addr = ":443"
+		hosts := []string{}
+		for host := range a.Hosts {
+			hosts = append(hosts, host)
 		}
-		return a.TLS.Certificates[clientHello.ServerName], nil
+		h.tlsManager.SetHosts(hosts) // Added security
+		if err := h.tlsManager.CacheFile(a.TLS.CacheFile); err != nil {
+			return err
+		}
 	}
 
 	for name, host := range a.Hosts {
@@ -139,8 +138,23 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 		if err != nil {
 			h.logger.Fatal(err)
 		}
-		a.TLS.Certificates[name] = &cert
+		s.TLSConfig.NameToCertificate[name] = &cert
 	}
 
-	return e.StartTLS(a.TLS.Address, a.TLS.CertFile, a.TLS.KeyFile)
+	s.TLSConfig.GetCertificate = func(clientHello *tls.ClientHelloInfo) (*tls.Certificate, error) {
+		if a.TLS.Auto {
+			return h.tlsManager.GetCertificate(clientHello)
+		}
+		return nil, nil // Certificate will be looked in `NameToCertificate`
+	}
+
+	return e.StartServer(s)
+}
+
+func (h *HTTP) start(a *armor.Armor, e *echo.Echo) error {
+	return e.StartServer(&http.Server{
+		Addr:         a.Address,
+		ReadTimeout:  a.ReadTimeout * time.Second,
+		WriteTimeout: a.WriteTimeout * time.Second,
+	})
 }
