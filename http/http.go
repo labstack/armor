@@ -142,10 +142,13 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 	}
 
 	s.TLSConfig.GetCertificate = func(clientHello *tls.ClientHelloInfo) (*tls.Certificate, error) {
-		if a.TLS.Auto {
+		if cert, ok := s.TLSConfig.NameToCertificate[clientHello.ServerName]; ok {
+			// Use provided certificate
+			return cert, nil
+		} else if a.TLS.Auto {
 			return h.tlsManager.GetCertificate(clientHello)
 		}
-		return nil, nil // Certificate will be looked in `NameToCertificate`
+		return nil, nil // No certificate
 	}
 
 	return e.StartServer(s)
