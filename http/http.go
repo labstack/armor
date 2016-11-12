@@ -119,7 +119,6 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 	}
 
 	if a.TLS.Auto {
-		s.Addr = ":443"
 		hosts := []string{}
 		for host := range a.Hosts {
 			hosts = append(hosts, host)
