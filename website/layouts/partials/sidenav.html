@@ -7,7 +7,7 @@
   </a>
   {{ $currentNode := . }}
   {{ range .Site.Menus.side }}
-    <h4>{{ .Pre }} {{ .Name }}</h4>
+    <h3>{{ .Pre }} {{ .Name }}</h3>
       {{ range .Children }}
         <a{{ if $currentNode.IsMenuCurrent "side" . }} class="active"{{ end }} href="{{ .URL }}">
           {{ .Name }}

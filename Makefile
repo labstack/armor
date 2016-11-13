@@ -1,4 +1,7 @@
-VERSION = 0.2.2
+VERSION = 0.2.3
+
+clean:
+	rm -rf build
 
 build:
 	GOOS=linux GOARCH=amd64 go build -o build/armor-$(VERSION)_linux-64 github.com/labstack/armor/cmd/armor
@@ -14,4 +17,4 @@ install:
 push: build
 	docker push labstack/armor
 
-.PHONY: build install push
+.PHONY: clean build install push

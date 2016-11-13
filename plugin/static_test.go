@@ -14,13 +14,14 @@ func TestStatic(t *testing.T) {
 	req := httptest.NewRequest(echo.GET, "/", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+	c.SetParamNames("*")
 	s := &Static{
 		Root: "../_fixture",
 	}
 	s.Init()
 
 	// File found
-	req.URL.Path = "/images/walle.png"
+	c.SetParamValues("/images/walle.png")
 	h := s.Process(echo.NotFoundHandler)
 	if assert.NoError(t, h(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
@@ -28,14 +29,14 @@ func TestStatic(t *testing.T) {
 	}
 
 	// File not found
-	req.URL.Path = "/none"
+	c.SetParamValues("/none")
 	rec.Body.Reset()
 	h = s.Process(echo.NotFoundHandler)
 	he := h(c).(*echo.HTTPError)
 	assert.Equal(t, http.StatusNotFound, he.Code)
 
 	// HTML5
-	req.URL.Path = "/random"
+	c.SetParamValues("/random")
 	rec.Body.Reset()
 	s.HTML5 = true
 	h = s.Process(echo.NotFoundHandler)
@@ -45,7 +46,7 @@ func TestStatic(t *testing.T) {
 	}
 
 	// Browse
-	req.URL.Path = "/"
+	c.SetParamValues("/")
 	rec.Body.Reset()
 	s.Browse = true
 	h = s.Process(echo.NotFoundHandler)

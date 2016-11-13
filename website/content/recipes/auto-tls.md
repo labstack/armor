@@ -38,10 +38,14 @@ be installed automatically.
   }],
   "hosts": {
     "test.lab.st": {
-      "plugins": [{
-        "name": "static",
-        "root": "/var/www/test"
-      }]
+      "paths" {
+        "/": {
+          "plugins": [{
+            "name": "static",
+            "root": "/var/www/test"
+          }]
+        }
+      }
     }
   }
 }

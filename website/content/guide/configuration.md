@@ -52,75 +52,93 @@ Name | Type | Description
 
 ```js
 {
-    "address": ":8080",
-    "plugins": [{
-        "name": "logger"
-    }, {
-        "name": "static",
-        "browse": true,
-        "root": "."
-    }]
+	"address": ":8080",
+	"plugins": [{
+		"name": "logger"
+	}, {
+		"name": "static",
+		"browse": true,
+		"root": "."
+	}]
 }
 ```
 
 ### Sample Configuration
 
   ```js
-  {
-      "address": ":80",
-      "tls": {
-          "auto": true
-      },
-      "plugins": {
-          "https-redirect": {},
-          "remove-trailing-slash": {
-            "redirect_code": 301
-          },
-          "logger": {},
-          "gzip": {}
-      },
-      "hosts": {
-          "labstack.com": {
-              "paths": {
-                  "/": {
-                      "plugins": [{
-                          "name": "static",
-                          "root": "/var/www/web",
-                          "html5": true
-                      }]
-                  },
-                  "/up": {
-                      "plugins": [{
-                          "name": "file",
-                          "path": "/var/www/web/up/index.html"
-                      }]
-                  }
-              }
-          },
-          "api.labstack.com": {
-              "plugins": [{
-                  "name": "https-redirect"
-              }, {
-                  "name": "cors"
-              }, {
-                  "name": "proxy",
-                  "targets": [{
-                      "url": "http://api.ls"
-                  }]
-              }]
-          },
-          "armor.labstack.com": {
-              "plugins": [{
-                  "name": "static",
-                  "root": "/var/www/armor"
-              }]
-          },
-          "echo.labstack.com": {
-              "plugins": [{
-                  "name": "static",
-                  "root": "/var/www/echo"
-              }]
-          }
-      }
-  }
-  ```
+{
+	"address": ":80",
+	"read_timeout": 1200,
+	"write_timeout": 1200,
+	"tls": {
+		"auto": true,
+		"cache_file": "/var/www/le.cache"
+	},
+	"plugins": [{
+		"name": "logger"
+	}, {
+		"name": "remove-trailing-slash",
+		"redirect_code": 301
+	}],
+	"hosts": {
+		"labstack.com": {
+			"paths": {
+				"/": {
+					"plugins": [{
+						"name": "static",
+						"root": "/var/www/web"
+					}]
+				},
+				"/up": {
+					"plugins": [{
+						"name": "file",
+						"path": "/var/www/web/up/index.html"
+					}]
+				}
+			}
+		},
+		"api.labstack.com": {
+			"paths": {
+				"/": {
+					"plugins": [{
+						"name": "https-redirect"
+					}, {
+						"name": "cors"
+					}, {
+						"name": "proxy",
+						"targets": [{
+							"url": "http://api.ls"
+						}]
+					}]
+				}
+			}
+		},
+		"armor.labstack.com": {
+			"paths": {
+				"/": {
+					"plugins": [{
+						"name": "static",
+						"root": "/var/www/armor"
+					}]
+				}
+			}
+		},
+		"echo.labstack.com": {
+			"paths": {
+				"/": {
+					"plugins": [{
+						"name": "static",
+						"root": "/var/www/echo/v3"
+					}]
+				},
+				"/v2": {
+					"plugins": [{
+						"name": "static",
+						"root": "/var/www/echo/v2"
+					}]
+				}
+			}
+		}
+	}
+}
+```

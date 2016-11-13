@@ -18,7 +18,7 @@ which enable secure cross-domain data transfers.
 
 Name | Type | Description
 :--- | :--- | :----------
-`allow_origins` | array | Defines a list of origins that may access the resource. Default value ["\*"].
+`allow_origins` | array | Defines a list of origins that may access the resource. If request header `Origin` is set, value is ["<Origin>"] else ["\*"].
 `allow_methods` | array | Defines a list methods allowed when accessing the resource. This is used in response to a preflight request. Default value ["HEAD", "PUT", "PATCH", "POST", "DELETE"].
 `allow_headers` | array | Defines a list of request headers that can be used when making the actual request. This in response to a preflight request. Default value [].
 `allow_credentials` | bool | Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the  actual request can be made using credentials. Default value `false`.

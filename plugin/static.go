@@ -50,9 +50,6 @@ func (*Static) Priority() int {
 func (s *Static) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		p := c.Param("*")
-		if p == "" {
-			p = c.Request().URL.Path // For hosts with no paths defined
-		}
 		name := filepath.Join(s.Root, p)
 		fi, err := os.Stat(name)
 
