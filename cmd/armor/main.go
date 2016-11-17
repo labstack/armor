@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
+	"log"
 	"net"
 	"os"
 
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/http"
 	"github.com/labstack/gommon/color"
-	"github.com/labstack/gommon/log"
+	glog "github.com/labstack/gommon/log"
 )
 
 const (
@@ -44,8 +45,9 @@ _______________O/______________________________
 
 func main() {
 	// Initialize
-	logger := log.New("armor")
-	logger.SetLevel(log.ERROR)
+	logger := glog.New("armor")
+	logger.SetLevel(glog.ERROR)
+	log.SetOutput(logger.Output())
 	a := &armor.Armor{
 		Logger: logger,
 	}
