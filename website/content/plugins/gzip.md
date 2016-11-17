@@ -7,13 +7,11 @@ description = "Gzip plugin compresses HTTP response using gzip compression schem
   weight = 3
 +++
 
-## Gzip Plugin
-
-### `gzip`
+## `gzip`
 
 Compresses HTTP response using gzip compression scheme
 
-### Configuration
+## Configuration
 
 Name | Type | Description
 :--- | :--- | :----------

@@ -7,20 +7,18 @@ description = "Proxy plugin proxies HTTP and WebSocket requests to upstream serv
   weight = 3
 +++
 
-## Proxy Plugin
-
-### `proxy`
+## `proxy`
 
 Proxy HTTP and WebSocket requests to upstream servers
 
-### Configuration
+## Configuration
 
 Name | Type | Description
 :--- | :--- | :----------
 `balance` | string | Load balancing technique. Default value `random`. Possible values: `random`, `round-robin`.
 `targets` | array | Upstream servers
 
-#### `targets`
+### `targets`
 
 Name | Type | Description
 :--- | :--- | :----------

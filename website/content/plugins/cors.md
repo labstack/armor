@@ -7,14 +7,12 @@ description = "CORS plugin gives web servers cross-domain access controls, which
   weight = 4
 +++
 
-## CORS Plugin
-
-### `cors`
+## `cors`
 
 [CORS](http://www.w3.org/TR/cors) gives web servers cross-domain access controls,
 which enable secure cross-domain data transfers.
 
-### Configuration
+## Configuration
 
 Name | Type | Description
 :--- | :--- | :----------

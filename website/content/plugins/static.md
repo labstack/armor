@@ -7,13 +7,11 @@ description = "Static plugin serves static files from a root directory"
   weight = 4
 +++
 
-## Static Plugin
-
 Serves static files from a provided root directory
 
-### `static`
+## `static`
 
-### Configuration
+## Configuration
 
 Name | Type | Description
 :--- | :--- | :----------

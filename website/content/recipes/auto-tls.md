@@ -7,12 +7,10 @@ description = "Automatic TLS (HTTPS) via Let’s Encrypt"
   weight = 1
 +++
 
-## Automatic TLS (HTTPS) via [Let’s Encrypt](https://letsencrypt.org)
-
 For demo purpose, I will use domain `test.lab.st` that serves a simple
 HTML page.
 
-### Steps
+## Steps
 
 - Have a domain that resolves to an IP address via `A` or `CNAME` DNS record
 - [Install Armor]({{< ref "guide/getting-started.md#installation">}})
@@ -22,7 +20,11 @@ HTML page.
 - Browse to `http://test.lab.st`, and in a few seconds TLS certificate will
 be installed automatically.
 
-### Source
+## Maintainers
+
+- [vishr](https://github.com/vishr)
+
+## Source
 
 `config.json`
 

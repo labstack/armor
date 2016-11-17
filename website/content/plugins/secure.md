@@ -7,15 +7,13 @@ description = "Secure plugin provides protection against web attacks"
   weight = 3
 +++
 
-## Secure Plugin
-
-### `secure`
+## `secure`
 
 Secure plugin provides protection against cross-site scripting (XSS) attack,
 content type sniffing, clickjacking, insecure connection and other code injection
 attacks.
 
-### Configuration
+## Configuration
 
 Name | Type | Description
 :--- | :--- | :----------

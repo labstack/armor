@@ -7,15 +7,13 @@ description = "Trailing slash plugin adds / removes a trailing slash from the re
   weight = 2
 +++
 
-## TrailingSlash Plugin
+## Configuration
 
-### Configuration
-
-#### `add-trailing-slash`
+### `add-trailing-slash`
 
 Adds a trailing slash to the request URI.
 
-#### `remove-trailing-slash`
+### `remove-trailing-slash`
 
 Removes a trailing slash from the request URI.
 

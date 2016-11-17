@@ -7,8 +7,6 @@ description = "Armor configuration"
   weight = 2
 +++
 
-## Configuration
-
 Armor accepts configuration in JSON format, command-line option `-c` can be used
 to specify a config file, e.g. `armor -c config.json`.
 
@@ -21,7 +19,7 @@ Name | Type | Description
 `plugins` | array | Global plugins
 `hosts` | object | Virtual hosts
 
-### `tls`
+## `tls`
 
 Name | Type | Description
 :--- | :--- | :----------
@@ -31,7 +29,7 @@ Name | Type | Description
 `auto` | bool | Enable automatic certificates from https://letsencrypt.org
 `cache_file` | string | Cache file to store certificates from https://letsencrypt.org. Default value `letsencrypt.cache`.
 
-### `hosts`
+## `hosts`
 
 Name | Type | Description
 :--- | :--- | :----------
@@ -40,15 +38,15 @@ Name | Type | Description
 `plugins` | array | Host plugins
 `paths` | object | Paths
 
-### `paths`
+## `paths`
 
 Name | Type | Description
 :--- | :--- | :----------
 `plugins` | array | Path plugins
 
-### [Plugins]({{< ref "plugins/redirect.md">}})
+## [Plugins]({{< ref "plugins/redirect.md">}})
 
-### Default Configuration
+## Default Configuration
 
 ```js
 {
@@ -63,7 +61,7 @@ Name | Type | Description
 }
 ```
 
-### Sample Configuration
+## Sample Configuration
 
   ```js
 {

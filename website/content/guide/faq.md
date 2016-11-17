@@ -8,6 +8,4 @@ draft = true
   weight = 3
 +++
 
-## FAQ
-
 Q: **Question**

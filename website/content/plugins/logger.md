@@ -7,13 +7,11 @@ description = "Logger plugin logs HTTP requests"
   weight = 3
 +++
 
-## Logger Plugin
-
-### `logger`
+## `logger`
 
 Logs HTTP requests
 
-### Configuration
+## Configuration
 
 <table>
   <thead>

@@ -1,8 +1,6 @@
 +++
-title = "Support"
+title = "Support Armor"
 +++
-
-## Support Armor Development
 
 <p>
   <a href="https://patreon.com/labstack" target="_blank"><br>

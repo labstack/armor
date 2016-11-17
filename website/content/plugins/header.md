@@ -7,13 +7,11 @@ description = "Header plugin adds / removes response header"
   weight = 5
 +++
 
-## Header Plugin
-
-### `header`
+## `header`
 
 Add / remove response header
 
-### Configuration
+## Configuration
 
 Name | Type | Description
 :--- | :--- | :----------
