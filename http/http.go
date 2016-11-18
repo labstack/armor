@@ -99,15 +99,9 @@ func Start(a *armor.Armor) {
 	})
 
 	if a.TLS != nil {
-		go func() {
-			if err := h.startTLS(a, e); err != nil {
-				h.logger.Fatal(err)
-			}
-		}()
+		go h.logger.Fatal(h.startTLS(a, e))
 	}
-	if err := h.start(a, e); err != nil {
-		h.logger.Fatal(err)
-	}
+	h.logger.Fatal(h.start(a, e))
 }
 
 func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
