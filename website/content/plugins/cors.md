@@ -1,13 +1,11 @@
 +++
 title = "CORS Plugin"
 description = "CORS plugin gives web servers cross-domain access controls, which enable secure cross-domain data transfers."
-[menu.side]
+[menu.main]
   name = "CORS"
   parent = "plugins"
   weight = 4
 +++
-
-## `cors`
 
 [CORS](http://www.w3.org/TR/cors) gives web servers cross-domain access controls,
 which enable secure cross-domain data transfers.

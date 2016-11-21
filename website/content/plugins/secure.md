@@ -1,13 +1,11 @@
 +++
 title = "Secure Plugin"
 description = "Secure plugin provides protection against web attacks"
-[menu.side]
+[menu.main]
   name = "Secure"
   parent = "plugins"
   weight = 3
 +++
-
-## `secure`
 
 Secure plugin provides protection against cross-site scripting (XSS) attack,
 content type sniffing, clickjacking, insecure connection and other code injection

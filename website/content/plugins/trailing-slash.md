@@ -1,7 +1,7 @@
 +++
 title = "Trailing Slash Plugin"
 description = "Trailing slash plugin adds / removes a trailing slash from the request URI"
-[menu.side]
+[menu.main]
   name = "TrailingSlash"
   parent = "plugins"
   weight = 2

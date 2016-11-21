@@ -1,5 +1,7 @@
 +++
 title = "Support Armor"
+description = "Support Armor"
+type = "single"
 +++
 
 <p>

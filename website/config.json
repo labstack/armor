@@ -1,5 +1,5 @@
 {
-  "baseurl": "https://armor.labstack.com/",
+  "baseurl": "https://armor.labstack.com",
   "languageCode": "en-us",
   "title": "Armor - Uncomplicated HTTP server, supports HTTP/2 and auto TLS",
   "canonifyurls": true,
@@ -8,27 +8,6 @@
     "guide": "/guide/:filename",
     "plugins": "/plugin/:filename",
     "recipes": "/recipes/:filename"
-  },
-  "menu": {
-    "side": [{
-      "name": "Guide",
-      "pre": "<i class='fa fa-book'></i>",
-      "weight": 1,
-      "identifier": "guide",
-      "url": "guide"
-    },{
-      "name": "Plugins",
-      "pre": "<i class='fa fa-plug'></i>",
-      "weight": 1,
-      "identifier": "plugins",
-      "url": "plugins"
-    }, {
-      "name": "Recipes",
-      "pre": "<i class='fa fa-code'></i>",
-      "weight": 2,
-      "identifier": "recipes",
-      "url": "recipes"
-    }]
   },
   "params": {
     "image": "https://armor.labstack.com/images/logo.png",

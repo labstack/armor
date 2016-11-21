@@ -1,13 +1,11 @@
 +++
 title = "Header Plugin"
 description = "Header plugin adds / removes response header"
-[menu.side]
+[menu.main]
   name = "Header"
   parent = "plugins"
   weight = 5
 +++
-
-## `header`
 
 Add / remove response header
 

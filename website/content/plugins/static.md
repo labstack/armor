@@ -1,15 +1,13 @@
 +++
 title = "Static Plugin"
 description = "Static plugin serves static files from a root directory"
-[menu.side]
+[menu.main]
   name = "Static"
   parent = "plugins"
   weight = 4
 +++
 
 Serves static files from a provided root directory
-
-## `static`
 
 ## Configuration
 

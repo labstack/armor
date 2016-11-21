@@ -2,7 +2,7 @@
 title = "Overview"
 description = "Armor plugin overview"
 draft = true
-[menu.side]
+[menu.main]
   name = "Overview"
   parent = "plugins"
   weight = 1

@@ -1,10 +1,10 @@
 +++
 title = "Configuration"
 description = "Armor configuration"
-[menu.side]
+[menu.main]
   name = "Configuration"
   parent = "guide"
-  weight = 2
+  weight = 1
 +++
 
 Armor accepts configuration in JSON format, command-line option `-c` can be used

@@ -1,13 +1,11 @@
 +++
 title = "Gzip Plugin"
 description = "Gzip plugin compresses HTTP response using gzip compression scheme"
-[menu.side]
+[menu.main]
   name = "Gzip"
   parent = "plugins"
   weight = 3
 +++
-
-## `gzip`
 
 Compresses HTTP response using gzip compression scheme
 

@@ -1,13 +1,11 @@
 +++
 title = "BodyLimit Plugin"
 description = "BodyLimit plugin sets the maximum allowed size for a request body"
-[menu.side]
+[menu.main]
   name = "BodyLimit"
   parent = "plugins"
   weight = 3
 +++
-
-## `body-limit`
 
 Sets the maximum allowed size for a request body, if the size exceeds the configured
 limit, it sends `413 - Request Entity Too Large` response. The body limit is determined

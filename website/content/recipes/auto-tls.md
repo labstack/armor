@@ -1,7 +1,7 @@
 +++
 title = "Auto TLS"
 description = "Automatic TLS (HTTPS) via Let’s Encrypt"
-[menu.side]
+[menu.main]
   name = "Auto TLS"
   parent = "recipes"
   weight = 1
@@ -13,7 +13,7 @@ HTML page.
 ## Steps
 
 - Have a domain that resolves to an IP address via `A` or `CNAME` DNS record
-- [Install Armor]({{< ref "guide/getting-started.md#installation">}})
+- [Install Armor]({{< ref "guide.md#installation">}})
 - Copy config `config.json` to `/etc/armor`
 - Copy `index.html` to `/var/www/test`
 - Start Armor `armor -c /etc/armor/config.json`

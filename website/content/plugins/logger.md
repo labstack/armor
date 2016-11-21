@@ -1,13 +1,11 @@
 +++
 title = "Logger Plugin"
 description = "Logger plugin logs HTTP requests"
-[menu.side]
+[menu.main]
   name = "Logger"
   parent = "plugins"
   weight = 3
 +++
-
-## `logger`
 
 Logs HTTP requests
 

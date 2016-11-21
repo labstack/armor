@@ -2,7 +2,7 @@
 title = "FAQ"
 description = "Frequently asked questions"
 draft = true
-[menu.side]
+[menu.main]
   name = "FAQ"
   parent = "guide"
   weight = 3

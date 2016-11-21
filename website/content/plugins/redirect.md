@@ -1,7 +1,7 @@
 +++
 title = "Redirect Plugin"
 description = "Redirect plugin redirects HTTP requests"
-[menu.side]
+[menu.main]
   name = "Redirect"
   parent = "plugins"
   weight = 2

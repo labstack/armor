@@ -32,7 +32,7 @@ Armor is written in Go. It is based on the upcoming [Echo](https://github.com/la
 Most of the functionality is implemented via `Plugin` interface which makes writing
 a custom plugin super easy.
 
-## [Getting Started](https://armor.labstack.com/guide/getting-started)
+## [Get Started](https://armor.labstack.com/guide)
 
 ## What's on the roadmap?
 
