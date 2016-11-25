@@ -1,7 +1,7 @@
 {
   "baseurl": "https://armor.labstack.com",
   "languageCode": "en-us",
-  "title": "Armor - Uncomplicated HTTP server, supports HTTP/2 and auto TLS",
+  "title": "Armor - Uncomplicated, modern HTTP server",
   "canonifyurls": true,
   "googleAnalytics": "UA-85059636-1",
   "permalinks": {
@@ -10,7 +10,6 @@
     "recipes": "/recipes/:filename"
   },
   "params": {
-    "image": "https://armor.labstack.com/images/logo.png",
     "description": "Armor is a simple HTTP server, supports HTTP/2 and auto TLS"
   }
 }

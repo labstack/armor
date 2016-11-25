@@ -46,8 +46,7 @@ Type `armor` in your terminal
 
 https://armor.labstack.com               v0.2.4
 
-Uncomplicated HTTP server, supports HTTP/2 and
-auto TLS
+Uncomplicated, modern HTTP server
 _______________O/______________________________
                O\
 
