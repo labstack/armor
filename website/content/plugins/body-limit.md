@@ -1,8 +1,8 @@
 +++
-title = "BodyLimit Plugin"
+title = "Body Limit Plugin"
 description = "BodyLimit plugin sets the maximum allowed size for a request body"
 [menu.main]
-  name = "BodyLimit"
+  name = "Body Limit"
   parent = "plugins"
   weight = 3
 +++

@@ -22,7 +22,7 @@ func TestStatic(t *testing.T) {
 
 	// File found
 	c.SetParamValues("/images/walle.png")
-	h := s.Process(echo.NotFoundHandler)
+	h := s.Execute(echo.NotFoundHandler)
 	if assert.NoError(t, h(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Equal(t, rec.Header().Get(echo.HeaderContentLength), "219885")
@@ -31,7 +31,7 @@ func TestStatic(t *testing.T) {
 	// File not found
 	c.SetParamValues("/none")
 	rec.Body.Reset()
-	h = s.Process(echo.NotFoundHandler)
+	h = s.Execute(echo.NotFoundHandler)
 	he := h(c).(*echo.HTTPError)
 	assert.Equal(t, http.StatusNotFound, he.Code)
 
@@ -39,7 +39,7 @@ func TestStatic(t *testing.T) {
 	c.SetParamValues("/random")
 	rec.Body.Reset()
 	s.HTML5 = true
-	h = s.Process(echo.NotFoundHandler)
+	h = s.Execute(echo.NotFoundHandler)
 	if assert.NoError(t, h(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Contains(t, rec.Body.String(), "Armor")
@@ -49,7 +49,7 @@ func TestStatic(t *testing.T) {
 	c.SetParamValues("/")
 	rec.Body.Reset()
 	s.Browse = true
-	h = s.Process(echo.NotFoundHandler)
+	h = s.Execute(echo.NotFoundHandler)
 	if assert.NoError(t, h(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Contains(t, rec.Body.String(), "images")

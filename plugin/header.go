@@ -21,7 +21,7 @@ func (*Header) Priority() int {
 	return 1
 }
 
-func (h *Header) Process(next echo.HandlerFunc) echo.HandlerFunc {
+func (h *Header) Execute(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		header := c.Response().Header()
 		for k, v := range h.Set { // Set headers

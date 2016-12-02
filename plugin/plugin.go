@@ -19,7 +19,7 @@ type (
 	Plugin interface {
 		Name() string
 		Init() error
-		Process(echo.HandlerFunc) echo.HandlerFunc
+		Execute(echo.HandlerFunc) echo.HandlerFunc
 		Priority() int
 	}
 

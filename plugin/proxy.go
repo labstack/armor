@@ -70,7 +70,7 @@ func (*Proxy) Priority() int {
 	return 1
 }
 
-func (p *Proxy) Process(echo.HandlerFunc) echo.HandlerFunc {
+func (p *Proxy) Execute(echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		req := c.Request()
 		res := c.Response()

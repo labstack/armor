@@ -21,6 +21,6 @@ func (*CORS) Priority() int {
 	return 1
 }
 
-func (c *CORS) Process(next echo.HandlerFunc) echo.HandlerFunc {
+func (c *CORS) Execute(next echo.HandlerFunc) echo.HandlerFunc {
 	return c.Middleware(next)
 }

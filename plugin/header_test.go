@@ -25,7 +25,7 @@ func TestHeader(t *testing.T) {
 	rec.Header().Set("Delete", "me")
 
 	h.Init()
-	h.Process(ok)(c)
+	h.Execute(ok)(c)
 
 	assert.Equal(t, "Jon", rec.Header().Get("Name"))                    // Set
 	assert.EqualValues(t, []string{"Jon", "Joe"}, rec.Header()["Name"]) // Add

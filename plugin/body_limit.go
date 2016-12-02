@@ -21,6 +21,6 @@ func (*BodyLimit) Priority() int {
 	return 1
 }
 
-func (l *BodyLimit) Process(next echo.HandlerFunc) echo.HandlerFunc {
+func (l *BodyLimit) Execute(next echo.HandlerFunc) echo.HandlerFunc {
 	return l.Middleware(next)
 }
