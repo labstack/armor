@@ -21,6 +21,6 @@ func (*Gzip) Priority() int {
 	return 1
 }
 
-func (g *Gzip) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (g *Gzip) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return g.Middleware(next)
 }

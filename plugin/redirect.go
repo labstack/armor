@@ -47,7 +47,7 @@ func (*Redirect) Priority() int {
 	return -1
 }
 
-func (r *Redirect) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *Redirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
@@ -60,7 +60,7 @@ func (*HTTPSRedirect) Priority() int {
 	return -1
 }
 
-func (r *HTTPSRedirect) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *HTTPSRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
@@ -73,7 +73,7 @@ func (*HTTPSWWWRedirect) Priority() int {
 	return -1
 }
 
-func (r *HTTPSWWWRedirect) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *HTTPSWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
@@ -86,7 +86,7 @@ func (*HTTPSNonWWWRedirect) Priority() int {
 	return -1
 }
 
-func (r *HTTPSNonWWWRedirect) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *HTTPSNonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
@@ -99,7 +99,7 @@ func (*WWWRedirect) Priority() int {
 	return -1
 }
 
-func (r *WWWRedirect) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *WWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
@@ -112,6 +112,6 @@ func (*NonWWWRedirect) Priority() int {
 	return -1
 }
 
-func (r *NonWWWRedirect) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *NonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }

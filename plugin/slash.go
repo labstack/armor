@@ -26,7 +26,7 @@ func (*AddTrailingSlash) Priority() int {
 	return -1
 }
 
-func (s *AddTrailingSlash) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (s *AddTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return s.Middleware(next)
 }
 
@@ -39,6 +39,6 @@ func (*RemoveTrailingSlash) Priority() int {
 	return -1
 }
 
-func (s *RemoveTrailingSlash) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (s *RemoveTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return s.Middleware(next)
 }

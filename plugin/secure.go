@@ -20,6 +20,6 @@ func (*Secure) Priority() int {
 	return 1
 }
 
-func (s *Secure) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (s *Secure) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return s.Middleware(next)
 }

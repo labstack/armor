@@ -21,6 +21,6 @@ func (*Logger) Priority() int {
 	return 1
 }
 
-func (l *Logger) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (l *Logger) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return l.Middleware(next)
 }

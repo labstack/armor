@@ -47,7 +47,7 @@ func (*Static) Priority() int {
 	return 1
 }
 
-func (s *Static) Execute(next echo.HandlerFunc) echo.HandlerFunc {
+func (s *Static) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		p := c.Param("*")
 		name := filepath.Join(s.Root, p)

@@ -41,9 +41,9 @@ func Start(a *armor.Armor) {
 			h.logger.Error(err)
 		}
 		if p.Priority() < 0 {
-			e.Pre(p.Execute)
+			e.Pre(p.Process)
 		} else {
-			e.Use(p.Execute)
+			e.Use(p.Process)
 		}
 	}
 
@@ -58,9 +58,9 @@ func Start(a *armor.Armor) {
 				h.logger.Error(err)
 			}
 			if p.Priority() < 0 {
-				host.Echo.Pre(p.Execute)
+				host.Echo.Pre(p.Process)
 			} else {
-				host.Echo.Use(p.Execute)
+				host.Echo.Use(p.Process)
 			}
 		}
 
@@ -73,7 +73,7 @@ func Start(a *armor.Armor) {
 				if err != nil {
 					h.logger.Error(err)
 				}
-				g.Use(p.Execute)
+				g.Use(p.Process)
 			}
 
 			// NOP handlers to trigger plugins
