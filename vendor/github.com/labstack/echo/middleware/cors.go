@@ -75,6 +75,7 @@ func CORSWithConfig(config CORSConfig) echo.MiddlewareFunc {
 	if len(config.AllowMethods) == 0 {
 		config.AllowMethods = DefaultCORSConfig.AllowMethods
 	}
+
 	allowMethods := strings.Join(config.AllowMethods, ",")
 	allowHeaders := strings.Join(config.AllowHeaders, ",")
 	exposeHeaders := strings.Join(config.ExposeHeaders, ",")
@@ -89,13 +90,12 @@ func CORSWithConfig(config CORSConfig) echo.MiddlewareFunc {
 			req := c.Request()
 			res := c.Response()
 			origin := req.Header.Get(echo.HeaderOrigin)
-			_, originSet := req.Header[echo.HeaderOrigin]
+			allowOrigin := ""
 
 			// Check allowed origins
-			allowedOrigin := ""
 			for _, o := range config.AllowOrigins {
 				if o == "*" || o == origin {
-					allowedOrigin = o
+					allowOrigin = o
 					break
 				}
 			}
@@ -103,10 +103,7 @@ func CORSWithConfig(config CORSConfig) echo.MiddlewareFunc {
 			// Simple request
 			if req.Method != echo.OPTIONS {
 				res.Header().Add(echo.HeaderVary, echo.HeaderOrigin)
-				if !originSet || allowedOrigin == "" {
-					return next(c)
-				}
-				res.Header().Set(echo.HeaderAccessControlAllowOrigin, allowedOrigin)
+				res.Header().Set(echo.HeaderAccessControlAllowOrigin, allowOrigin)
 				if config.AllowCredentials {
 					res.Header().Set(echo.HeaderAccessControlAllowCredentials, "true")
 				}
@@ -120,10 +117,7 @@ func CORSWithConfig(config CORSConfig) echo.MiddlewareFunc {
 			res.Header().Add(echo.HeaderVary, echo.HeaderOrigin)
 			res.Header().Add(echo.HeaderVary, echo.HeaderAccessControlRequestMethod)
 			res.Header().Add(echo.HeaderVary, echo.HeaderAccessControlRequestHeaders)
-			if !originSet || allowedOrigin == "" {
-				return next(c)
-			}
-			res.Header().Set(echo.HeaderAccessControlAllowOrigin, allowedOrigin)
+			res.Header().Set(echo.HeaderAccessControlAllowOrigin, allowOrigin)
 			res.Header().Set(echo.HeaderAccessControlAllowMethods, allowMethods)
 			if config.AllowCredentials {
 				res.Header().Set(echo.HeaderAccessControlAllowCredentials, "true")

@@ -1,19 +1,15 @@
 +++
 title = "Error Handling"
 description = "Error handling in Echo"
-[menu.side]
+[menu.main]
   name = "Error Handling"
   parent = "guide"
   weight = 8
 +++
 
-## Error Handling
-
 Echo advocates centralized HTTP error handling by returning error from middleware
-or handlers.
-
-- Log errors from a unified location
-- Send customized HTTP responses
+and handlers. It allows us to log/report errors to external services from a unified
+location and send customized HTTP responses.
 
 For example, when basic auth middleware finds invalid credentials it returns
 `401 - Unauthorized` error, aborting the current HTTP request.
@@ -29,20 +25,20 @@ import (
 
 func main() {
 	e := echo.New()
-	e.Use(func(handler echo.HandlerFunc) echo.HandlerFunc {
-		// Extract the credentials from HTTP request header and perform a security
-		// check
-		
-		// For invalid credentials
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			// Extract the credentials from HTTP request header and perform a security
+			// check
+
+			// For invalid credentials
 			return echo.NewHTTPError(http.StatusUnauthorized)
+
+			// For valid credentials call next
+			// return next(c)
 		}
 	})
-
-	e.GET("/welcome", welcome)
-	if err := e.Start(":1323"); err != nil {
-		e.Logger.Fatal(err.Error())
-	}
+	e.GET("/", welcome)
+	e.Logger.Fatal(e.Start(":1323"))
 }
 
 func welcome(c echo.Context) error {

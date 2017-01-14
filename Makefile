@@ -3,7 +3,7 @@ VERSION = 0.2.4
 clean:
 	rm -rf build
 
-build:
+build: clean
 	GOOS=linux GOARCH=amd64 go build -o build/armor-$(VERSION)_linux-64 github.com/labstack/armor/cmd/armor
 	GOOS=linux GOARCH=arm go build -o build/armor-$(VERSION)_linux-arm32 github.com/labstack/armor/cmd/armor
 	GOOS=linux GOARCH=arm64 go build -o build/armor-$(VERSION)_linux-arm64 github.com/labstack/armor/cmd/armor

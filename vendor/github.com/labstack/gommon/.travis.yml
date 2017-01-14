@@ -13,8 +13,8 @@ script:
     - go test -coverprofile=bytes.coverprofile ./bytes
     - go test -coverprofile=log.coverprofile ./log
     - go test -coverprofile=random.coverprofile ./random
-    - $HOME/gopath/bin/gover
-    - $HOME/gopath/bin/goveralls -coverprofile=gover.coverprofile -service=travis-ci
+    - gover
+    - goveralls -coverprofile=gover.coverprofile -service=travis-ci
 matrix:
   allow_failures:
     - go: tip

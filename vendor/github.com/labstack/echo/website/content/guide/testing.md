@@ -1,22 +1,20 @@
 +++
 title = "Testing"
 description = "Testing handler and middleware in Echo"
-[menu.side]
+[menu.main]
   name = "Testing"
   parent = "guide"
   weight = 9
 +++
 
-## Testing
-
-### Testing Handler
+## Testing Handler
 
 `GET` `/users/:id`
 
 Handler below retrieves user by id from the database. If user is not found it returns
 `404` error with a message.
 
-#### CreateUser
+### CreateUser
 
 `POST` `/users`
 
@@ -24,7 +22,7 @@ Handler below retrieves user by id from the database. If user is not found it re
 - On success `201 - Created`
 - On error `500 - Internal Server Error`
 
-#### GetUser
+### GetUser
 
 `GET` `/users/:email`
 
@@ -82,7 +80,6 @@ import (
 	"testing"
 
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine/standard"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -100,7 +97,7 @@ func TestCreateUser(t *testing.T) {
 	if assert.NoError(t, err) {
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
-		c := e.NewContext(standard.NewRequest(req, e.Logger()), standard.NewResponse(rec, e.Logger()))
+		c := e.NewContext(req, rec)
 		h := &handler{mockDB}
 
 		// Assertions
@@ -116,7 +113,7 @@ func TestGetUser(t *testing.T) {
 	e := echo.New()
 	req := new(http.Request)
 	rec := httptest.NewRecorder()
-	c := e.NewContext(standard.NewRequest(req, e.Logger()), standard.NewResponse(rec, e.Logger()))
+  c := e.NewContext(req, rec)
 	c.SetPath("/users/:email")
 	c.SetParamNames("email")
 	c.SetParamValues("jon@labstack.com")
@@ -130,7 +127,7 @@ func TestGetUser(t *testing.T) {
 }
 ```
 
-#### Using Form Payload
+### Using Form Payload
 
 ```go
 f := make(url.Values)
@@ -139,14 +136,14 @@ f.Set("email", "jon@labstack.com")
 req, err := http.NewRequest(echo.POST, "/", strings.NewReader(f.Encode()))
 ```
 
-#### Setting Path Params
+### Setting Path Params
 
 ```go
 c.SetParamNames("id", "email")
 c.SetParamValues("1", "jon@labstack.com")
 ```
 
-#### Setting Query Params
+### Setting Query Params
 
 ```go
 q := make(url.Values)
@@ -154,8 +151,8 @@ q.Set("email", "jon@labstack.com")
 req, err := http.NewRequest(echo.POST, "/?"+q.Encode(), nil)
 ```
 
-### Testing Middleware
+## Testing Middleware
 
 *TBD*
 
-You can looking to built-in middleware [test cases](https://github.com/labstack/echo/tree/master/middleware).
+For now you can look into built-in middleware [test cases](https://github.com/labstack/echo/tree/master/middleware).

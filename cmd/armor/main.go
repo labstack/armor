@@ -4,32 +4,17 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
-	"log"
+	slog "log"
 	"net"
 	"os"
 
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/http"
 	"github.com/labstack/gommon/color"
-	glog "github.com/labstack/gommon/log"
+	"github.com/labstack/gommon/log"
 )
 
 const (
-	banner = `
- _______  ______    __   __  _______  ______
-|   _   ||    _ |  |  |_|  ||       ||    _ |
-|  |_|  ||   | ||  |       ||   _   ||   | ||
-|       ||   |_||_ |       ||  | |  ||   |_||_
-|       ||    __  ||       ||  |_|  ||    __  |
-|   _   ||   |  | || ||_|| ||       ||   |  | |
-|__| |__||___|  |_||_|   |_||_______||___|  |_|
-
-%s               %s
-
-Uncomplicated, modern HTTP server
-_______________O/______________________________
-               O\
-`
 	defaultConfig = `{
     "address": ":8080",
     "plugins": [{
@@ -44,11 +29,14 @@ _______________O/______________________________
 
 func main() {
 	// Initialize
-	logger := glog.New("armor")
-	logger.SetLevel(glog.ERROR)
-	log.SetOutput(logger.Output())
+	logger := log.New("armor")
+	colorer := color.New()
+	logger.SetLevel(log.INFO)
+	colorer.SetOutput(logger.Output())
+	slog.SetOutput(logger.Output())
 	a := &armor.Armor{
-		Logger: logger,
+		Logger:  logger,
+		Colorer: colorer,
 	}
 
 	// Global flags
@@ -102,6 +90,5 @@ func main() {
 		a.Address = ":80"
 	}
 
-	color.Printf(banner+"\n", color.Blue("https://armor.labstack.com"), color.Red("v"+armor.Version))
 	http.Start(a)
 }

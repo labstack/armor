@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
 )
 
@@ -16,14 +17,15 @@ type (
 		Plugins      []Plugin         `json:"plugins"`
 		Hosts        map[string]*Host `json:"hosts"`
 		Logger       *log.Logger      `json:"-"`
+		Colorer      *color.Color     `json:"-"`
 	}
 
 	TLS struct {
-		Address   string `json:"address"`
-		CertFile  string `json:"cert_file"`
-		KeyFile   string `json:"key_file"`
-		Auto      bool   `json:"auto"`
-		CacheFile string `json:"cache_file"`
+		Address  string `json:"address"`
+		CertFile string `json:"cert_file"`
+		KeyFile  string `json:"key_file"`
+		Auto     bool   `json:"auto"`
+		CacheDir string `json:"cache_dir"`
 	}
 
 	Host struct {
@@ -42,6 +44,23 @@ type (
 	Plugin map[string]interface{}
 )
 
+// Banner
 const (
+	// http://patorjk.com/software/taag/#p=display&f=Small%20Slant&t=Armor
+	Banner = `
+   ___                     
+  / _ | ______ _  ___  ____
+ / __ |/ __/  ' \/ _ \/ __/
+/_/ |_/_/ /_/_/_/\___/_/   
+                           
+%s %s
+
+Uncomplicated, modern HTTP server
+__________________________O/_____
+                          O\
+
+⇛ %s server started on %s
+`
 	Version = "0.2.4"
+	Website = "https://armor.labstack.com"
 )

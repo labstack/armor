@@ -110,6 +110,15 @@ func TestJSON(t *testing.T) {
 	assert.Contains(t, b.String(), `"name":"value"`)
 }
 
+func TestStringWithQuotes(t *testing.T) {
+	l := New("test")
+	b := new(bytes.Buffer)
+	l.SetOutput(b)
+	l.SetLevel(DEBUG)
+	l.Debugf("Content-Type: %q", "")
+	assert.Contains(t, b.String(), `"message":"Content-Type: \"\""`)
+}
+
 func BenchmarkLog(b *testing.B) {
 	l := New("test")
 	l.SetOutput(new(bytes.Buffer))

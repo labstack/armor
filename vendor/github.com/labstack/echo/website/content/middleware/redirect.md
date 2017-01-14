@@ -1,15 +1,15 @@
 +++
 title = "Redirect Middleware"
 description = "Redirect middleware for Echo"
-[menu.side]
+[menu.main]
   name = "Redirect"
   parent = "middleware"
   weight = 5
 +++
 
-## HTTPSRedirect Middleware
+## HTTPS Redirect
 
-HTTPSRedirect middleware redirects http requests to https.
+HTTPS redirect middleware redirects http requests to https.
 For example, http://labstack.com will be redirected to https://labstack.com.
 
 *Usage*
@@ -19,9 +19,9 @@ e := echo.New()
 e.Pre(middleware.HTTPSRedirect())
 ```
 
-## HTTPSWWWRedirect Middleware
+## HTTPS WWW Redirect
 
-HTTPSWWWRedirect redirects http requests to www https.
+HTTPS WWW redirect redirects http requests to www https.
 For example, http://labstack.com will be redirected to https://www.labstack.com.
 
 *Usage*
@@ -31,21 +31,21 @@ e := echo.New()
 e.Pre(middleware.HTTPSWWWRedirect())
 ```
 
-## HTTPSNonWWWRedirect Middleware
+## HTTPS NonWWW Redirect
 
-HTTPSNonWWWRedirect redirects http requests to https non www.
+HTTPS NonWWW redirect redirects http requests to https non www.
 For example, http://www.labstack.com will be redirect to https://labstack.com.
 
 *Usage*
 
 ```go
 e := echo.New()
-e.Pre(HTTPSNonWWWRedirect())
+e.Pre(middleware.HTTPSNonWWWRedirect())
 ```
 
-## WWWRedirect Middleware
+## WWW Redirect
 
-WWWRedirect redirects non www requests to www.
+WWW redirect redirects non www requests to www.
 
 For example, http://labstack.com will be redirected to http://www.labstack.com.
 
@@ -56,9 +56,9 @@ e := echo.New()
 e.Pre(middleware.WWWRedirect())
 ```
 
-## NonWWWRedirect Middleware
+## NonWWW Redirect
 
-NonWWWRedirect redirects www requests to non www.
+NonWWW redirect redirects www requests to non www.
 For example, http://www.labstack.com will be redirected to http://labstack.com.
 
 *Usage*
@@ -68,7 +68,7 @@ e := echo.New()
 e.Pre(middleware.NonWWWRedirect())
 ```
 
-### Custom Configuration
+## Custom Configuration
 
 *Usage*
 
@@ -81,7 +81,7 @@ e.Use(middleware.HTTPSRedirectWithConfig(middleware.RedirectConfig{
 
 Example above will redirect the request HTTP to HTTPS with status code `307 - StatusTemporaryRedirect`.
 
-### Configuration
+## Configuration
 
 ```go
 RedirectConfig struct {

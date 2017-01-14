@@ -1,4 +1,4 @@
-// Copyright 2013 The Go Authors.  All rights reserved.
+// Copyright 2013 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -11,6 +11,11 @@ import (
 
 	"golang.org/x/net/internal/netreflect"
 )
+
+// BUG(mikio): On Windows, the JoinSourceSpecificGroup,
+// LeaveSourceSpecificGroup, ExcludeSourceSpecificGroup and
+// IncludeSourceSpecificGroup methods of PacketConn are not
+// implemented.
 
 // A Conn represents a network endpoint that uses IPv6 transport.
 // It allows to set basic IP-level socket options such as traffic

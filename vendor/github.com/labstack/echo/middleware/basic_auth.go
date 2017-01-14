@@ -18,7 +18,7 @@ type (
 	}
 
 	// BasicAuthValidator defines a function to validate BasicAuth credentials.
-	BasicAuthValidator func(string, string) bool
+	BasicAuthValidator func(string, string, echo.Context) bool
 )
 
 const (
@@ -35,8 +35,7 @@ var (
 // BasicAuth returns an BasicAuth middleware.
 //
 // For valid credentials it calls the next handler.
-// For invalid credentials, it sends "401 - Unauthorized" response.
-// For empty or invalid `Authorization` header, it sends "400 - Bad Request" response.
+// For missing or invalid credentials, it sends "401 - Unauthorized" response.
 func BasicAuth(fn BasicAuthValidator) echo.MiddlewareFunc {
 	c := DefaultBasicAuthConfig
 	c.Validator = fn
@@ -48,7 +47,7 @@ func BasicAuth(fn BasicAuthValidator) echo.MiddlewareFunc {
 func BasicAuthWithConfig(config BasicAuthConfig) echo.MiddlewareFunc {
 	// Defaults
 	if config.Validator == nil {
-		panic("basic-auth middleware requires validator function")
+		panic("basic-auth middleware requires a validator function")
 	}
 	if config.Skipper == nil {
 		config.Skipper = DefaultBasicAuthConfig.Skipper
@@ -72,12 +71,13 @@ func BasicAuthWithConfig(config BasicAuthConfig) echo.MiddlewareFunc {
 				for i := 0; i < len(cred); i++ {
 					if cred[i] == ':' {
 						// Verify credentials
-						if config.Validator(cred[:i], cred[i+1:]) {
+						if config.Validator(cred[:i], cred[i+1:], c) {
 							return next(c)
 						}
 					}
 				}
 			}
+
 			// Need to return `401` for browsers to pop-up login box.
 			c.Response().Header().Set(echo.HeaderWWWAuthenticate, basic+" realm=Restricted")
 			return echo.ErrUnauthorized

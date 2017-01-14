@@ -1,13 +1,11 @@
 +++
 title = "CORS Middleware"
 description = "CORS middleware for Echo"
-[menu.side]
+[menu.main]
   name = "CORS"
   parent = "middleware"
   weight = 5
 +++
-
-## CORS Middleware
 
 CORS middleware implements [CORS](http://www.w3.org/TR/cors) specification.
 CORS gives web servers cross-domain access controls, which enable secure cross-domain
@@ -17,7 +15,7 @@ data transfers.
 
 `e.Use(middleware.CORS())`
 
-### Custom Configuration
+## Custom Configuration
 
 *Usage*
 
@@ -29,9 +27,10 @@ e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 }))
 ```
 
-### Configuration
+## Configuration
 
 ```go
+// CORSConfig defines the config for CORS middleware.
 CORSConfig struct {
   // Skipper defines a function to skip middleware.
   Skipper Skipper

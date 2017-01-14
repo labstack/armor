@@ -9,13 +9,12 @@ import (
 	"github.com/labstack/armor/plugin"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
-	"github.com/rsc/letsencrypt"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 type (
 	HTTP struct {
-		tlsManager letsencrypt.Manager
-		logger     *log.Logger
+		logger *log.Logger
 	}
 )
 
@@ -25,6 +24,7 @@ func Start(a *armor.Armor) {
 	}
 	e := echo.New()
 	e.Logger = h.logger
+	e.HideBanner = true
 
 	// Internal
 	e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -117,10 +117,8 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 		for host := range a.Hosts {
 			hosts = append(hosts, host)
 		}
-		h.tlsManager.SetHosts(hosts) // Added security
-		if err := h.tlsManager.CacheFile(a.TLS.CacheFile); err != nil {
-			return err
-		}
+		e.AutoTLSManager.HostPolicy = autocert.HostWhitelist(hosts...) // Added security
+		e.AutoTLSManager.Cache = autocert.DirCache(a.TLS.CacheDir)
 	}
 
 	for name, host := range a.Hosts {
@@ -139,7 +137,7 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 			// Use provided certificate
 			return cert, nil
 		} else if a.TLS.Auto {
-			return h.tlsManager.GetCertificate(clientHello)
+			return e.AutoTLSManager.GetCertificate(clientHello)
 		}
 		return nil, nil // No certificate
 	}
@@ -148,9 +146,15 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 }
 
 func (h *HTTP) start(a *armor.Armor, e *echo.Echo) error {
-	return e.StartServer(&http.Server{
+	s := &http.Server{
 		Addr:         a.Address,
 		ReadTimeout:  a.ReadTimeout * time.Second,
 		WriteTimeout: a.WriteTimeout * time.Second,
-	})
+	}
+	args := []interface{}{a.Colorer.Blue(armor.Website), a.Colorer.Red("v" + armor.Version), "http", a.Colorer.Green(s.Addr)}
+	if a.TLS != nil {
+		args[2] = "https"
+	}
+	a.Colorer.Printf(armor.Banner, args...)
+	return e.StartServer(s)
 }

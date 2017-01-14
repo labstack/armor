@@ -1,15 +1,13 @@
 +++
-title = "MethodOverride Middleware"
+title = "Method Override Middleware"
 description = "Method override middleware for Echo"
-[menu.side]
-  name = "MethodOverride"
+[menu.main]
+  name = "Method Override"
   parent = "middleware"
   weight = 5
 +++
 
-## MethodOverride Middleware
-
-MethodOverride middleware checks for the overridden method from the request and
+Method override middleware checks for the overridden method from the request and
 uses it instead of the original method.
 
 For security reasons, only `POST` method can be overridden.
@@ -18,7 +16,7 @@ For security reasons, only `POST` method can be overridden.
 
 `e.Pre(middleware.MethodOverride())`
 
-### Custom Configuration
+## Custom Configuration
 
 *Usage*
 
@@ -29,7 +27,7 @@ e.Pre(middleware.MethodOverrideWithConfig(middleware.MethodOverrideConfig{
 }))
 ```
 
-### Configuration
+## Configuration
 
 ```go
 MethodOverrideConfig struct {

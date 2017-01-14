@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"reflect"
 	"strings"
@@ -17,8 +16,8 @@ import (
 
 type (
 	user struct {
-		ID   int    `json:"id" xml:"id" form:"id"`
-		Name string `json:"name" xml:"name" form:"name"`
+		ID   int    `json:"id" xml:"id" form:"id" query:"id"`
+		Name string `json:"name" xml:"name" form:"name" query:"name"`
 	}
 )
 
@@ -28,6 +27,16 @@ const (
 	userForm       = `id=1&name=Jon Snow`
 	invalidContent = "invalid content"
 )
+
+const userJSONPretty = `{
+	"id": 1,
+	"name": "Jon Snow"
+}`
+
+const userXMLPretty = `<user>
+	<id>1</id>
+	<name>Jon Snow</name>
+</user>`
 
 func TestEcho(t *testing.T) {
 	e := New()
@@ -370,13 +379,6 @@ func TestEchoMethodNotAllowed(t *testing.T) {
 	assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
 }
 
-func TestEchoHTTPError(t *testing.T) {
-	m := http.StatusText(http.StatusBadRequest)
-	he := NewHTTPError(http.StatusBadRequest, m)
-	assert.Equal(t, http.StatusBadRequest, he.Code)
-	assert.Equal(t, m, he.Error())
-}
-
 func TestEchoContext(t *testing.T) {
 	e := New()
 	c := e.AcquireContext()
@@ -389,8 +391,6 @@ func TestEchoStart(t *testing.T) {
 	go func() {
 		assert.NoError(t, e.Start(":0"))
 	}()
-	time.Sleep(200 * time.Millisecond)
-	e.Shutdown(1 * time.Second)
 }
 
 func TestEchoStartTLS(t *testing.T) {
@@ -398,8 +398,6 @@ func TestEchoStartTLS(t *testing.T) {
 	go func() {
 		assert.NoError(t, e.StartTLS(":0", "_fixture/certs/cert.pem", "_fixture/certs/key.pem"))
 	}()
-	time.Sleep(200 * time.Millisecond)
-	e.ShutdownTLS(1 * time.Second)
 }
 
 func testMethod(t *testing.T, method, path string, e *Echo) {

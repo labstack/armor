@@ -1,98 +1,115 @@
 +++
 title = "Customization"
 description = "Customizing Echo"
-[menu.side]
+[menu.main]
   name = "Customization"
   parent = "guide"
   weight = 3
 +++
 
-## Customization
+## Debug
 
-### HTTP Error Handler
+`Echo#Debug` can be used to enable / disable debug mode. Debug mode sets the log level
+to `DEBUG`.
 
-`Echo#SetHTTPErrorHandler(h HTTPErrorHandler)` registers a custom `Echo#HTTPErrorHandler`.
+## Logging
 
-Default HTTP error handler rules:
+### Log Output
 
-- If error is of type `Echo#HTTPError` it sends HTTP response with status code `HTTPError.Code`
-and message `HTTPError.Message`.
-- Else it sends `500 - Internal Server Error`.
-- If debug mode is enabled, it uses `error.Error()` as status message.
+`Echo#Logger.SetOutput(io.Writer)` can be used to set the output destination for
+the logger. Default value is `os.Stdout`
 
-### Debug
+To completely disable logs use `Echo#Logger.SetOutput(ioutil.Discard)` or `Echo#Logger.SetLevel(log.OFF)`
 
-`Echo#SetDebug(on bool)` enable/disable debug mode.
+### Log Level
 
-### Logging
+`Echo#Logger.SetLevel(log.Lvl)` can be used to set the log level for the logger.
+Default value is `OFF`. Possible values:
 
-#### Custom Logger
+- `DEBUG`
+- `INFO`
+- `WARN`
+- `ERROR`
+- `OFF`
 
-`Echo#SetLogger(l log.Logger)`
+### Custom Logger
 
-SetLogger defines a custom logger.
+Logging is implemented using `echo.Logger` interface which allows you to register
+a custom logger using `Echo#Logger`.
 
-#### Log Output
+### Hide Banner
 
-`Echo#SetLogOutput(w io.Writer)` sets the output destination for the logger. Default
-value `os.Stdout`
+`Echo#HideBanner` can be used to hide the startup banner.
 
-To completely disable logs use `Echo#SetLogOutput(io.Discard)`
+## Custom Server
 
-#### Log Level
+### Using `Echo#StartServer()`
 
-`Echo#SetLogLevel(l log.Level)`
-
-SetLogLevel sets the log level for the logger. Default value `5` (OFF).
-Possible values:
-
-- `0` (DEBUG)
-- `1` (INFO)
-- `2` (WARN)
-- `3`	(ERROR)
-- `4`	(FATAL)
-- `5` (OFF)
-
-### HTTP Engine
-
-Echo currently supports standard and [fasthttp](https://github.com/valyala/fasthttp)
-server engines. Echo utilizes interfaces to abstract the internal implementation
-of these servers so you can seamlessly switch from one engine to another based on
-your preference.
-
-#### Running a standard HTTP server
-
-`e.Run(standard.New(":1323"))`
-
-#### Running a fasthttp server
-
-`e.Run(fasthttp.New(":1323"))`
-
-#### Running a server with TLS configuration
-
-`e.Run(<engine>.WithTLS(":1323", "<certFile>", "<keyFile>"))`
-
-#### Running a server with engine configuration
-
-`e.Run(<engine>.WithConfig(<config>))`
-
-##### Configuration
+*Example*
 
 ```go
-Config struct {
-  Address      string        // TCP address to listen on.
-  Listener     net.Listener  // Custom `net.Listener`. If set, server accepts connections on it.
-  TLSCertFile  string        // TLS certificate file path.
-  TLSKeyFile   string        // TLS key file path.
-  ReadTimeout  time.Duration // Maximum duration before timing out read of the request.
-  WriteTimeout time.Duration // Maximum duration before timing out write of the response.
+s := &http.Server{
+  Addr:         ":1323",
+  ReadTimeout:  20 * time.Minute,
+  WriteTimeout: 20 * time.Minute,
 }
+e.Logger.Fatal(e.StartServer(s))
 ```
 
-#### Access internal server instance and configure its properties
+### Using `http.ListenAndServe*()`
+
+
+*Example*
 
 ```go
-s := standard.New(":1323")
-s.MaxHeaderBytes = 1 << 20
-e.Run(s)
+e := echo.New()
+e.GET("/", func(c echo.Context) error {
+  return c.JSON(http.StatusOK, "OK")
+})
+s := &http.Server{
+  Handler: e,
+  Addr:    ":1323",
+}
+e.Logger.Fatal(s.ListenAndServe())
 ```
+
+> This setup will bypass auto-tls and graceful shutdown. 
+
+## Disable HTTP/2
+
+`Echo#DisableHTTP2` can be used disable HTTP/2 protocol.
+
+## Read Timeout
+
+`Echo#*Server#ReadTimeout` can be used to set the maximum duration before timing out read
+of the request.
+
+## Write Timeout
+
+`Echo#*Server#WriteTimeout` can be used to set the maximum duration before timing out write
+of the response.
+
+## Validator
+
+`Echo#Validator` can be used to register a validator for performing data validation
+on request payload.
+
+[Learn more](/guide/request#validate-data)
+
+## Custom Binder
+
+`Echo#Binder` can be used to register a custom binder for binding request payload.
+
+[Learn more](/guide/request/#custom-binder)
+
+## Renderer
+
+`Echo#Renderer` can be used to register a renderer for template rendering.
+
+[Learn more](/guide/templates)
+
+## HTTP Error Handler
+
+`Echo#HTTPErrorHandler` can be used to register a custom http error handler.
+
+[Learn more](/guide/error-handling)

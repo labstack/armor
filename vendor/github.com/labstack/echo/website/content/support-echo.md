@@ -1,8 +1,8 @@
 +++
-title = "Support"
+title = "Support Echo"
+description = "Support Echo"
+type = "single"
 +++
-
-## Support Echo Development
 
 <p>
   <a href="https://patreon.com/labstack" target="_blank"><br>
