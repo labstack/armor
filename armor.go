@@ -58,6 +58,6 @@ Uncomplicated, modern HTTP server
 ________________________O/_______
                         O\
 `
-	Version = "0.2.4"
+	Version = "0.2.5"
 	Website = "https://armor.labstack.com"
 )

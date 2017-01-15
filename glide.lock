@@ -1,5 +1,5 @@
 hash: 1cab7f99a66cff45db04e75da6c14ec0d0aba0f2a83151ad8f4a459cf20210cd
-updated: 2017-01-14T13:02:38.858760222-08:00
+updated: 2017-01-15T17:12:02.16835404-08:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
@@ -10,7 +10,7 @@ imports:
   subpackages:
   - proto
 - name: github.com/labstack/echo
-  version: 736d153c2921895462e168299df048a002e63103
+  version: b2c623b07dd1362011f2677147ffbbe48ea3b178
   subpackages:
   - middleware
 - name: github.com/labstack/gommon

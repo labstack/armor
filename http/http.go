@@ -28,7 +28,6 @@ func Start(a *armor.Armor) {
 	}
 	e := h.echo
 	e.Logger = h.logger
-	e.HideBanner = true
 
 	// Internal
 	e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -102,15 +101,14 @@ func Start(a *armor.Armor) {
 		return
 	})
 
+	// Banner
 	a.Colorer.Printf(armor.Banner, a.Colorer.Red("v"+armor.Version), a.Colorer.Blue(armor.Website))
 
 	if a.TLS != nil {
-		a.Colorer.Printf("⇛ https server started on %s\n", a.Colorer.Green(a.TLS.Address))
 		go func() {
 			h.logger.Fatal(h.startTLS())
 		}()
 	}
-	a.Colorer.Printf("⇛ http server started on %s\n", a.Colorer.Green(a.Address))
 	h.logger.Fatal(e.StartServer(&http.Server{
 		Addr:         a.Address,
 		ReadTimeout:  a.ReadTimeout * time.Second,
