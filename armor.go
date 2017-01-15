@@ -51,15 +51,12 @@ const (
    ___                     
   / _ | ______ _  ___  ____
  / __ |/ __/  ' \/ _ \/ __/
-/_/ |_/_/ /_/_/_/\___/_/   
-                           
-%s %s
+/_/ |_/_/ /_/_/_/\___/_/    %s
 
 Uncomplicated, modern HTTP server
-__________________________O/_____
-                          O\
-
-⇛ %s server started on %s
+%s
+________________________O/_______
+                        O\
 `
 	Version = "0.2.4"
 	Website = "https://armor.labstack.com"

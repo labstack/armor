@@ -14,15 +14,19 @@ import (
 
 type (
 	HTTP struct {
+		armor  *armor.Armor
+		echo   *echo.Echo
 		logger *log.Logger
 	}
 )
 
 func Start(a *armor.Armor) {
 	h := &HTTP{
+		armor:  a,
+		echo:   echo.New(),
 		logger: a.Logger,
 	}
-	e := echo.New()
+	e := h.echo
 	e.Logger = h.logger
 	e.HideBanner = true
 
@@ -98,13 +102,25 @@ func Start(a *armor.Armor) {
 		return
 	})
 
+	a.Colorer.Printf(armor.Banner, a.Colorer.Red("v"+armor.Version), a.Colorer.Blue(armor.Website))
+
 	if a.TLS != nil {
-		go h.logger.Fatal(h.startTLS(a, e))
+		a.Colorer.Printf("⇛ https server started on %s\n", a.Colorer.Green(a.TLS.Address))
+		go func() {
+			h.logger.Fatal(h.startTLS())
+		}()
 	}
-	h.logger.Fatal(h.start(a, e))
+	a.Colorer.Printf("⇛ http server started on %s\n", a.Colorer.Green(a.Address))
+	h.logger.Fatal(e.StartServer(&http.Server{
+		Addr:         a.Address,
+		ReadTimeout:  a.ReadTimeout * time.Second,
+		WriteTimeout: a.WriteTimeout * time.Second,
+	}))
 }
 
-func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
+func (h *HTTP) startTLS() error {
+	a := h.armor
+	e := h.echo
 	s := &http.Server{
 		Addr:         a.TLS.Address,
 		TLSConfig:    new(tls.Config),
@@ -142,19 +158,5 @@ func (h *HTTP) startTLS(a *armor.Armor, e *echo.Echo) error {
 		return nil, nil // No certificate
 	}
 
-	return e.StartServer(s)
-}
-
-func (h *HTTP) start(a *armor.Armor, e *echo.Echo) error {
-	s := &http.Server{
-		Addr:         a.Address,
-		ReadTimeout:  a.ReadTimeout * time.Second,
-		WriteTimeout: a.WriteTimeout * time.Second,
-	}
-	args := []interface{}{a.Colorer.Blue(armor.Website), a.Colorer.Red("v" + armor.Version), "http", a.Colorer.Green(s.Addr)}
-	if a.TLS != nil {
-		args[2] = "https"
-	}
-	a.Colorer.Printf(armor.Banner, args...)
 	return e.StartServer(s)
 }
