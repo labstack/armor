@@ -14,6 +14,7 @@ it super secure.
 
 ## Configuration
 
-Name | Type | Description
-:--- | :--- | :----------
-`limit` | string | Maximum allowed size for a request body, it can be specified as `4x` or `4xB`, where x is one of the multiple from K, M, G, T or P.
+Name | Type | Value | Description
+:--- | :--- | :--- | :----------
+`name` | string | `body-limit` | Plugin name
+`limit` | string | | Maximum allowed size for a request body, it can be specified as `4x` or `4xB`, where x is one of the multiple from K, M, G, T or P.

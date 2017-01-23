@@ -3,12 +3,14 @@ package http
 import (
 	"crypto/tls"
 	"net/http"
+	"path/filepath"
 	"time"
 
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/plugin"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
+	homedir "github.com/mitchellh/go-homedir"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -20,8 +22,8 @@ type (
 	}
 )
 
-func Start(a *armor.Armor) {
-	h := &HTTP{
+func Init(a *armor.Armor) (h *HTTP) {
+	h = &HTTP{
 		armor:  a,
 		echo:   echo.New(),
 		logger: a.Logger,
@@ -37,58 +39,6 @@ func Start(a *armor.Armor) {
 		}
 	})
 
-	// Global plugins
-	for _, pi := range a.Plugins {
-		p, err := plugin.Decode(pi, a)
-		if err != nil {
-			h.logger.Error(err)
-		}
-		if p.Priority() < 0 {
-			e.Pre(p.Process)
-		} else {
-			e.Use(p.Process)
-		}
-	}
-
-	// Hosts
-	for hn, host := range a.Hosts {
-		host.Name = hn
-		host.Echo = echo.New()
-
-		for _, pi := range host.Plugins {
-			p, err := plugin.Decode(pi, a)
-			if err != nil {
-				h.logger.Error(err)
-			}
-			if p.Priority() < 0 {
-				host.Echo.Pre(p.Process)
-			} else {
-				host.Echo.Use(p.Process)
-			}
-		}
-
-		// Paths
-		for pn, path := range host.Paths {
-			g := host.Echo.Group(pn)
-
-			for _, pi := range path.Plugins {
-				p, err := plugin.Decode(pi, a)
-				if err != nil {
-					h.logger.Error(err)
-				}
-				g.Use(p.Process)
-			}
-
-			// NOP handlers to trigger plugins
-			g.Any("", echo.NotFoundHandler)
-			if pn == "/" {
-				g.Any("*", echo.NotFoundHandler)
-			} else {
-				g.Any("/*", echo.NotFoundHandler)
-			}
-		}
-	}
-
 	// Route all requests
 	e.Any("/*", func(c echo.Context) (err error) {
 		req := c.Request()
@@ -101,22 +51,21 @@ func Start(a *armor.Armor) {
 		return
 	})
 
-	// Banner
-	a.Colorer.Printf(armor.Banner, a.Colorer.Red("v"+armor.Version), a.Colorer.Blue(armor.Website))
+	return
+}
 
-	if a.TLS != nil {
-		go func() {
-			h.logger.Fatal(h.startTLS())
-		}()
-	}
-	h.logger.Fatal(e.StartServer(&http.Server{
+func (h *HTTP) Start() error {
+	a := h.armor
+	e := h.echo
+	s := &http.Server{
 		Addr:         a.Address,
 		ReadTimeout:  a.ReadTimeout * time.Second,
 		WriteTimeout: a.WriteTimeout * time.Second,
-	}))
+	}
+	return e.StartServer(s)
 }
 
-func (h *HTTP) startTLS() error {
+func (h *HTTP) StartTLS() error {
 	a := h.armor
 	e := h.echo
 	s := &http.Server{
@@ -132,6 +81,13 @@ func (h *HTTP) startTLS() error {
 			hosts = append(hosts, host)
 		}
 		e.AutoTLSManager.HostPolicy = autocert.HostWhitelist(hosts...) // Added security
+		home, err := homedir.Dir()
+		if err != nil {
+			return err
+		}
+		if a.TLS.CacheDir == "" {
+			a.TLS.CacheDir = filepath.Join(home, ".armor", "cache")
+		}
 		e.AutoTLSManager.Cache = autocert.DirCache(a.TLS.CacheDir)
 	}
 
@@ -157,4 +113,64 @@ func (h *HTTP) startTLS() error {
 	}
 
 	return e.StartServer(s)
+}
+
+func (h *HTTP) LoadPlugins() {
+	a := h.armor
+	e := h.echo
+
+	// Global plugins
+	for _, pi := range a.Plugins {
+		p, err := plugin.Decode(pi, a, e)
+		if err != nil {
+			h.logger.Fatal(err)
+		}
+		if p.Priority() < 0 {
+			e.Pre(p.Process)
+		} else {
+			e.Use(p.Process)
+		}
+	}
+
+	// Hosts
+	for hn, host := range a.Hosts {
+		host.Name = hn
+		host.Echo = echo.New()
+		host.Echo.Logger = a.Logger
+
+		// Host plugins
+		for _, pi := range host.Plugins {
+			p, err := plugin.Decode(pi, a, host.Echo)
+			if err != nil {
+				h.logger.Error(err)
+			}
+			if p.Priority() < 0 {
+				host.Echo.Pre(p.Process)
+			} else {
+				host.Echo.Use(p.Process)
+			}
+		}
+
+		// Paths
+		for pn, path := range host.Paths {
+			g := host.Echo.Group(pn)
+
+			// Path plugins
+			for _, pi := range path.Plugins {
+				p, err := plugin.Decode(pi, a, host.Echo)
+				if err != nil {
+					h.logger.Fatal(err)
+				}
+				g.Use(p.Process)
+			}
+
+			// NOP handlers to trigger plugins
+			g.Any("", echo.NotFoundHandler)
+			if pn == "/" {
+				g.Any("*", echo.NotFoundHandler)
+			} else {
+				g.Any("/*", echo.NotFoundHandler)
+			}
+		}
+	}
 }

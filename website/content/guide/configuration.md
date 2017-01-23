@@ -19,7 +19,7 @@ Name | Type | Description
 `plugins` | array | Global plugins
 `hosts` | object | Virtual hosts
 
-## `tls`
+`tls`
 
 Name | Type | Description
 :--- | :--- | :----------
@@ -27,9 +27,9 @@ Name | Type | Description
 `cert_file` | string | Certificate file
 `key_file` | string | Key file
 `auto` | bool | Enable automatic certificates from https://letsencrypt.org
-`cache_file` | string | Cache file to store certificates from https://letsencrypt.org. Default value `letsencrypt.cache`.
+`cache_dir` | string | Cache directory to store certificates from https://letsencrypt.org. Default value `~/.armor/cache`.
 
-## `hosts`
+`hosts`
 
 Name | Type | Description
 :--- | :--- | :----------
@@ -38,7 +38,7 @@ Name | Type | Description
 `plugins` | array | Host plugins
 `paths` | object | Paths
 
-## `paths`
+`paths`
 
 Name | Type | Description
 :--- | :--- | :----------
@@ -65,78 +65,78 @@ Name | Type | Description
 
   ```js
 {
-	"address": ":80",
-	"read_timeout": 1200,
-	"write_timeout": 1200,
-	"tls": {
-		"auto": true,
-		"cache_file": "/var/www/le.cache"
-	},
-	"plugins": [{
-		"name": "logger"
-	}, {
-		"name": "remove-trailing-slash",
-		"redirect_code": 301
-	}],
-	"hosts": {
-		"labstack.com": {
-			"paths": {
-				"/": {
-					"plugins": [{
-						"name": "static",
-						"root": "/var/www/web"
-					}]
-				},
-				"/up": {
-					"plugins": [{
-						"name": "file",
-						"path": "/var/www/web/up/index.html"
-					}]
-				}
-			}
-		},
-		"api.labstack.com": {
-			"paths": {
-				"/": {
-					"plugins": [{
-						"name": "https-redirect"
-					}, {
-						"name": "cors"
-					}, {
-						"name": "proxy",
-						"targets": [{
-							"url": "http://api.ls"
-						}]
-					}]
-				}
-			}
-		},
-		"armor.labstack.com": {
-			"paths": {
-				"/": {
-					"plugins": [{
-						"name": "static",
-						"root": "/var/www/armor"
-					}]
-				}
-			}
-		},
-		"echo.labstack.com": {
-			"paths": {
-				"/": {
-					"plugins": [{
-						"name": "static",
-						"root": "/var/www/echo/v3"
-					}]
-				},
-				"/v2": {
-					"plugins": [{
-						"name": "static",
-						"root": "/var/www/echo/v2"
-					}]
-				}
-			}
-		}
-	}
+  "address": ":80",
+  "read_timeout": 1200,
+  "write_timeout": 1200,
+  "tls": {
+    "address": ":443",
+    "auto": true,
+    "cache_dir": "/pool/ingress/cache"
+  },
+  "plugins": [{
+    "name": "logger"
+  }, {
+    "name": "remove-trailing-slash",
+    "redirect_code": 301
+  }],
+  "hosts": {
+    "labstack.com": {
+      "paths": {
+        "/": {
+          "plugins": [{
+            "name": "static",
+            "root": "/var/www/web",
+            "html5": true
+          }]
+        }
+      }
+    },
+    "api.labstack.com": {
+      "paths": {
+        "/": {
+          "plugins": [{
+            "name": "cors"
+          }, {
+            "name": "proxy",
+            "targets": [{
+              "url": "http://api.ls"
+            }]
+          }]
+        }
+      }
+    },
+    "armor.labstack.com": {
+      "paths": {
+        "/": {
+          "plugins": [{
+            "name": "static",
+            "root": "/var/www/armor"
+          }]
+        }
+      }
+    },
+    "echo.labstack.com": {
+      "paths": {
+        "/": {
+          "plugins": [{
+            "name": "static",
+            "root": "/var/www/echo"
+          }]
+        }
+      }
+    },
+    "forum.labstack.com": {
+      "paths": {
+        "/": {
+          "plugins": [{
+            "name": "proxy",
+            "targets": [{
+              "url": "http://forum.ls"
+            }]
+          }]
+        }
+      }
+    }
+  }
 }
 ```

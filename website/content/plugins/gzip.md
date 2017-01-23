@@ -11,6 +11,7 @@ Compresses HTTP response using gzip compression scheme
 
 ## Configuration
 
-Name | Type | Description
-:--- | :--- | :----------
-`level` | number | Gzip compression level. Default value -1.
+Name | Type | Value | Description
+:--- | :--- | :--- | :----------
+`name` | string | `gzip` | Plugin name
+`level` | number | -1 (default) | Gzip compression level

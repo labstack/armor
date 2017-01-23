@@ -15,6 +15,19 @@ import (
 )
 
 const (
+
+	// http://patorjk.com/software/taag/#p=display&f=Small%20Slant&t=Armor
+	banner = `
+   ___                     
+  / _ | ______ _  ___  ____
+ / __ |/ __/  ' \/ _ \/ __/
+/_/ |_/_/ /_/_/_/\___/_/    %s
+
+Uncomplicated, modern HTTP server
+%s
+________________________O/_______
+                        O\
+`
 	defaultConfig = `{
     "address": ":8080",
     "plugins": [{
@@ -90,5 +103,17 @@ func main() {
 		a.Address = ":80"
 	}
 
-	http.Start(a)
+	// Initialize and load the plugins
+	h := http.Init(a)
+	h.LoadPlugins()
+
+	// Start server - start
+	colorer.Printf(banner, colorer.Red("v"+armor.Version), colorer.Blue(armor.Website))
+	if a.TLS != nil {
+		go func() {
+			logger.Fatal(h.StartTLS())
+		}()
+	}
+	logger.Fatal(h.Start())
+	// Start server - end
 }

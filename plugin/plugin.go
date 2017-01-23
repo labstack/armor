@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"path"
 	"strings"
 	"sync"
 
@@ -28,6 +27,7 @@ type (
 		name       string
 		Middleware echo.MiddlewareFunc `json:"-"`
 		Armor      *armor.Armor        `json:"-"`
+		Echo       *echo.Echo          `json:"-"`
 		Logger     *log.Logger         `json:"-"`
 	}
 
@@ -42,11 +42,12 @@ var (
 
 // Decode searches the plugin by name, decodes the provided map into plugin and
 // calls Plugin#Init().
-func Decode(pi armor.Plugin, a *armor.Armor) (p Plugin, err error) {
+func Decode(pi armor.Plugin, a *armor.Armor, e *echo.Echo) (p Plugin, err error) {
 	name := pi["name"].(string)
 	base := Base{
 		name:   name,
 		Armor:  a,
+		Echo:   e,
 		Logger: a.Logger,
 	}
 	if p = Lookup(base); p == nil {
@@ -126,12 +127,10 @@ func (t *Template) Execute(c echo.Context) (string, error) {
 			return buf.Write([]byte(c.Scheme()))
 		case "method":
 			return buf.Write([]byte(c.Request().Method))
-		case "path":
-			return buf.Write([]byte(c.Request().URL.Path))
 		case "uri":
 			return buf.Write([]byte(c.Request().RequestURI))
-		case "dir":
-			return buf.Write([]byte(path.Dir(c.Param("*"))))
+		case "path":
+			return buf.Write([]byte(c.Request().URL.Path))
 		default:
 			switch {
 			case strings.HasPrefix(tag, "header:"):

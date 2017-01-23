@@ -39,7 +39,7 @@ a custom logger using `Echo#Logger`.
 
 ## Custom Server
 
-### Using `Echo#StartServer()`
+`Echo#StartServer()` can be used to run a custom server.
 
 *Example*
 
@@ -52,24 +52,20 @@ s := &http.Server{
 e.Logger.Fatal(e.StartServer(s))
 ```
 
-### Using `http.ListenAndServe*()`
+## Custom Listener
 
+`Echo#*Listener` can be used to run a custom listener.
 
 *Example*
 
 ```go
-e := echo.New()
-e.GET("/", func(c echo.Context) error {
-  return c.JSON(http.StatusOK, "OK")
-})
-s := &http.Server{
-  Handler: e,
-  Addr:    ":1323",
+l, err := net.Listen("tcp", ":1323")
+if err != nil {
+  e.Logger.Fatal(l)
 }
-e.Logger.Fatal(s.ListenAndServe())
+e.Listener = l
+e.Logger.Fatal(e.Start(""))
 ```
-
-> This setup will bypass auto-tls and graceful shutdown. 
 
 ## Disable HTTP/2
 

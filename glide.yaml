@@ -5,6 +5,7 @@ import:
   subpackages:
   - proto
 - package: github.com/labstack/echo
+  version: sync
   subpackages:
   - middleware
 - package: github.com/labstack/gommon
@@ -19,6 +20,7 @@ import:
 - package: golang.org/x/net
   subpackages:
   - websocket
+- package: github.com/mitchellh/go-homedir
 testImport:
 - package: github.com/stretchr/testify
   subpackages:

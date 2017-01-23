@@ -44,20 +44,7 @@ type (
 	Plugin map[string]interface{}
 )
 
-// Banner
 const (
-	// http://patorjk.com/software/taag/#p=display&f=Small%20Slant&t=Armor
-	Banner = `
-   ___                     
-  / _ | ______ _  ___  ____
- / __ |/ __/  ' \/ _ \/ __/
-/_/ |_/_/ /_/_/_/\___/_/    %s
-
-Uncomplicated, modern HTTP server
-%s
-________________________O/_______
-                        O\
-`
-	Version = "0.2.5"
+	Version = "0.2.6"
 	Website = "https://armor.labstack.com"
 )

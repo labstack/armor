@@ -36,21 +36,16 @@ Type `armor` in your terminal
 ```sh
 ❯ armor
 
- _______  ______    __   __  _______  ______
-|   _   ||    _ |  |  |_|  ||       ||    _ |
-|  |_|  ||   | ||  |       ||   _   ||   | ||
-|       ||   |_||_ |       ||  | |  ||   |_||_
-|       ||    __  ||       ||  |_|  ||    __  |
-|   _   ||   |  | || ||_|| ||       ||   |  | |
-|__| |__||___|  |_||_|   |_||_______||___|  |_|
-
-https://armor.labstack.com               v0.2.5
+   ___
+  / _ | ______ _  ___  ____
+ / __ |/ __/  ' \/ _ \/ __/
+/_/ |_/_/ /_/_/_/\___/_/    v0.2.6
 
 Uncomplicated, modern HTTP server
-_______________O/______________________________
-               O\
-
- ⇛ http server started on :8080
+https://armor.labstack.com
+________________________O/_______
+                        O\
+⇛ http server started on [::]:8080
 ```
 
 This starts armor on address `:8080`, serving the current directory listing using

@@ -11,9 +11,10 @@ Serves static files from a provided root directory
 
 ## Configuration
 
-Name | Type | Description
-:--- | :--- | :----------
-`root` | string | Root directory from where the static content is served. Required.
-`index` | string | Index file for serving a directory. Default value `index.html`.
-`html5` | bool | Enable HTML5 mode by forwarding all not-found requests to root so that SPA (single-page application) can handle the routing. Default value false.
-`browse` | bool | Enable directory browsing. Default value false.
+Name | Type | Value | Description
+:--- | :--- | :--- | :----------
+`name` | string | `static` | Plugin name
+`root` | string | | Root directory from where the static content is served. Required.
+`index` | string | `index.html` (default) | Index file for serving a directory
+`html5` | bool | `false` (default) | Enable HTML5 mode by forwarding all not-found requests to root so that SPA (single-page application) can handle the routing
+`browse` | bool | `false` (default) | Enable directory browsing

@@ -1,16 +1,19 @@
 package plugin
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
 type (
 	Redirect struct {
-		Base `json:",squash"`
-		To   string `json:"to"`
-		Code string `json:"code"`
-		When string `json:"when"`
+		Base     `json:",squash"`
+		From     string `json:"from"`
+		To       string `json:"to"`
+		Code     int    `json:"code"`
+		template *Template
 	}
 
 	HTTPSRedirect struct {
@@ -39,7 +42,19 @@ type (
 	}
 )
 
-func (*Redirect) Init() (err error) {
+func (r *Redirect) Init() (err error) {
+	r.template = NewTemplate(r.To)
+	// Defaults
+	if r.Code == 0 {
+		r.Code = http.StatusMovedPermanently
+	}
+	r.Echo.GET(r.From, func(c echo.Context) error {
+		to, err := r.template.Execute(c)
+		if err != nil {
+			return err
+		}
+		return c.Redirect(r.Code, to)
+	})
 	return
 }
 
@@ -48,7 +63,9 @@ func (*Redirect) Priority() int {
 }
 
 func (r *Redirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
-	return r.Middleware(next)
+	return func(c echo.Context) error {
+		return next(c)
+	}
 }
 
 func (r *HTTPSRedirect) Init() (err error) {

@@ -70,6 +70,7 @@ type (
 		Validator        Validator
 		Renderer         Renderer
 		AutoTLSManager   autocert.Manager
+		Mutex            sync.RWMutex
 		Logger           Logger
 		stdLogger        *slog.Logger
 		colorer          *color.Color
@@ -290,6 +291,8 @@ func (e *Echo) DefaultHTTPErrorHandler(err error, c Context) {
 	if he, ok := err.(*HTTPError); ok {
 		code = he.Code
 		msg = he.Message
+	} else if e.Debug {
+		msg = err.Error()
 	} else {
 		msg = http.StatusText(code)
 	}
@@ -495,7 +498,13 @@ func (e *Echo) ReleaseContext(c Context) {
 
 // ServeHTTP implements `http.Handler` interface, which serves HTTP requests.
 func (e *Echo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Acquire lock
+	e.Mutex.RLock()
+	defer e.Mutex.RUnlock()
+
+	// Acquire context
 	c := e.pool.Get().(*context)
+	defer e.pool.Put(c)
 	c.Reset(r, w)
 
 	// Middleware
@@ -519,8 +528,6 @@ func (e *Echo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err := h(c); err != nil {
 		e.HTTPErrorHandler(err, c)
 	}
-
-	e.pool.Put(c)
 }
 
 // Start starts an HTTP server.
@@ -562,27 +569,30 @@ func (e *Echo) startTLS(address string) error {
 }
 
 // StartServer starts a custom http server.
-func (e *Echo) StartServer(s *http.Server) error {
+func (e *Echo) StartServer(s *http.Server) (err error) {
 	// Setup
 	e.colorer.SetOutput(e.Logger.Output())
 	s.Handler = e
 	s.ErrorLog = e.stdLogger
 
-	l, err := net.Listen("tcp", s.Addr)
-	if err != nil {
-		return err
-	}
 	if s.TLSConfig == nil {
 		if e.Listener == nil {
-			e.Listener = tcpKeepAliveListener{l.(*net.TCPListener)}
+			e.Listener, err = newListener(s.Addr)
+			if err != nil {
+				return err
+			}
 		}
-		e.colorer.Printf("⇛ http server started on %s\n", e.colorer.Green(s.Addr))
+		e.colorer.Printf("⇛ http server started on %s\n", e.colorer.Green(e.Listener.Addr()))
 		return s.Serve(e.Listener)
 	}
 	if e.TLSListener == nil {
-		e.TLSListener = tls.NewListener(tcpKeepAliveListener{l.(*net.TCPListener)}, s.TLSConfig)
+		l, err := newListener(s.Addr)
+		if err != nil {
+			return err
+		}
+		e.TLSListener = tls.NewListener(l, s.TLSConfig)
 	}
-	e.colorer.Printf("⇛ https server started on %s\n", e.colorer.Green(s.Addr))
+	e.colorer.Printf("⇛ https server started on %s\n", e.colorer.Green(e.TLSListener.Addr()))
 	return s.Serve(e.TLSListener)
 }
 
@@ -645,4 +655,12 @@ func (ln tcpKeepAliveListener) Accept() (c net.Conn, err error) {
 	tc.SetKeepAlive(true)
 	tc.SetKeepAlivePeriod(3 * time.Minute)
 	return tc, nil
+}
+
+func newListener(address string) (*tcpKeepAliveListener, error) {
+	l, err := net.Listen("tcp", address)
+	if err != nil {
+		return nil, err
+	}
+	return &tcpKeepAliveListener{l.(*net.TCPListener)}, nil
 }

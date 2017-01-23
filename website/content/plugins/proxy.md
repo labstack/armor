@@ -11,12 +11,13 @@ Proxy HTTP and WebSocket requests to upstream servers
 
 ## Configuration
 
-Name | Type | Description
-:--- | :--- | :----------
-`balance` | string | Load balancing technique. Default value `random`. Possible values: `random`, `round-robin`.
-`targets` | array | Upstream servers
+Name | Type | Value | Description
+:--- | :--- | :--- | :----------
+`name` | string | `proxy` | Plugin name
+`balance` | string | `random` (default) | Load balancing technique. Possible values: `random`, `round-robin`.
+`targets` | array | | Upstream servers
 
-### `targets`
+`targets`
 
 Name | Type | Description
 :--- | :--- | :----------
