@@ -1,16 +1,20 @@
-hash: 475f1052c5be3bb4d524650176a00142389861e829f9c0f1541c0466a5dd2bbf
-updated: 2017-01-22T17:01:43.311915748-08:00
+hash: 92fd7882e65001ff78f25ad7374f4f811895e383c79709c3ce7d0c73d75e372d
+updated: 2017-02-01T20:17:27.234431276-08:00
 imports:
 - name: github.com/dgrijalva/jwt-go
-  version: a601269ab70c205d26370c16f7c81e9017c14e04
+  version: 2268707a8f0843315e2004ee4f1d021dc08baedf
 - name: github.com/fsnotify/fsnotify
-  version: fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197
+  version: a904159b9206978bb6d53fcc7a769e5cd726c737
 - name: github.com/golang/protobuf
   version: 8ee79997227bf9b34611aee7946ae64735e6fd93
   subpackages:
   - proto
+- name: github.com/labstack/cubex
+  version: 7e769a17d3d17e9436c1b39ff972c9cd1409c8ce
+  subpackages:
+  - middleware/go/cube
 - name: github.com/labstack/echo
-  version: 0310604cc82fc9a01727475a5970a85dfda81fa6
+  version: c7c4395fbdf085a1d76443e2b66dc94aeba7947c
   subpackages:
   - middleware
 - name: github.com/labstack/gommon
@@ -27,29 +31,31 @@ imports:
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/mitchellh/mapstructure
-  version: ed105d635dfa9ea7133f7c79f1eb36203fc3a156
+  version: db1efb556f84b25a0a13a04aad883943538ad2e0
+- name: github.com/mssola/user_agent
+  version: 07efe2b857fb8c02d2dd85c12d0145f58554ec7c
 - name: github.com/valyala/bytebufferpool
   version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - name: github.com/valyala/fasttemplate
   version: d090d65668a286d9a180d43a19dfdc5dcad8fe88
 - name: golang.org/x/crypto
-  version: b8a2a83acfe6e6770b75de42d5ff4c67596675c0
+  version: dc137beb6cce2043eb6b5f223ab8bf51c32459f4
   subpackages:
   - acme
   - acme/autocert
 - name: golang.org/x/net
-  version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
+  version: 007e530097ad7f954752df63046b4036f98ba6a6
   subpackages:
   - context
   - context/ctxhttp
   - websocket
 - name: golang.org/x/sys
-  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
+  version: 7a6e5648d140666db5d920909e082ca00a87ba2c
   subpackages:
   - unix
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
@@ -57,6 +63,6 @@ testImports:
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: 2402e8e7a02fc811447d11f881aa9746cdc57983
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
   - assert

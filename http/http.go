@@ -62,6 +62,7 @@ func (h *HTTP) Start() error {
 		ReadTimeout:  a.ReadTimeout * time.Second,
 		WriteTimeout: a.WriteTimeout * time.Second,
 	}
+	e.Server = s
 	return e.StartServer(s)
 }
 
@@ -74,6 +75,7 @@ func (h *HTTP) StartTLS() error {
 		ReadTimeout:  a.ReadTimeout * time.Second,
 		WriteTimeout: a.WriteTimeout * time.Second,
 	}
+	e.TLSServer = s
 
 	if a.TLS.Auto {
 		hosts := []string{}
@@ -91,7 +93,15 @@ func (h *HTTP) StartTLS() error {
 		e.AutoTLSManager.Cache = autocert.DirCache(a.TLS.CacheDir)
 	}
 
-	for name, host := range a.Hosts {
+	// Load certificates - start
+	// Global
+	cert, err := tls.LoadX509KeyPair(a.TLS.CertFile, a.TLS.KeyFile)
+	if err != nil {
+		h.logger.Fatal(err)
+	}
+	s.TLSConfig.Certificates = append(s.TLSConfig.Certificates, cert)
+	// Host
+	for _, host := range a.Hosts {
 		if host.CertFile == "" || host.KeyFile == "" {
 			continue
 		}
@@ -99,8 +109,10 @@ func (h *HTTP) StartTLS() error {
 		if err != nil {
 			h.logger.Fatal(err)
 		}
-		s.TLSConfig.NameToCertificate[name] = &cert
+		s.TLSConfig.Certificates = append(s.TLSConfig.Certificates, cert)
 	}
+	s.TLSConfig.BuildNameToCertificate()
+	// Load certificates - end
 
 	s.TLSConfig.GetCertificate = func(clientHello *tls.ClientHelloInfo) (*tls.Certificate, error) {
 		if cert, ok := s.TLSConfig.NameToCertificate[clientHello.ServerName]; ok {

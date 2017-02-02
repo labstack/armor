@@ -5,13 +5,13 @@ import:
   subpackages:
   - proto
 - package: github.com/labstack/echo
-  version: sync
   subpackages:
   - middleware
 - package: github.com/labstack/gommon
   subpackages:
   - color
   - log
+- package: github.com/mitchellh/go-homedir
 - package: github.com/mitchellh/mapstructure
 - package: github.com/valyala/fasttemplate
 - package: golang.org/x/crypto
@@ -20,7 +20,9 @@ import:
 - package: golang.org/x/net
   subpackages:
   - websocket
-- package: github.com/mitchellh/go-homedir
+- package: github.com/labstack/cubex
+  subpackages:
+  - middleware/go/cube
 testImport:
 - package: github.com/stretchr/testify
   subpackages:

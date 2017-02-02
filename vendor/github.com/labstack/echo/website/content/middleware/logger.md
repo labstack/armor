@@ -60,13 +60,13 @@ LoggerConfig struct {
   // - referer
   // - user_agent
   // - status
-  // - latency (In microseconds)
+  // - latency (In nanoseconds)
   // - latency_human (Human readable)
   // - bytes_in (Bytes received)
   // - bytes_out (Bytes sent)
-  // - header:<name>
-  // - query:<name>
-  // - form:<name>
+  // - header:<NAME>
+  // - query:<NAME>
+  // - form:<NAME>
   //
   // Example "${remote_ip} ${status}"
   //

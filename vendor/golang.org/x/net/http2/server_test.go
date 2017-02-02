@@ -318,7 +318,7 @@ func (st *serverTester) encodeHeaderRaw(headers ...string) []byte {
 }
 
 // encodeHeader encodes headers and returns their HPACK bytes. headers
-// must contain an even number of key/value pairs.  There may be
+// must contain an even number of key/value pairs. There may be
 // multiple pairs for keys (e.g. "cookie").  The :method, :path, and
 // :scheme headers default to GET, / and https. The :authority header
 // defaults to st.ts.Listener.Addr().
@@ -656,7 +656,7 @@ func TestServer_Request_Get_PathSlashes(t *testing.T) {
 }
 
 // TODO: add a test with EndStream=true on the HEADERS but setting a
-// Content-Length anyway.  Should we just omit it and force it to
+// Content-Length anyway. Should we just omit it and force it to
 // zero?
 
 func TestServer_Request_Post_NoContentLength_EndStream(t *testing.T) {
@@ -1192,7 +1192,7 @@ func TestServer_Handler_Sends_WindowUpdate_Padding(t *testing.T) {
 		EndStream:     false,
 		EndHeaders:    true,
 	})
-	st.writeDataPadded(1, false, []byte("abcdef"), []byte("1234"))
+	st.writeDataPadded(1, false, []byte("abcdef"), []byte{0, 0, 0, 0})
 
 	// Expect to immediately get our 5 bytes of padding back for
 	// both the connection and stream (4 bytes of padding + 1 byte of length)

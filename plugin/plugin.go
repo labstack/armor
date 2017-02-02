@@ -40,31 +40,8 @@ var (
 	bufferPool sync.Pool
 )
 
-// Decode searches the plugin by name, decodes the provided map into plugin and
-// calls Plugin#Init().
-func Decode(pi armor.Plugin, a *armor.Armor, e *echo.Echo) (p Plugin, err error) {
-	name := pi["name"].(string)
-	base := Base{
-		name:   name,
-		Armor:  a,
-		Echo:   e,
-		Logger: a.Logger,
-	}
-	if p = Lookup(base); p == nil {
-		return p, fmt.Errorf("plugin=%s not found", name)
-	}
-	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
-		TagName: "json",
-		Result:  p,
-	})
-	if err = dec.Decode(pi); err != nil {
-		return
-	}
-	return p, p.Init()
-}
-
-// Lookup returns a plugin by name.
-func Lookup(base Base) (p Plugin) {
+// lookup returns a plugin by name.
+func lookup(base Base) (p Plugin) {
 	switch base.Name() {
 	case "body-limit":
 		p = &BodyLimit{Base: base}
@@ -102,8 +79,33 @@ func Lookup(base Base) (p Plugin) {
 		p = &File{Base: base}
 	case "nats":
 		// p = &NATS{Base: base}
+	case "cube":
+		p = &Cube{Base: base}
 	}
 	return
+}
+
+// Decode searches the plugin by name, decodes the provided map into plugin and
+// calls Plugin#Init().
+func Decode(pi armor.Plugin, a *armor.Armor, e *echo.Echo) (p Plugin, err error) {
+	name := pi["name"].(string)
+	base := Base{
+		name:   name,
+		Armor:  a,
+		Echo:   e,
+		Logger: a.Logger,
+	}
+	if p = lookup(base); p == nil {
+		return p, fmt.Errorf("plugin=%s not found", name)
+	}
+	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		TagName: "json",
+		Result:  p,
+	})
+	if err = dec.Decode(pi); err != nil {
+		return
+	}
+	return p, p.Init()
 }
 
 func (b *Base) Name() string {

@@ -7,8 +7,8 @@ import (
 
 type (
 	Logger struct {
-		Base                    `json:",squash"`
 		middleware.LoggerConfig `json:",squash"`
+		Base                    `json:",squash"`
 	}
 )
 
