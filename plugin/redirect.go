@@ -9,11 +9,10 @@ import (
 
 type (
 	Redirect struct {
-		Base     `json:",squash"`
-		From     string `json:"from"`
-		To       string `json:"to"`
-		Code     int    `json:"code"`
-		template *Template
+		Base `json:",squash"`
+		From string `json:"from"`
+		To   string `json:"to"`
+		Code int    `json:"code"`
 	}
 
 	HTTPSRedirect struct {
@@ -43,13 +42,13 @@ type (
 )
 
 func (r *Redirect) Init() (err error) {
-	r.template = NewTemplate(r.To)
+	t := NewTemplate(r.To)
 	// Defaults
 	if r.Code == 0 {
 		r.Code = http.StatusMovedPermanently
 	}
 	r.Echo.GET(r.From, func(c echo.Context) error {
-		to, err := r.template.Execute(c)
+		to, err := t.Execute(c)
 		if err != nil {
 			return err
 		}
@@ -95,6 +94,14 @@ func (r *HTTPSWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func (r *HTTPSNonWWWRedirect) Init() (err error) {
+	e := NewExpression(r.Skip)
+	r.RedirectConfig.Skipper = func(c echo.Context) bool {
+		skip, err := e.Evaluate(c)
+		if err != nil {
+			return false
+		}
+		return skip.(bool)
+	}
 	r.Middleware = middleware.HTTPSNonWWWRedirectWithConfig(r.RedirectConfig)
 	return
 }

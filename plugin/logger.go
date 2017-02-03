@@ -18,7 +18,7 @@ func (l *Logger) Init() (err error) {
 }
 
 func (*Logger) Priority() int {
-	return 1
+	return -1
 }
 
 func (l *Logger) Process(next echo.HandlerFunc) echo.HandlerFunc {

@@ -23,6 +23,7 @@ import:
 - package: github.com/labstack/cubex
   subpackages:
   - middleware/go/cube
+- package: github.com/Knetic/govaluate
 testImport:
 - package: github.com/stretchr/testify
   subpackages:

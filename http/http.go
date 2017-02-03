@@ -29,12 +29,25 @@ func Init(a *armor.Armor) (h *HTTP) {
 		logger: a.Logger,
 	}
 	e := h.echo
+	e.Server = &http.Server{
+		Addr:         a.Address,
+		ReadTimeout:  a.ReadTimeout * time.Second,
+		WriteTimeout: a.WriteTimeout * time.Second,
+	}
+	if a.TLS != nil {
+		e.TLSServer = &http.Server{
+			Addr:         a.TLS.Address,
+			TLSConfig:    new(tls.Config),
+			ReadTimeout:  a.ReadTimeout * time.Second,
+			WriteTimeout: a.WriteTimeout * time.Second,
+		}
+	}
 	e.Logger = h.logger
 
 	// Internal
 	e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			c.Response().Header().Set(echo.HeaderServer, "armor/"+armor.Version)
+			c.Response().Header().Set(echo.HeaderServer, "Armor/"+armor.Version)
 			return next(c)
 		}
 	})
@@ -55,27 +68,14 @@ func Init(a *armor.Armor) (h *HTTP) {
 }
 
 func (h *HTTP) Start() error {
-	a := h.armor
 	e := h.echo
-	s := &http.Server{
-		Addr:         a.Address,
-		ReadTimeout:  a.ReadTimeout * time.Second,
-		WriteTimeout: a.WriteTimeout * time.Second,
-	}
-	e.Server = s
-	return e.StartServer(s)
+	return e.StartServer(e.Server)
 }
 
 func (h *HTTP) StartTLS() error {
 	a := h.armor
 	e := h.echo
-	s := &http.Server{
-		Addr:         a.TLS.Address,
-		TLSConfig:    new(tls.Config),
-		ReadTimeout:  a.ReadTimeout * time.Second,
-		WriteTimeout: a.WriteTimeout * time.Second,
-	}
-	e.TLSServer = s
+	s := e.TLSServer
 
 	if a.TLS.Auto {
 		hosts := []string{}
@@ -95,11 +95,13 @@ func (h *HTTP) StartTLS() error {
 
 	// Load certificates - start
 	// Global
-	cert, err := tls.LoadX509KeyPair(a.TLS.CertFile, a.TLS.KeyFile)
-	if err != nil {
-		h.logger.Fatal(err)
+	if a.TLS.CertFile != "" && a.TLS.KeyFile != "" {
+		cert, err := tls.LoadX509KeyPair(a.TLS.CertFile, a.TLS.KeyFile)
+		if err != nil {
+			h.logger.Fatal(err)
+		}
+		s.TLSConfig.Certificates = append(s.TLSConfig.Certificates, cert)
 	}
-	s.TLSConfig.Certificates = append(s.TLSConfig.Certificates, cert)
 	// Host
 	for _, host := range a.Hosts {
 		if host.CertFile == "" || host.KeyFile == "" {

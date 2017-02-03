@@ -1,5 +1,5 @@
-hash: 92fd7882e65001ff78f25ad7374f4f811895e383c79709c3ce7d0c73d75e372d
-updated: 2017-02-01T20:17:27.234431276-08:00
+hash: 82603a512d69016a4f0374e3edb21f8fcd583cfd5d19b4fc57a4fd168ae40914
+updated: 2017-02-02T21:09:29.657628083-08:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: 2268707a8f0843315e2004ee4f1d021dc08baedf
@@ -9,12 +9,15 @@ imports:
   version: 8ee79997227bf9b34611aee7946ae64735e6fd93
   subpackages:
   - proto
+- name: github.com/Knetic/govaluate
+  version: 5598166b6fc09f038e53f628eec79f0c004a4299
 - name: github.com/labstack/cubex
-  version: 7e769a17d3d17e9436c1b39ff972c9cd1409c8ce
+  version: e028f56c5b556b82af5bc2d072272f2efe7fd391
   subpackages:
+  - go/cube
   - middleware/go/cube
 - name: github.com/labstack/echo
-  version: c7c4395fbdf085a1d76443e2b66dc94aeba7947c
+  version: a8b6864be328fcb5c2d96d32c75b750f84e0e4be
   subpackages:
   - middleware
 - name: github.com/labstack/gommon
@@ -39,7 +42,7 @@ imports:
 - name: github.com/valyala/fasttemplate
   version: d090d65668a286d9a180d43a19dfdc5dcad8fe88
 - name: golang.org/x/crypto
-  version: dc137beb6cce2043eb6b5f223ab8bf51c32459f4
+  version: bed12803fa9663d7aa2c2346b0c634ad2dcd43b7
   subpackages:
   - acme
   - acme/autocert

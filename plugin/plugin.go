@@ -7,6 +7,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/Knetic/govaluate"
 	"github.com/labstack/armor"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
@@ -25,6 +26,7 @@ type (
 	// Base defines the base struct for plugins.
 	Base struct {
 		name       string
+		Skip       string              `json:"skip"`
 		Middleware echo.MiddlewareFunc `json:"-"`
 		Armor      *armor.Armor        `json:"-"`
 		Echo       *echo.Echo          `json:"-"`
@@ -32,13 +34,26 @@ type (
 	}
 
 	Template struct {
-		template *fasttemplate.Template
+		*fasttemplate.Template
+	}
+
+	Expression struct {
+		*fasttemplate.Template
 	}
 )
 
 var (
 	bufferPool sync.Pool
 )
+
+// Initialize
+func init() {
+	bufferPool = sync.Pool{
+		New: func() interface{} {
+			return new(bytes.Buffer)
+		},
+	}
+}
 
 // lookup returns a plugin by name.
 func lookup(base Base) (p Plugin) {
@@ -91,6 +106,7 @@ func Decode(pi armor.Plugin, a *armor.Armor, e *echo.Echo) (p Plugin, err error)
 	name := pi["name"].(string)
 	base := Base{
 		name:   name,
+		Skip:   "false",
 		Armor:  a,
 		Echo:   e,
 		Logger: a.Logger,
@@ -112,52 +128,66 @@ func (b *Base) Name() string {
 	return b.name
 }
 
-func NewTemplate(src string) *Template {
-	return &Template{
-		template: fasttemplate.New(src, "${", "}"),
-	}
+func NewTemplate(t string) *Template {
+	return &Template{Template: fasttemplate.New(t, "${", "}")}
 }
 
 func (t *Template) Execute(c echo.Context) (string, error) {
 	buf := bufferPool.Get().(*bytes.Buffer)
 	buf.Reset()
 	defer bufferPool.Put(buf)
-
-	_, err := t.template.ExecuteFunc(buf, func(w io.Writer, tag string) (int, error) {
-		switch tag {
-		case "scheme":
-			return buf.Write([]byte(c.Scheme()))
-		case "method":
-			return buf.Write([]byte(c.Request().Method))
-		case "uri":
-			return buf.Write([]byte(c.Request().RequestURI))
-		case "path":
-			return buf.Write([]byte(c.Request().URL.Path))
-		default:
-			switch {
-			case strings.HasPrefix(tag, "header:"):
-				return buf.Write([]byte(c.Request().Header.Get(tag[7:])))
-			case strings.HasPrefix(tag, "path:"):
-				return buf.Write([]byte(c.Param(tag[5:])))
-			case strings.HasPrefix(tag, "query:"):
-				return buf.Write([]byte(c.QueryParam(tag[6:])))
-			case strings.HasPrefix(tag, "form:"):
-				return buf.Write([]byte(c.FormValue(tag[5:])))
-			default:
-				// TODO:
-			}
-		}
-
+	_, err := t.ExecuteFunc(buf, func(w io.Writer, tag string) (int, error) {
+		mapTag(buf, c, tag)
 		return 0, nil
 	})
-
 	return buf.String(), err
 }
 
-func init() {
-	bufferPool = sync.Pool{
-		New: func() interface{} {
-			return new(bytes.Buffer)
-		},
+func NewExpression(t string) *Expression {
+	return &Expression{fasttemplate.New(t, "${", "}")}
+}
+
+func (e *Expression) Evaluate(c echo.Context) (interface{}, error) {
+	buf := bufferPool.Get().(*bytes.Buffer)
+	buf.Reset()
+	defer bufferPool.Put(buf)
+
+	if _, err := e.ExecuteFunc(buf, func(w io.Writer, tag string) (int, error) {
+		buf.WriteString("'")
+		mapTag(buf, c, tag)
+		buf.WriteString("'")
+		return 0, nil
+	}); err != nil {
+		return nil, err
+	}
+
+	expr, err := govaluate.NewEvaluableExpression(buf.String())
+	if err != nil {
+		return nil, err
+	}
+	return expr.Evaluate(nil)
+}
+
+func mapTag(b *bytes.Buffer, c echo.Context, t string) {
+	switch t {
+	case "scheme":
+		b.WriteString(c.Scheme())
+	case "method":
+		b.WriteString(c.Request().Method)
+	case "uri":
+		b.WriteString(c.Request().RequestURI)
+	case "path":
+		b.WriteString(c.Request().URL.Path)
+	default:
+		switch {
+		case strings.HasPrefix(t, "header:"):
+			b.WriteString(c.Request().Header.Get(t[7:]))
+		case strings.HasPrefix(t, "path:"):
+			b.WriteString(c.Param(t[5:]))
+		case strings.HasPrefix(t, "query:"):
+			b.WriteString(c.QueryParam(t[6:]))
+		case strings.HasPrefix(t, "form:"):
+			b.WriteString(c.FormValue(t[5:]))
+		}
 	}
 }

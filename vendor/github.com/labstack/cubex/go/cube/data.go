@@ -2,7 +2,6 @@ package cube
 
 type Data struct {
 	Uptime           int64             `json:"uptime"`
-	NewConnection    int64             `json:"new_connection"`
 	ActiveConnection int64             `json:"active_connection"`
 	IdleConnection   int64             `json:"idle_connection"`
 	Request          int64             `json:"request"`

@@ -51,6 +51,8 @@ func New(s *http.Server) (cube *Cube) {
 	}
 
 	s.ConnState = func(c net.Conn, cs http.ConnState) {
+		cube.mutex.Lock()
+		defer cube.mutex.Unlock()
 		cube.connState[c.RemoteAddr().String()] = cs
 	}
 
@@ -115,8 +117,6 @@ func (c *Cube) Data() (d *Data) {
 	}
 	for _, s := range c.connState {
 		switch s {
-		case http.StateNew:
-			d.NewConnection++
 		case http.StateActive:
 			d.ActiveConnection++
 		case http.StateIdle:
