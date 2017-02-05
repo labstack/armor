@@ -17,11 +17,10 @@ type (
 )
 
 func (c *Cube) Init() (err error) {
-	s := c.Echo.Server
-	if c.Armor.TLS != nil {
-		s = c.Echo.TLSServer
+	m := cube.New()
+	m.Skipper = func(r *http.Request) bool {
+		return r.URL.Path == c.Path
 	}
-	m := cube.New(s)
 	c.middleware = m
 	c.Middleware = m.Middleware
 	c.Echo.GET(c.Path, func(ctx echo.Context) error {

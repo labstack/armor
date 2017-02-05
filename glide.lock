@@ -1,5 +1,5 @@
 hash: 82603a512d69016a4f0374e3edb21f8fcd583cfd5d19b4fc57a4fd168ae40914
-updated: 2017-02-02T21:09:29.657628083-08:00
+updated: 2017-02-05T09:24:38.566064276-08:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: 2268707a8f0843315e2004ee4f1d021dc08baedf
@@ -12,7 +12,7 @@ imports:
 - name: github.com/Knetic/govaluate
   version: 5598166b6fc09f038e53f628eec79f0c004a4299
 - name: github.com/labstack/cubex
-  version: e028f56c5b556b82af5bc2d072272f2efe7fd391
+  version: e7cc50247e4550335c4126cc4f149cdbecd29dfe
   subpackages:
   - go/cube
   - middleware/go/cube
@@ -47,7 +47,7 @@ imports:
   - acme
   - acme/autocert
 - name: golang.org/x/net
-  version: 007e530097ad7f954752df63046b4036f98ba6a6
+  version: 41bba8d80bbfab43231ffdf4c210037baae5f6a3
   subpackages:
   - context
   - context/ctxhttp
@@ -58,7 +58,7 @@ imports:
   - unix
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
@@ -66,6 +66,6 @@ testImports:
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  version: 4d4bfba8f1d1027c4fdbe371823030df51419987
   subpackages:
   - assert

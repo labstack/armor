@@ -53,9 +53,9 @@ func main() {
 	}
 
 	// Global flags
-	c := flag.String("c", "", "config file")
-	p := flag.String("p", "", "listen port")
-	v := flag.Bool("v", false, "print the version")
+	config := flag.String("c", "", "config file")
+	port := flag.String("p", "", "listen port")
+	version := flag.Bool("v", false, "print the version")
 
 	// daemon := flag.Bool("d", false, "run in daemon mode")
 	// -daemon
@@ -71,14 +71,13 @@ func main() {
 	// port := flag.String("p", "", "the port to bind to")
 	// directory?
 	flag.Parse()
-
-	if *v {
+	if *version {
 		color.Printf("armor %s\n", color.Red("v"+armor.Version))
 		os.Exit(0)
 	}
 
 	// Load config
-	data, err := ioutil.ReadFile(*c)
+	data, err := ioutil.ReadFile(*config)
 	if err != nil {
 		// Use default config
 		data = []byte(defaultConfig)
@@ -94,8 +93,8 @@ func main() {
 	}
 
 	// Flags should override
-	if *p != "" {
-		a.Address = net.JoinHostPort("", *p)
+	if *port != "" {
+		a.Address = net.JoinHostPort("", *port)
 	}
 
 	// Defaults

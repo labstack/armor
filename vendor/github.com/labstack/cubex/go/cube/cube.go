@@ -1,12 +1,12 @@
 package cube
 
 import (
-	"net"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 
-	"sync"
+	"sync/atomic"
 
 	"github.com/labstack/echo"
 	"github.com/mssola/user_agent"
@@ -14,49 +14,39 @@ import (
 
 type (
 	Cube struct {
-		uptime     time.Time
-		connState  map[string]http.ConnState
-		request    int64
-		bytesIn    int64
-		bytesOut   int64
-		latency    *Window
-		endpoint   map[string]int64
-		userAgent  map[string]int64
-		remoteIP   map[string]int64
-		status     map[int32]int64
-		windowSize int
-		mutex      sync.Mutex
-		Skipper    Skipper
-		Address    string            `json:"address"`
-		Tags       map[string]string `json:"tags"`
+		uptime        time.Time
+		request       int64
+		activeRequest int64
+		bytesIn       int64
+		bytesOut      int64
+		latency       *Window
+		endpoint      map[string]int64
+		userAgent     map[string]int64
+		remoteIP      map[string]int64
+		status        map[int32]int64
+		windowSize    int
+		mutex         sync.Mutex
+		Skipper       Skipper
+		Tags          map[string]string `json:"tags"`
 	}
 
 	Skipper func(r *http.Request) bool
 )
 
-func New(s *http.Server) (cube *Cube) {
-	cube = &Cube{
+func New() *Cube {
+	return &Cube{
 		uptime:    time.Now(),
-		connState: make(map[string]http.ConnState),
-		endpoint:  make(map[string]int64),
-		userAgent: make(map[string]int64),
-		remoteIP:  make(map[string]int64),
-		status:    make(map[int32]int64),
+		endpoint:  map[string]int64{},
+		userAgent: map[string]int64{},
+		remoteIP:  map[string]int64{},
+		status:    map[int32]int64{},
 		latency:   NewWindow(50),
 		Skipper: func(*http.Request) bool {
 			return false
 		},
 		windowSize: 50,
-		Tags:       make(map[string]string),
+		Tags:       map[string]string{},
 	}
-
-	s.ConnState = func(c net.Conn, cs http.ConnState) {
-		cube.mutex.Lock()
-		defer cube.mutex.Unlock()
-		cube.connState[c.RemoteAddr().String()] = cs
-	}
-
-	return
 }
 
 func (c *Cube) Middleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -68,12 +58,14 @@ func (c *Cube) Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 		req := ctx.Request()
 		res := ctx.Response()
 		start := time.Now()
+		atomic.AddInt64(&c.activeRequest, 1)
 		if err = next(ctx); err != nil {
 			ctx.Error(err)
 		}
+		atomic.AddInt64(&c.activeRequest, -1)
 		stop := time.Now()
 
-		// Update
+		// Update (Acquire lock post request to prevent a deadlock)
 		c.mutex.Lock()
 		defer c.mutex.Unlock()
 		c.request++
@@ -106,6 +98,7 @@ func (c *Cube) Data() (d *Data) {
 	d = &Data{
 		Uptime:         int64(time.Now().Sub(c.uptime).Seconds()),
 		Request:        c.request,
+		ActiveRequest:  c.activeRequest,
 		BytesIn:        c.bytesIn,
 		BytesOut:       c.bytesOut,
 		AverageLatency: c.latency.Mean(),
@@ -115,14 +108,6 @@ func (c *Cube) Data() (d *Data) {
 		Status:         c.status,
 		Tags:           c.Tags,
 	}
-	for _, s := range c.connState {
-		switch s {
-		case http.StateActive:
-			d.ActiveConnection++
-		case http.StateIdle:
-			d.IdleConnection++
-		}
-	}
 
 	// Reset data
 	c.reset()
@@ -131,13 +116,12 @@ func (c *Cube) Data() (d *Data) {
 }
 
 func (c *Cube) reset() {
-	c.connState = make(map[string]http.ConnState)
 	c.request = 0
 	c.bytesIn = 0
 	c.bytesOut = 0
 	c.latency = NewWindow(c.windowSize)
-	c.endpoint = make(map[string]int64)
-	c.userAgent = make(map[string]int64)
-	c.remoteIP = make(map[string]int64)
-	c.status = make(map[int32]int64)
+	c.endpoint = map[string]int64{}
+	c.userAgent = map[string]int64{}
+	c.remoteIP = map[string]int64{}
+	c.status = map[int32]int64{}
 }
