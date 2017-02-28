@@ -90,6 +90,11 @@ func (p *Proxy) Process(echo.HandlerFunc) echo.HandlerFunc {
 		// 	outReq.Header = req.Header
 		// 	p.Logger.Infof("proxy: out request, url=%v", outReq.URL)
 
+		// Tell upstream that the incoming request is https
+		if c.IsTLS() {
+			req.Header.Set(echo.HeaderXForwardedProto, "https")
+		}
+
 		if req.Header.Get(echo.HeaderUpgrade) == "websocket" {
 			p.wsProxy(t).ServeHTTP(res, req)
 		} else {
