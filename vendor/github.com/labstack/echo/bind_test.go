@@ -96,13 +96,15 @@ func TestBindJSON(t *testing.T) {
 func TestBindXML(t *testing.T) {
 	testBindOkay(t, strings.NewReader(userXML), MIMEApplicationXML)
 	testBindError(t, strings.NewReader(invalidContent), MIMEApplicationXML)
+	testBindOkay(t, strings.NewReader(userXML), MIMETextXML)
+	testBindError(t, strings.NewReader(invalidContent), MIMETextXML)
 }
 
 func TestBindForm(t *testing.T) {
 	testBindOkay(t, strings.NewReader(userForm), MIMEApplicationForm)
 	testBindError(t, nil, MIMEApplicationForm)
 	e := New()
-	req, _ := http.NewRequest(POST, "/", strings.NewReader(userForm))
+	req := httptest.NewRequest(POST, "/", strings.NewReader(userForm))
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	req.Header.Set(HeaderContentType, MIMEApplicationForm)
@@ -113,7 +115,7 @@ func TestBindForm(t *testing.T) {
 
 func TestBindQueryParams(t *testing.T) {
 	e := New()
-	req, _ := http.NewRequest(GET, "/?id=1&name=Jon Snow", nil)
+	req := httptest.NewRequest(GET, "/?id=1&name=Jon+Snow", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	u := new(user)
@@ -126,7 +128,7 @@ func TestBindQueryParams(t *testing.T) {
 
 func TestBindUnmarshalParam(t *testing.T) {
 	e := New()
-	req, _ := http.NewRequest(GET, "/?ts=2016-12-06T19:09:05Z&sa=one,two,three&ta=2016-12-06T19:09:05Z&ta=2016-12-06T19:09:05Z&ST=baz", nil)
+	req := httptest.NewRequest(GET, "/?ts=2016-12-06T19:09:05Z&sa=one,two,three&ta=2016-12-06T19:09:05Z&ta=2016-12-06T19:09:05Z&ST=baz", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	result := struct {
@@ -148,7 +150,7 @@ func TestBindUnmarshalParam(t *testing.T) {
 
 func TestBindUnmarshalParamPtr(t *testing.T) {
 	e := New()
-	req, _ := http.NewRequest(GET, "/?ts=2016-12-06T19:09:05Z", nil)
+	req := httptest.NewRequest(GET, "/?ts=2016-12-06T19:09:05Z", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	result := struct {
@@ -270,7 +272,7 @@ func assertBindTestStruct(t *testing.T, ts *bindTestStruct) {
 
 func testBindOkay(t *testing.T, r io.Reader, ctype string) {
 	e := New()
-	req, _ := http.NewRequest(POST, "/", r)
+	req := httptest.NewRequest(POST, "/", r)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	req.Header.Set(HeaderContentType, ctype)
@@ -284,7 +286,7 @@ func testBindOkay(t *testing.T, r io.Reader, ctype string) {
 
 func testBindError(t *testing.T, r io.Reader, ctype string) {
 	e := New()
-	req, _ := http.NewRequest(POST, "/", r)
+	req := httptest.NewRequest(POST, "/", r)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	req.Header.Set(HeaderContentType, ctype)
@@ -292,7 +294,7 @@ func testBindError(t *testing.T, r io.Reader, ctype string) {
 	err := c.Bind(u)
 
 	switch {
-	case strings.HasPrefix(ctype, MIMEApplicationJSON), strings.HasPrefix(ctype, MIMEApplicationXML),
+	case strings.HasPrefix(ctype, MIMEApplicationJSON), strings.HasPrefix(ctype, MIMEApplicationXML), strings.HasPrefix(ctype, MIMETextXML),
 		strings.HasPrefix(ctype, MIMEApplicationForm), strings.HasPrefix(ctype, MIMEMultipartForm):
 		if assert.IsType(t, new(HTTPError), err) {
 			assert.Equal(t, http.StatusBadRequest, err.(*HTTPError).Code)

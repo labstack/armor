@@ -9,25 +9,31 @@ import (
 	"sync/atomic"
 
 	"github.com/labstack/echo"
-	"github.com/mssola/user_agent"
+	"github.com/labstack/gommon/log"
 )
 
 type (
 	Cube struct {
-		uptime        time.Time
-		request       int64
-		activeRequest int64
-		bytesIn       int64
-		bytesOut      int64
-		latency       *Window
-		endpoint      map[string]int64
-		userAgent     map[string]int64
-		remoteIP      map[string]int64
-		status        map[int32]int64
-		windowSize    int
-		mutex         sync.Mutex
-		Skipper       Skipper
-		Tags          map[string]string `json:"tags"`
+		logger         *log.Logger
+		mutex          sync.RWMutex
+		activeRequests int64
+		requests       []*Request
+		Skipper        Skipper
+		CacheLimit     int
+	}
+
+	Request struct {
+		Time      int64  `json:"time"`
+		Path      string `json:"path"`
+		Method    string `json:"method"`
+		Active    int64  `json:"active"`
+		Status    int    `json:"status"`
+		BytesIn   int64  `json:"bytes_in"`
+		BytesOut  int64  `json:"bytes_out"`
+		Latency   int64  `json:"latency"`
+		ClientID  string `json:"client_id"`
+		RemoteIP  string `json:"remote_ip"`
+		UserAgent string `json:"user_agent"`
 	}
 
 	Skipper func(r *http.Request) bool
@@ -35,18 +41,16 @@ type (
 
 func New() *Cube {
 	return &Cube{
-		uptime:    time.Now(),
-		endpoint:  map[string]int64{},
-		userAgent: map[string]int64{},
-		remoteIP:  map[string]int64{},
-		status:    map[int32]int64{},
-		latency:   NewWindow(50),
 		Skipper: func(*http.Request) bool {
 			return false
 		},
-		windowSize: 50,
-		Tags:       map[string]string{},
 	}
+}
+
+func (c *Cube) reset() {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.requests = nil
 }
 
 func (c *Cube) Middleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -58,17 +62,18 @@ func (c *Cube) Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 		req := ctx.Request()
 		res := ctx.Response()
 		start := time.Now()
-		atomic.AddInt64(&c.activeRequest, 1)
+		r := &Request{
+			Time: time.Now().UnixNano(),
+		}
+		atomic.AddInt64(&c.activeRequests, 1)
 		if err = next(ctx); err != nil {
 			ctx.Error(err)
 		}
-		atomic.AddInt64(&c.activeRequest, -1)
+		atomic.AddInt64(&c.activeRequests, -1)
 		stop := time.Now()
-
-		// Update (Acquire lock post request to prevent a deadlock)
-		c.mutex.Lock()
-		defer c.mutex.Unlock()
-		c.request++
+		r.Path = req.URL.Path
+		r.Method = req.Method
+		r.Status = res.Status
 		cl := req.Header.Get(echo.HeaderContentLength)
 		if cl == "" {
 			cl = "0"
@@ -77,51 +82,29 @@ func (c *Cube) Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			ctx.Error(err)
 		}
-		c.bytesIn += l
-		c.bytesOut += res.Size
+		r.BytesIn = l
+		r.BytesOut = res.Size
 		l = int64(stop.Sub(start))
-		c.latency.Push(l)
-		c.endpoint[req.URL.Path]++
-		ua, _ := user_agent.New(req.UserAgent()).Browser()
-		c.userAgent[ua]++
-		c.remoteIP[ctx.RealIP()]++
-		c.status[int32(res.Status)]++
+		r.Latency = int64(stop.Sub(start))
+		r.UserAgent = req.UserAgent()
+		r.RemoteIP = ctx.RealIP()
+		r.ClientID = ctx.RealIP()
+
+		c.mutex.Lock()
+		defer c.mutex.Unlock()
+		c.requests = append(c.requests, r)
 
 		return
 	}
 }
 
-func (c *Cube) Data() (d *Data) {
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
-
-	d = &Data{
-		Uptime:         int64(time.Now().Sub(c.uptime).Seconds()),
-		Request:        c.request,
-		ActiveRequest:  c.activeRequest,
-		BytesIn:        c.bytesIn,
-		BytesOut:       c.bytesOut,
-		AverageLatency: c.latency.Mean(),
-		Endpoint:       c.endpoint,
-		UserAgent:      c.userAgent,
-		RemoteIP:       c.remoteIP,
-		Status:         c.status,
-		Tags:           c.Tags,
+func (c *Cube) Requests() []*Request {
+	c.mutex.RLock()
+	requests := make([]*Request, len(c.requests))
+	for i, r := range c.requests {
+		requests[i] = r
 	}
-
-	// Reset data
+	c.mutex.RUnlock()
 	c.reset()
-
-	return
-}
-
-func (c *Cube) reset() {
-	c.request = 0
-	c.bytesIn = 0
-	c.bytesOut = 0
-	c.latency = NewWindow(c.windowSize)
-	c.endpoint = map[string]int64{}
-	c.userAgent = map[string]int64{}
-	c.remoteIP = map[string]int64{}
-	c.status = map[int32]int64{}
+	return requests
 }

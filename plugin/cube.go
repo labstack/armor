@@ -27,7 +27,7 @@ func (c *Cube) Init() (err error) {
 		if ctx.Request().Header.Get("X-Cube-Key") != c.Key {
 			return echo.ErrUnauthorized
 		}
-		return ctx.JSON(http.StatusOK, m.Data())
+		return ctx.JSON(http.StatusOK, m.Requests())
 	})
 	return
 }

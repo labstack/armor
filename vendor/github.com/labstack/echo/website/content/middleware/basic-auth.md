@@ -41,6 +41,10 @@ BasicAuthConfig struct {
   // Validator is a function to validate BasicAuth credentials.
   // Required.
   Validator BasicAuthValidator
+
+  // Realm is a string to define realm attribute of BasicAuth.
+  // Default value "Restricted".
+  Realm string
 }
 ```
 
@@ -48,6 +52,6 @@ BasicAuthConfig struct {
 
 ```go
 DefaultBasicAuthConfig = BasicAuthConfig{
-	Skipper: defaultSkipper,
+	Skipper: DefaultSkipper,
 }
 ```

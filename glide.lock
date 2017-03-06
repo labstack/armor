@@ -1,59 +1,57 @@
 hash: 82603a512d69016a4f0374e3edb21f8fcd583cfd5d19b4fc57a4fd168ae40914
-updated: 2017-02-05T09:24:38.566064276-08:00
+updated: 2017-03-05T19:08:49.6201805-08:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: 2268707a8f0843315e2004ee4f1d021dc08baedf
 - name: github.com/fsnotify/fsnotify
-  version: a904159b9206978bb6d53fcc7a769e5cd726c737
+  version: 7d7316ed6e1ed2de075aab8dfc76de5d158d66e1
 - name: github.com/golang/protobuf
-  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
+  version: 69b215d01a5606c843240eab4937eab3acee6530
   subpackages:
   - proto
 - name: github.com/Knetic/govaluate
-  version: 5598166b6fc09f038e53f628eec79f0c004a4299
+  version: 4598e72a5762f7e683b840482a8bf9d19b1eb5e2
 - name: github.com/labstack/cubex
-  version: e7cc50247e4550335c4126cc4f149cdbecd29dfe
+  version: 8b9574e35cf1f9d41c88d9226a2462829f540548
   subpackages:
   - go/cube
   - middleware/go/cube
 - name: github.com/labstack/echo
-  version: a8b6864be328fcb5c2d96d32c75b750f84e0e4be
+  version: 6bb7747530796ae7152cc6f1ff74fd97ca52e71e
   subpackages:
   - middleware
 - name: github.com/labstack/gommon
-  version: f72d3c883f8ea180da8f085dd320804c41332ad1
+  version: e8995fb26e646187d33cff439b18609cfba23088
   subpackages:
   - bytes
   - color
   - log
   - random
 - name: github.com/mattn/go-colorable
-  version: d228849504861217f796da67fae4f6e347643f15
+  version: acb9493f2794fd0f820de7a27a217dafbb1b65ea
 - name: github.com/mattn/go-isatty
-  version: 30a891c33c7cde7b02a981314b4228ec99380cca
+  version: 9622e0cc9d8f9be434ca605520ff9a16808fee47
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/mitchellh/mapstructure
   version: db1efb556f84b25a0a13a04aad883943538ad2e0
-- name: github.com/mssola/user_agent
-  version: 07efe2b857fb8c02d2dd85c12d0145f58554ec7c
 - name: github.com/valyala/bytebufferpool
   version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - name: github.com/valyala/fasttemplate
-  version: d090d65668a286d9a180d43a19dfdc5dcad8fe88
+  version: dcecefd839c4193db0d35b88ec65b4c12d360ab0
 - name: golang.org/x/crypto
-  version: bed12803fa9663d7aa2c2346b0c634ad2dcd43b7
+  version: 40541ccb1c6e64c947ed6f606b8a6cb4b67d7436
   subpackages:
   - acme
   - acme/autocert
 - name: golang.org/x/net
-  version: 41bba8d80bbfab43231ffdf4c210037baae5f6a3
+  version: d379faa25cbdc04d653984913a2ceb43b0bc46d7
   subpackages:
   - context
   - context/ctxhttp
   - websocket
 - name: golang.org/x/sys
-  version: 7a6e5648d140666db5d920909e082ca00a87ba2c
+  version: e48874b42435b4347fc52bdee0424a52abc974d7
   subpackages:
   - unix
 testImports:

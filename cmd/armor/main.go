@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
-	slog "log"
+	stdLog "log"
 	"net"
 	"os"
 
@@ -46,7 +46,7 @@ func main() {
 	colorer := color.New()
 	logger.SetLevel(log.INFO)
 	colorer.SetOutput(logger.Output())
-	slog.SetOutput(logger.Output())
+	stdLog.SetOutput(logger.Output())
 	a := &armor.Armor{
 		Logger:  logger,
 		Colorer: colorer,
@@ -55,7 +55,7 @@ func main() {
 	// Global flags
 	config := flag.String("c", "", "config file")
 	port := flag.String("p", "", "listen port")
-	version := flag.Bool("v", false, "print the version")
+	version := flag.Bool("v", false, "armor version")
 
 	// daemon := flag.Bool("d", false, "run in daemon mode")
 	// -daemon

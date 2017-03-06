@@ -80,6 +80,18 @@ func TestParsingFailure(test *testing.T) {
 		},
 		ParsingFailureTest{
 
+			Name:     "Hanging REQ",
+			Input:    "'wat' =~",
+			Expected: UNEXPECTED_END,
+		},
+		ParsingFailureTest{
+
+			Name:     "Invalid operator change to REQ",
+			Input:    " / =~",
+			Expected: INVALID_TOKEN_TRANSITION,
+		},
+		ParsingFailureTest{
+
 			Name:     "Invalid starting token, comparator",
 			Input:    "> 10",
 			Expected: INVALID_TOKEN_TRANSITION,
@@ -112,6 +124,12 @@ func TestParsingFailure(test *testing.T) {
 
 			Name:     "Invalid operator transition",
 			Input:    "10 > < 10",
+			Expected: INVALID_TOKEN_TRANSITION,
+		},
+		ParsingFailureTest{
+
+			Name:     "Starting with unbalanced parens",
+			Input:    " ) ( arg2",
 			Expected: INVALID_TOKEN_TRANSITION,
 		},
 		ParsingFailureTest{
@@ -170,7 +188,7 @@ func runParsingFailureTests(parsingTests []ParsingFailureTest, test *testing.T) 
 		if !strings.Contains(err.Error(), testCase.Expected) {
 
 			test.Logf("Test '%s' failed", testCase.Name)
-			test.Logf("Got error: '%s', expected '%s'", testCase.Expected, err.Error())
+			test.Logf("Got error: '%s', expected '%s'", err.Error(), testCase.Expected)
 			test.Fail()
 			continue
 		}

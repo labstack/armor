@@ -1,9 +1,6 @@
-package: github.com/labstack/cubex/middleware/go
+package: github.com/labstack/cubex/go
 import:
 - package: github.com/labstack/echo
+- package: github.com/labstack/gommon
   subpackages:
-  - middleware
-- package: github.com/mssola/user_agent
-- package: github.com/gogo/protobuf
-  subpackages:
-  - proto
+  - log

@@ -177,14 +177,6 @@ func (h *HTTP) LoadPlugins() {
 				}
 				g.Use(p.Process)
 			}
-
-			// NOP handlers to trigger plugins
-			g.Any("", echo.NotFoundHandler)
-			if pn == "/" {
-				g.Any("*", echo.NotFoundHandler)
-			} else {
-				g.Any("/*", echo.NotFoundHandler)
-			}
 		}
 	}
 }
