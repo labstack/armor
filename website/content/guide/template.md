@@ -4,7 +4,6 @@ description = "Armor template"
 [menu.main]
   name = "Template"
   parent = "guide"
-  weight = 2
 +++
 
 Armor template can be used to form a string from variables derived from the HTTP request.

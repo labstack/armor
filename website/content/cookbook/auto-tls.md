@@ -4,7 +4,6 @@ description = "Automatic TLS (HTTPS) via Let’s Encrypt"
 [menu.main]
   name = "Auto TLS"
   parent = "cookbook"
-  weight = 1
 +++
 
 For demo purpose, I will use domain `test.lab.st` that serves a simple
