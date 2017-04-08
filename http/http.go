@@ -77,6 +77,9 @@ func (h *HTTP) StartTLS() error {
 	e := h.echo
 	s := e.TLSServer
 
+	// Enable HTTP/2
+	s.TLSConfig.NextProtos = append(s.TLSConfig.NextProtos, "h2")
+
 	if a.TLS.Auto {
 		hosts := []string{}
 		for host := range a.Hosts {

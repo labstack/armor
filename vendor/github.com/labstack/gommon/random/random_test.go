@@ -1,6 +1,7 @@
 package random
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,6 +10,5 @@ import (
 func Test(t *testing.T) {
 	assert.Len(t, String(32), 32)
 	r := New()
-	r.SetCharset(Numeric)
-	assert.Len(t, r.String(8), 8)
+	assert.Regexp(t, regexp.MustCompile("[0-9]+$"), r.String(8, Numeric))
 }

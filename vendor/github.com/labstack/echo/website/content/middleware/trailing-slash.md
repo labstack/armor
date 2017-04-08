@@ -4,7 +4,6 @@ description = "Trailing slash middleware for Echo"
 [menu.main]
   name = "Trailing Slash"
   parent = "middleware"
-  weight = 5
 +++
 
 ## Add Trailing Slash  
@@ -40,7 +39,7 @@ e.Use(middleware.AddTrailingSlashWithConfig(middleware.TrailingSlashConfig{
 }))
 ```
 
-Example above will add a trailing slash to the request URI and redirect with `308 - StatusMovedPermanently`.
+Example above will add a trailing slash to the request URI and redirect with `301 - StatusMovedPermanently`.
 
 ## Configuration
 

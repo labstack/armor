@@ -4,7 +4,6 @@ description = "Logger middleware for Echo"
 [menu.main]
   name = "Logger"
   parent = "middleware"
-  weight = 5
 +++
 
 Logger middleware logs the information about each HTTP request.
@@ -51,7 +50,7 @@ LoggerConfig struct {
   // - time_unix_nano
   // - time_rfc3339
   // - time_rfc3339_nano
-  // - id (Request ID - Not implemented)
+  // - id (Request ID)
   // - remote_ip
   // - uri
   // - host
@@ -84,7 +83,7 @@ LoggerConfig struct {
 ```go
 DefaultLoggerConfig = LoggerConfig{
   Skipper: DefaultSkipper,
-  Format: `{"time":"${time_rfc3339_nano}","remote_ip":"${remote_ip}","host":"${host}",` +
+  Format: `{"time":"${time_rfc3339_nano}","id":"${id}","remote_ip":"${remote_ip}","host":"${host}",` +
     `"method":"${method}","uri":"${uri}","status":${status}, "latency":${latency},` +
     `"latency_human":"${latency_human}","bytes_in":${bytes_in},` +
     `"bytes_out":${bytes_out}}` + "\n",
