@@ -1,6 +1,0 @@
-package: github.com/labstack/cubex/go
-import:
-- package: github.com/labstack/echo
-- package: github.com/labstack/gommon
-  subpackages:
-  - log

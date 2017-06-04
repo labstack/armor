@@ -2,8 +2,10 @@ package govaluate
 
 import (
 	"fmt"
+	"time"
 	"regexp"
 	"testing"
+	"errors"
 )
 
 /*
@@ -1226,6 +1228,50 @@ func TestParameterizedEvaluation(test *testing.T) {
 
 			Expected: "2awesome",
 		},
+		EvaluationTest{
+
+			Name:  "Short-circuit OR",
+			Input: "true || fail()",
+			Functions: map[string]ExpressionFunction{
+				"fail": func(arguments ...interface{}) (interface{}, error) {
+					return nil, errors.New("Did not short-circuit")
+				},
+			},
+			Expected: true,
+		},
+		EvaluationTest{
+
+			Name:  "Short-circuit AND",
+			Input: "false && fail()",
+			Functions: map[string]ExpressionFunction{
+				"fail": func(arguments ...interface{}) (interface{}, error) {
+					return nil, errors.New("Did not short-circuit")
+				},
+			},
+			Expected: false,
+		},
+		EvaluationTest{
+
+			Name:  "Short-circuit ternary",
+			Input: "true ? 1 : fail()",
+			Functions: map[string]ExpressionFunction{
+				"fail": func(arguments ...interface{}) (interface{}, error) {
+					return nil, errors.New("Did not short-circuit")
+				},
+			},
+			Expected: 1.0,
+		},
+		EvaluationTest{
+
+			Name:  "Short-circuit coalesce",
+			Input: "'foo' ?? fail()",
+			Functions: map[string]ExpressionFunction{
+				"fail": func(arguments ...interface{}) (interface{}, error) {
+					return nil, errors.New("Did not short-circuit")
+				},
+			},
+			Expected: "foo",
+		},
 	}
 
 	runEvaluationTests(evaluationTests, test)
@@ -1240,6 +1286,34 @@ func TestNilParameters(test *testing.T) {
 	_, err := expression.Evaluate(nil)
 
 	if err != nil {
+		test.Fail()
+	}
+}
+
+/*
+	Tests functionality related to using functions with a struct method receiver.
+	Created to test #54.
+*/
+func TestStructFunctions(test *testing.T) {
+
+	parseFormat := "2006"
+	y2k, _ := time.Parse(parseFormat, "2000")
+	y2k1, _ := time.Parse(parseFormat, "2001")
+
+	functions := map[string]ExpressionFunction {
+		"func1": func(args ...interface{}) (interface{}, error) {
+			return float64(y2k.Year()), nil
+		},
+		"func2": func(args ...interface{}) (interface{}, error) {
+			return float64(y2k1.Year()), nil
+		},
+	}
+
+	exp, _ := NewEvaluableExpressionWithFunctions("func1() + func2()", functions)
+	result, _ := exp.Evaluate(nil)
+
+	if result != 4001.0 {
+		test.Logf("Function calling method did not return the right value. Got: %v, expected %d\n", result, 4001)
 		test.Fail()
 	}
 }

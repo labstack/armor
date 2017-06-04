@@ -62,6 +62,8 @@ func lookup(base Base) (p Plugin) {
 		p = &BodyLimit{Base: base}
 	case "logger":
 		p = &Logger{Base: base}
+	case "cube":
+		p = &Cube{Base: base}
 	case "redirect":
 		p = &Redirect{Base: base}
 	case "https-redirect":
@@ -94,8 +96,6 @@ func lookup(base Base) (p Plugin) {
 		p = &File{Base: base}
 	case "nats":
 		// p = &NATS{Base: base}
-	case "cube":
-		p = &Cube{Base: base}
 	}
 	return
 }
