@@ -16,6 +16,7 @@ install:
 	go install cmd/armor/main.go
 
 push: build
-	docker push $(IMAGE)
+	docker push $(IMAGE):$(VERSION)
+	docker push $(IMAGE):latest
 
 .PHONY: clean build install push

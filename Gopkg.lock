@@ -28,8 +28,8 @@
 [[projects]]
   name = "github.com/labstack/cube"
   packages = ["go/cube"]
-  revision = "a1fabc5aa8d4ce411656236f0694cbf2fc50ab98"
-  version = "v0.0.3"
+  revision = "80845359aa26fa278235b9aad909c1132bb1a047"
+  version = "v0.0.2"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -101,7 +101,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["websocket"]
-  revision = "e4fa1c5465ad6111f206fc92186b8c83d64adbe1"
+  revision = "59a0b19b5533c7977ddeb86b017bf507ed407b12"
 
 [[projects]]
   branch = "master"
@@ -112,6 +112,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "484224b06b3e3b1ad82c2ac3275cc19eeaba5835ed832b778946bbee846ddc49"
+  inputs-digest = "d3da286e33fb4d15cbe21f1e72fe49f70c829de239d5ae7c328e1d738ec8bdd9"
   solver-name = "gps-cdcl"
   solver-version = 1

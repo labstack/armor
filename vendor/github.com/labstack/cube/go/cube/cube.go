@@ -103,8 +103,8 @@ func MiddlewareEcho(config Config) echo.MiddlewareFunc {
 	if config.BatchSize == 0 {
 		config.BatchSize = 60
 	}
-	if config.BatchSize == 0 {
-		config.BatchSize = 60
+	if config.BatchInterval == 0 {
+		config.BatchInterval = 60
 	}
 	if config.Skipper == nil {
 		config.Skipper = func(*http.Request) bool {

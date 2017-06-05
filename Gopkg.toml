@@ -76,7 +76,7 @@
 
 [[constraint]]
   name = "github.com/labstack/cube"
-  version = "0.0.3"
+  version = "0.0.2"
 
 [[constraint]]
   name = "github.com/labstack/echo"
