@@ -39,7 +39,7 @@ Type `armor` in your terminal
    ___
   / _ | ______ _  ___  ____
  / __ |/ __/  ' \/ _ \/ __/
-/_/ |_/_/ /_/_/_/\___/_/    v0.2.11
+/_/ |_/_/ /_/_/_/\___/_/    v0.2.12
 
 Uncomplicated, modern HTTP server
 https://armor.labstack.com
@@ -56,9 +56,9 @@ Armor can also be run as in a Docker:
 ```sh
 docker run \
   -p 8080:80 \
-  -v <config_file>:/etc/armor/config.json \
+  -v <config_file>:/etc/armor/config.yaml \
   -v <volume_to_mount>:/var/www \
-    labstack/armor -c /etc/armor/config.json
+    labstack/armor -c /etc/armor/config.yaml
 ```
 
 ### Command-line Flags

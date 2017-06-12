@@ -1,12 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"io/ioutil"
 	stdLog "log"
 	"net"
 	"os"
+
+	"github.com/go-yaml/yaml"
 
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/http"
@@ -28,16 +29,14 @@ Uncomplicated, modern HTTP server
 ________________________O/_______
                         O\
 `
-	defaultConfig = `{
-    "address": ":8080",
-    "plugins": [{
-			"name": "logger"
-		}, {
-			"name": "static",
-			"browse": true,
-			"root": "."
-		}]
-  }`
+	defaultConfig = `
+    address: ":8080"
+    plugins:
+    - name: logger
+    - name: static
+      browse: true
+      root: "."
+  `
 )
 
 func main() {
@@ -82,14 +81,8 @@ func main() {
 		// Use default config
 		data = []byte(defaultConfig)
 	}
-	if err = json.Unmarshal(data, a); err != nil {
-		if ute, ok := err.(*json.UnmarshalTypeError); ok {
-			logger.Fatalf("error parsing configuration file, type=type-error, expected=%v, got=%v, offset=%v", ute.Type, ute.Value, ute.Offset)
-		} else if se, ok := err.(*json.SyntaxError); ok {
-			logger.Fatalf("error parsing configuration file, type=syntax-error, offset=%v, error=%v", se.Offset, se.Error())
-		} else {
-			logger.Fatalf("error parsing configuration file, error=%v", err)
-		}
+	if err = yaml.Unmarshal(data, a); err != nil {
+		logger.Fatalf("armor: not able to parse the config file, error=%v", err)
 	}
 
 	// Flags should override

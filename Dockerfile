@@ -1,7 +1,7 @@
 FROM alpine:edge
 MAINTAINER Vishal Rana <vr@labstack.com>
 
-ENV VERSION 0.2.11
+ENV VERSION 0.2.12
 
 # https://letsencrypt.org
 RUN apk add --no-cache ca-certificates

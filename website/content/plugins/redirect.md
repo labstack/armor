@@ -22,12 +22,10 @@ Name | Type | Value | Description
 
 *Example*
 
-```js
-{
-  "name": "redirect",
-  "from": "/recipes*",
-  "to": "/cookbook${path:*}"
-}
+```yaml
+name: redirect
+from: "/recipes*"
+to: "/cookbook${path:*}"
 ```
 
 ## HTTPS Redirect

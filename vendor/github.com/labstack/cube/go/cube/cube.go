@@ -2,7 +2,6 @@ package cube
 
 import (
 	"bytes"
-	"errors"
 	"net/http"
 	"strconv"
 	"sync"
@@ -12,6 +11,10 @@ import (
 
 	"encoding/json"
 
+	"fmt"
+
+	"io/ioutil"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 )
@@ -20,6 +23,8 @@ type (
 	// Config defines the config for Cube middleware.
 	Config struct {
 		Skipper       Skipper
+		Node          string        `json:"node"`
+		Group         string        `json:"group"`
 		APIKey        string        `json:"api_key"`
 		BatchSize     int           `json:"batch_size"`
 		BatchInterval time.Duration `json:"batch_interval"`
@@ -38,6 +43,9 @@ type (
 	request struct {
 		ID             string    `json:"id"`
 		Time           time.Time `json:"time"`
+		Node           string    `json:"node"`
+		Group          string    `json:"group"`
+		Host           string    `json:"host"`
 		Path           string    `json:"path"`
 		Method         string    `json:"method"`
 		Status         int       `json:"status"`
@@ -48,7 +56,7 @@ type (
 		RemoteIP       string    `json:"remote_ip"`
 		UserAgent      string    `json:"user_agent"`
 		ActiveRequests int64     `json:"active_requests"`
-		// TODO: Node, CPU, Uptime, Memory
+		// TODO: CPU, Uptime, Memory
 	}
 
 	// Skipper defines a function to conditionally skip the middleware
@@ -58,6 +66,12 @@ type (
 const (
 	apiURL = "https://api.labstack.com/cube"
 )
+
+func (c *cube) resetRequests() {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.requests = make([]*request, 0, c.BatchSize)
+}
 
 func (c *cube) appendRequest(r *request) {
 	c.mutex.Lock()
@@ -70,10 +84,12 @@ func (c *cube) send() (err error) {
 		return
 	}
 
+	c.mutex.RLock()
 	buf := new(bytes.Buffer)
 	if err = json.NewEncoder(buf).Encode(c.requests); err != nil {
 		return
 	}
+	c.mutex.RUnlock()
 	req, err := http.NewRequest(echo.POST, apiURL, buf)
 	if err != nil {
 		return
@@ -86,14 +102,14 @@ func (c *cube) send() (err error) {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return errors.New("error sending requests")
+		body, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			body = []byte(err.Error())
+		}
+		return fmt.Errorf("cube: sending requests error=%s", body)
 	}
 
-	// Reset
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
-	c.requests = nil
-
+	c.resetRequests()
 	return
 }
 
@@ -117,10 +133,10 @@ func MiddlewareEcho(config Config) echo.MiddlewareFunc {
 		client: &http.Client{
 			Timeout: 20 * time.Second,
 		},
-		requests: make([]*request, 0, config.BatchSize),
-		logger:   log.New("cube"),
-		Config:   config,
+		logger: log.New("cube"),
+		Config: config,
 	}
+	c.resetRequests()
 	go func() {
 		for range time.Tick(config.BatchInterval * time.Second) {
 			c.send()
@@ -138,6 +154,9 @@ func MiddlewareEcho(config Config) echo.MiddlewareFunc {
 			start := time.Now()
 			r := &request{
 				Time:      time.Now(),
+				Node:      config.Node,
+				Group:     config.Group,
+				Host:      req.Host,
 				Path:      req.URL.Path,
 				Method:    req.Method,
 				UserAgent: req.UserAgent(),

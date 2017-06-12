@@ -20,6 +20,12 @@
   version = "v3.0.0"
 
 [[projects]]
+  branch = "v2"
+  name = "github.com/go-yaml/yaml"
+  packages = ["."]
+  revision = "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b"
+
+[[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
@@ -28,14 +34,14 @@
 [[projects]]
   name = "github.com/labstack/cube"
   packages = ["go/cube"]
-  revision = "80845359aa26fa278235b9aad909c1132bb1a047"
-  version = "v0.0.2"
+  revision = "d7cc6f2db3dee905d52ef4377cfc106fa324927f"
+  version = "v0.0.3"
 
 [[projects]]
+  branch = "master"
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
-  revision = "1049c9613cd371b7ea8f219404c9a821734781ed"
-  version = "v3.1.0"
+  revision = "3fafadf89554d7fbb4d04c075de4ca4fcf113c55"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -95,23 +101,17 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert"]
-  revision = "e1a4589e7d3ea14a3352255d04b6f1a418845e5e"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/net"
-  packages = ["websocket"]
-  revision = "59a0b19b5533c7977ddeb86b017bf507ed407b12"
+  revision = "e7ba82683099cae71475961448ab8f903ea77c26"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "b90f89a1e7a9c1f6b918820b3daa7f08488c8594"
+  revision = "0b25a408a50076fbbcae6b7ac0ea5fbb0b085e79"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d3da286e33fb4d15cbe21f1e72fe49f70c829de239d5ae7c328e1d738ec8bdd9"
+  inputs-digest = "9b45130bb0b912ce5df9a140af88dc7763d7b912daa70e01cd9f1abaf7a7431d"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -1,8 +1,4 @@
-# Website
-website/public
-
-# Glide
-vendor
-
 .DS_Store
+coverage.txt
 _test
+vendor

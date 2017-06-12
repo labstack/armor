@@ -71,16 +71,20 @@
   version = "3.0.0"
 
 [[constraint]]
+  branch = "v2"
+  name = "github.com/go-yaml/yaml"
+
+[[constraint]]
   branch = "master"
   name = "github.com/golang/protobuf"
 
 [[constraint]]
   name = "github.com/labstack/cube"
-  version = "0.0.2"
+  version = "0.0.3"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/labstack/echo"
-  version = "3.1.0"
 
 [[constraint]]
   name = "github.com/labstack/gommon"
@@ -105,7 +109,3 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
-
-[[constraint]]
-  branch = "master"
-  name = "golang.org/x/net"

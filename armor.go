@@ -10,41 +10,41 @@ import (
 
 type (
 	Armor struct {
-		Address      string           `json:"address"`
-		TLS          *TLS             `json:"tls"`
-		ReadTimeout  time.Duration    `json:"read_timeout"`
-		WriteTimeout time.Duration    `json:"write_timeout"`
-		Plugins      []Plugin         `json:"plugins"`
-		Hosts        map[string]*Host `json:"hosts"`
-		Logger       *log.Logger      `json:"-"`
-		Colorer      *color.Color     `json:"-"`
+		Address      string           `yaml:"address"`
+		TLS          *TLS             `yaml:"tls"`
+		ReadTimeout  time.Duration    `yaml:"read_timeout"`
+		WriteTimeout time.Duration    `yaml:"write_timeout"`
+		Plugins      []Plugin         `yaml:"plugins"`
+		Hosts        map[string]*Host `yaml:"hosts"`
+		Logger       *log.Logger      `yaml:"-"`
+		Colorer      *color.Color     `yaml:"-"`
 	}
 
 	TLS struct {
-		Address  string `json:"address"`
-		CertFile string `json:"cert_file"`
-		KeyFile  string `json:"key_file"`
-		Auto     bool   `json:"auto"`
-		CacheDir string `json:"cache_dir"`
+		Address  string `yaml:"address"`
+		CertFile string `yaml:"cert_file"`
+		KeyFile  string `yaml:"key_file"`
+		Auto     bool   `yaml:"auto"`
+		CacheDir string `yaml:"cache_dir"`
 	}
 
 	Host struct {
-		Name     string           `json:"-"`
-		CertFile string           `json:"cert_file"`
-		KeyFile  string           `json:"key_file"`
-		Plugins  []Plugin         `json:"plugins"`
-		Paths    map[string]*Path `json:"paths"`
-		Echo     *echo.Echo       `json:"-"`
+		Name     string           `yaml:"-"`
+		CertFile string           `yaml:"cert_file"`
+		KeyFile  string           `yaml:"key_file"`
+		Plugins  []Plugin         `yaml:"plugins"`
+		Paths    map[string]*Path `yaml:"paths"`
+		Echo     *echo.Echo       `yaml:"-"`
 	}
 
 	Path struct {
-		Plugins []Plugin `json:"plugins"`
+		Plugins []Plugin `yaml:"plugins"`
 	}
 
 	Plugin map[string]interface{}
 )
 
 const (
-	Version = "0.2.11"
+	Version = "0.2.12"
 	Website = "https://armor.labstack.com"
 )

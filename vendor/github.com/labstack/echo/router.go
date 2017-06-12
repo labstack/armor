@@ -7,7 +7,7 @@ type (
 	// request matching and URL path parameter parsing.
 	Router struct {
 		tree   *node
-		routes map[string]Route
+		routes map[string]*Route
 		echo   *Echo
 	}
 	node struct {
@@ -47,7 +47,7 @@ func NewRouter(e *Echo) *Router {
 		tree: &node{
 			methodHandler: new(methodHandler),
 		},
-		routes: map[string]Route{},
+		routes: map[string]*Route{},
 		echo:   e,
 	}
 }
@@ -101,7 +101,7 @@ func (r *Router) insert(method, path string, h HandlerFunc, t kind, ppath string
 
 	cn := r.tree // Current node as root
 	if cn == nil {
-		panic("echo ⇛ invalid method")
+		panic("echo: invalid method")
 	}
 	search := path
 

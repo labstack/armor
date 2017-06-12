@@ -31,13 +31,13 @@ const (
 )
 
 const userJSONPretty = `{
-	"id": 1,
-	"name": "Jon Snow"
+  "id": 1,
+  "name": "Jon Snow"
 }`
 
 const userXMLPretty = `<user>
-	<id>1</id>
-	<name>Jon Snow</name>
+  <id>1</id>
+  <name>Jon Snow</name>
 </user>`
 
 func TestEcho(t *testing.T) {
@@ -302,6 +302,17 @@ func TestEchoRoutes(t *testing.T) {
 			t.Errorf("Route %s : %s not found", r.Method, r.Path)
 		}
 	}
+}
+
+func TestEchoEncodedPath(t *testing.T) {
+	e := New()
+	e.GET("/:id", func(c Context) error {
+		return c.NoContent(http.StatusOK)
+	})
+	req := httptest.NewRequest(GET, "/with%2Fslash", nil)
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusOK, rec.Code)
 }
 
 func TestEchoGroup(t *testing.T) {

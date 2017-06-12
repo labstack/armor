@@ -6,8 +6,8 @@ description = "Armor configuration"
   parent = "guide"
 +++
 
-Armor accepts configuration in JSON format, command-line option `-c` can be used
-to specify a config file, e.g. `armor -c config.json`.
+Armor accepts configuration in YAML format, command-line option `-c` can be used
+to specify a config file, e.g. `armor -c config.yaml`.
 
 Name | Type | Description
 :--- | :--- | :----------
@@ -47,95 +47,68 @@ Name | Type | Description
 
 ## Default Configuration
 
-```js
-{
-	"address": ":8080",
-	"plugins": [{
-		"name": "logger"
-	}, {
-		"name": "static",
-		"browse": true,
-		"root": "."
-	}]
-}
+```yaml
+address: ":8080"
+plugins:
+- name: logger
+- name: static
+  browse: true
+  root: "."
 ```
 
 ## Sample Configuration
 
-  ```js
-{
-  "address": ":80",
-  "read_timeout": 1200,
-  "write_timeout": 1200,
-  "tls": {
-    "address": ":443",
-    "auto": true,
-    "cache_dir": "/pool/ingress/cache"
-  },
-  "plugins": [{
-    "name": "logger"
-  }, {
-    "name": "remove-trailing-slash",
-    "redirect_code": 301
-  }],
-  "hosts": {
-    "labstack.com": {
-      "paths": {
-        "/": {
-          "plugins": [{
-            "name": "static",
-            "root": "/var/www/web",
-            "html5": true
-          }]
-        }
-      }
-    },
-    "api.labstack.com": {
-      "paths": {
-        "/": {
-          "plugins": [{
-            "name": "cors"
-          }, {
-            "name": "proxy",
-            "targets": [{
-              "url": "http://api.ls"
-            }]
-          }]
-        }
-      }
-    },
-    "armor.labstack.com": {
-      "paths": {
-        "/": {
-          "plugins": [{
-            "name": "static",
-            "root": "/var/www/armor"
-          }]
-        }
-      }
-    },
-    "echo.labstack.com": {
-      "paths": {
-        "/": {
-          "plugins": [{
-            "name": "static",
-            "root": "/var/www/echo"
-          }]
-        }
-      }
-    },
-    "forum.labstack.com": {
-      "paths": {
-        "/": {
-          "plugins": [{
-            "name": "proxy",
-            "targets": [{
-              "url": "http://forum.ls"
-            }]
-          }]
-        }
-      }
-    }
-  }
-}
+```yaml
+address: ":80"
+read_timeout: 1200
+write_timeout: 1200
+tls:
+  address: ":443"
+  key_file: "/etc/armor/key.pem"
+  cert_file: "/etc/armor/cert.pem"
+plugins:
+- name: logger
+- name: cube
+  api_key: Y4mYFHJ7jbs1MtVpuGIFirtkvMm9wdJi
+- name: https-non-www-redirect
+- name: remove-trailing-slash
+  redirect_code: 301
+hosts:
+  labstack.com:
+    paths:
+      "/":
+        plugins:
+        - name: proxy
+          targets:
+          - url: http://web
+  api.labstack.com:
+    paths:
+      "/":
+        plugins:
+        - name: cors
+        - name: proxy
+          targets:
+          - url: http://api
+  armor.labstack.com:
+    paths:
+      "/":
+        plugins:
+        - name: static
+          root: "/var/www/armor"
+  echo.labstack.com:
+    paths:
+      "/":
+        plugins:
+        - name: static
+          root: "/var/www/echo"
+        - name: redirect
+          from: "/recipes*"
+          to: "/cookbook${path:*}"
+  forum.labstack.com:
+    paths:
+      "/":
+        plugins:
+        - name: proxy
+          targets:
+          - url: http://forum
 ```

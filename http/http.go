@@ -29,6 +29,7 @@ func Init(a *armor.Armor) (h *HTTP) {
 		logger: a.Logger,
 	}
 	e := h.echo
+	e.HideBanner = true
 	e.Server = &http.Server{
 		Addr:         a.Address,
 		ReadTimeout:  a.ReadTimeout * time.Second,
@@ -68,7 +69,9 @@ func Init(a *armor.Armor) (h *HTTP) {
 }
 
 func (h *HTTP) Start() error {
+	a := h.armor
 	e := h.echo
+	a.Colorer.Printf("⇨ http server started on %s\n", a.Colorer.Green(a.Address))
 	return e.StartServer(e.Server)
 }
 
@@ -129,6 +132,7 @@ func (h *HTTP) StartTLS() error {
 		return nil, nil // No certificate
 	}
 
+	a.Colorer.Printf("⇨ https server started on %s\n", a.Colorer.Green(a.TLS.Address))
 	return e.StartServer(s)
 }
 
