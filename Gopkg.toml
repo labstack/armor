@@ -79,8 +79,8 @@
   name = "github.com/golang/protobuf"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/labstack/cube"
-  version = "0.0.3"
 
 [[constraint]]
   branch = "master"

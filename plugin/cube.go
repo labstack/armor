@@ -1,7 +1,7 @@
 package plugin
 
 import (
-	"github.com/labstack/cube/go/cube"
+	"github.com/labstack/cube/echo"
 	"github.com/labstack/echo"
 )
 
