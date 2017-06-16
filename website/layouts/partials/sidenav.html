@@ -16,7 +16,7 @@
         {{ range where .Site.Menus.main "Identifier" .Type }}
           <h3>{{ .Pre }} {{ .Name }}</h3>
           {{ range .Children }}
-            <a{{ if $currentNode.IsMenuCurrent "main" . }} class="active"{{ end }} href="{{ .URL }}">
+            <a{{ if $currentNode.IsMenuCurrent "main" . }} class="active"{{ end }} href="{{ substr .URL 0 -1 }}">
               {{ .Name }}
             </a>
           {{ end }}
