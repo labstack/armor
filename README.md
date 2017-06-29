@@ -1,4 +1,9 @@
-# [Armor](https://armor.labstack.com) [![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/labstack/armor/master/LICENSE) [![Build Status](http://img.shields.io/travis/labstack/armor.svg?style=flat-square)](https://travis-ci.org/labstack/armor) [![Join the chat at https://gitter.im/labstack/armor](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg?style=flat-square)](https://gitter.im/labstack/armor) [![Twitter](https://img.shields.io/badge/twitter-@labstack-55acee.svg?style=flat-square)](https://twitter.com/labstack)
+<a href="https://armor.labstack.com"><img height="80" src="https://cdn.labstack.com/images/armor-logo.svg"></a>
+
+[![Build Status](http://img.shields.io/travis/labstack/armor.svg?style=flat-square)](https://travis-ci.org/labstack/armor)
+[![Forum](https://img.shields.io/badge/community-forum-00afd1.svg?style=flat-square)](https://forum.labstack.com)
+[![Twitter](https://img.shields.io/badge/twitter-@labstack-55acee.svg?style=flat-square)](https://twitter.com/labstack)
+[![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/labstack/armor/master/LICENSE)
 
 ## What can it do today?
 
