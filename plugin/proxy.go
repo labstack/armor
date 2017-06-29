@@ -44,7 +44,7 @@ func (p *Proxy) Init() (err error) {
 	}
 
 	// Need to be initialied in the end to reflect config changes.
-	p.Middleware = middleware.Proxy(p.ProxyConfig)
+	p.Middleware = middleware.ProxyWithConfig(p.ProxyConfig)
 	return
 }
 

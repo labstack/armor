@@ -22,13 +22,25 @@ import (
 type (
 	// Config defines the config for Cube middleware.
 	Config struct {
-		Skipper       Skipper
-		Node          string        `json:"node"`
-		Group         string        `json:"group"`
-		APIKey        string        `json:"api_key"`
-		BatchSize     int           `json:"batch_size"`
+		// Skipper defines a function to skip middleware.
+		Skipper Skipper
+
+		// Node name
+		Node string `json:"node"`
+
+		// Node group
+		Group string `json:"group"`
+
+		// LabStack API key
+		APIKey string `json:"api_key"`
+
+		// Number of requests in a batch
+		BatchSize int `json:"batch_size"`
+
+		// Interval in seconds to dispatch the batch
 		BatchInterval time.Duration `json:"batch_interval"`
-		ClientLookup  string        `json:"client_lookup"`
+
+		ClientLookup string `json:"client_lookup"`
 	}
 
 	cube struct {
@@ -65,6 +77,17 @@ type (
 
 const (
 	apiURL = "https://api.labstack.com/cube"
+)
+
+var (
+	// DefaultConfig is the default Cube middleware config.
+	DefaultConfig = Config{
+		Skipper: func(*http.Request) bool {
+			return false
+		},
+		BatchSize:     60,
+		BatchInterval: 60,
+	}
 )
 
 func (c *cube) resetRequests() {
@@ -113,19 +136,28 @@ func (c *cube) send() (err error) {
 	return
 }
 
-// MiddlewareEcho implements Cube middleware for Echo.
-func MiddlewareEcho(config Config) echo.MiddlewareFunc {
+// Middleware implements Cube middleware for Echo.
+func Middleware(apiKey string) echo.MiddlewareFunc {
+	c := DefaultConfig
+	c.APIKey = apiKey
+	return MiddlewareWithConfig(c)
+}
+
+// MiddlewareWithConfig returns a Cube middleware for Echo with config.
+// See: `Middleware()`.
+func MiddlewareWithConfig(config Config) echo.MiddlewareFunc {
 	// Defaults
-	if config.BatchSize == 0 {
-		config.BatchSize = 60
-	}
-	if config.BatchInterval == 0 {
-		config.BatchInterval = 60
+	if config.APIKey == "" {
+		panic("echo: cube middleware requires an api key")
 	}
 	if config.Skipper == nil {
-		config.Skipper = func(*http.Request) bool {
-			return false
-		}
+		config.Skipper = DefaultConfig.Skipper
+	}
+	if config.BatchSize == 0 {
+		config.BatchSize = DefaultConfig.BatchSize
+	}
+	if config.BatchInterval == 0 {
+		config.BatchInterval = DefaultConfig.BatchInterval
 	}
 
 	// Initialize
@@ -138,7 +170,8 @@ func MiddlewareEcho(config Config) echo.MiddlewareFunc {
 	}
 	c.resetRequests()
 	go func() {
-		for range time.Tick(config.BatchInterval * time.Second) {
+		d := time.Duration(config.BatchInterval) * time.Second
+		for range time.Tick(d) {
 			c.send()
 		}
 	}()

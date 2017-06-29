@@ -87,8 +87,8 @@
   name = "github.com/labstack/echo"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/labstack/gommon"
-  version = "0.2.1"
 
 [[constraint]]
   branch = "master"

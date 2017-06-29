@@ -13,7 +13,7 @@ type (
 )
 
 func (c *Cube) Init() (err error) {
-	c.Middleware = cube.MiddlewareEcho(c.Config)
+	c.Middleware = cube.MiddlewareWithConfig(c.Config)
 	return
 }
 

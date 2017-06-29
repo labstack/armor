@@ -48,7 +48,9 @@ func Init(a *armor.Armor) (h *HTTP) {
 	// Internal
 	e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			c.Response().Header().Set(echo.HeaderServer, "Armor/"+armor.Version)
+			c.Response().Before(func() {
+				c.Response().Header().Set(echo.HeaderServer, "armor/"+armor.Version)
+			})
 			return next(c)
 		}
 	})
