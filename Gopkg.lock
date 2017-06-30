@@ -35,7 +35,7 @@
   branch = "master"
   name = "github.com/labstack/cube"
   packages = ["echo"]
-  revision = "169c35b8dac431a06a5182579488f8601158e714"
+  revision = "75d0bfb13b02c2f5042e74e8a3f67919fbb5fea5"
 
 [[projects]]
   branch = "master"

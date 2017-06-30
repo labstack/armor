@@ -38,7 +38,7 @@ type (
 		BatchSize int `json:"batch_size"`
 
 		// Interval in seconds to dispatch the batch
-		BatchInterval time.Duration `json:"batch_interval"`
+		DispatchInterval time.Duration `json:"dispatch_interval"`
 
 		ClientLookup string `json:"client_lookup"`
 	}
@@ -85,8 +85,8 @@ var (
 		Skipper: func(*http.Request) bool {
 			return false
 		},
-		BatchSize:     60,
-		BatchInterval: 60,
+		BatchSize:        60,
+		DispatchInterval: 60,
 	}
 )
 
@@ -102,7 +102,7 @@ func (c *cube) appendRequest(r *request) {
 	c.requests = append(c.requests, r)
 }
 
-func (c *cube) send() (err error) {
+func (c *cube) dispatch() (err error) {
 	if len(c.requests) == 0 {
 		return
 	}
@@ -130,7 +130,7 @@ func (c *cube) send() (err error) {
 		if err != nil {
 			body = []byte(err.Error())
 		}
-		return fmt.Errorf("cube: requests sending error=%s", body)
+		return fmt.Errorf("cube: requests dispatching error=%s", body)
 	}
 
 	return
@@ -156,8 +156,8 @@ func MiddlewareWithConfig(config Config) echo.MiddlewareFunc {
 	if config.BatchSize == 0 {
 		config.BatchSize = DefaultConfig.BatchSize
 	}
-	if config.BatchInterval == 0 {
-		config.BatchInterval = DefaultConfig.BatchInterval
+	if config.DispatchInterval == 0 {
+		config.DispatchInterval = DefaultConfig.DispatchInterval
 	}
 
 	// Initialize
@@ -170,9 +170,9 @@ func MiddlewareWithConfig(config Config) echo.MiddlewareFunc {
 	}
 	c.resetRequests()
 	go func() {
-		d := time.Duration(config.BatchInterval) * time.Second
+		d := time.Duration(config.DispatchInterval) * time.Second
 		for range time.Tick(d) {
-			c.send()
+			c.dispatch()
 		}
 	}()
 
@@ -219,10 +219,10 @@ func MiddlewareWithConfig(config Config) echo.MiddlewareFunc {
 			l = int64(stop.Sub(start))
 			r.Latency = int64(stop.Sub(start))
 
-			// Send batch
+			// Dispatch batch
 			if len(c.requests) >= config.BatchSize {
 				go func() {
-					if err := c.send(); err != nil {
+					if err := c.dispatch(); err != nil {
 						c.logger.Error(err)
 					}
 				}()
