@@ -1,8 +1,8 @@
 package plugin
 
 import (
-	"github.com/labstack/cube/echo"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo-contrib/cube"
 )
 
 type (

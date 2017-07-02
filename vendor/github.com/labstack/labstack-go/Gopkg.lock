@@ -2,10 +2,16 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/labstack/echo"
+  name = "github.com/dghubble/sling"
   packages = ["."]
-  revision = "3fafadf89554d7fbb4d04c075de4ca4fcf113c55"
+  revision = "eb56e89ac5088bebb12eef3cb4b293300f43608b"
+  version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -16,8 +22,8 @@
 [[projects]]
   name = "github.com/mattn/go-colorable"
   packages = ["."]
-  revision = "d228849504861217f796da67fae4f6e347643f15"
-  version = "v0.0.7"
+  revision = "941b50ebc6efddf4c41c8e4537a5f68a4e686b24"
+  version = "v0.0.8"
 
 [[projects]]
   name = "github.com/mattn/go-isatty"
@@ -39,19 +45,13 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert"]
-  revision = "fea6c2c83557701d46ea1cc0ea4c8272632fa3bd"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "0b25a408a50076fbbcae6b7ac0ea5fbb0b085e79"
+  revision = "4ed4d404df456f81e878683a0363ed3013a59003"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9cbe4be86842ce815c5cdadcacba90ca812a0374ad370b61aa41615b02ab644c"
+  inputs-digest = "a0c53531fe80555a98671a9a8c3b9efd9f77a4b2e64da7263c269bf627134263"
   solver-name = "gps-cdcl"
   solver-version = 1

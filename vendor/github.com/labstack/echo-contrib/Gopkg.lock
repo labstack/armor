@@ -8,6 +8,12 @@
   version = "v3.0.0"
 
 [[projects]]
+  name = "github.com/casbin/casbin"
+  packages = [".","config","model","persist","rbac","util"]
+  revision = "27a24f1712c2b786be8b3fc996e0c513d35bae67"
+  version = "v0.8.0"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -26,34 +32,34 @@
   version = "v3.0.0"
 
 [[projects]]
-  branch = "v2"
-  name = "github.com/go-yaml/yaml"
-  packages = ["."]
-  revision = "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/golang/protobuf"
-  packages = ["proto"]
-  revision = "6a1fa9404c0aebf36c879bc50152edcc953910d2"
-
-[[projects]]
   branch = "master"
   name = "github.com/google/go-querystring"
   packages = ["query"]
   revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
 
 [[projects]]
+  name = "github.com/gorilla/context"
+  packages = ["."]
+  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
+  version = "v1.1"
+
+[[projects]]
+  name = "github.com/gorilla/securecookie"
+  packages = ["."]
+  revision = "667fe4e3466a040b780561fe9b51a83a3753eefc"
+  version = "v1.1"
+
+[[projects]]
+  name = "github.com/gorilla/sessions"
+  packages = ["."]
+  revision = "ca9ada44574153444b00d3fd9c8559e4cc95f896"
+  version = "v1.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
   revision = "ee85b46a0539c3a516dc68374d49eff8b04573de"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/labstack/echo-contrib"
-  packages = ["cube"]
-  revision = "76f965b699df550df5360c3aaa9f45a13d6fc89a"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -78,18 +84,6 @@
   packages = ["."]
   revision = "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
   version = "v0.0.2"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/mitchellh/go-homedir"
-  packages = ["."]
-  revision = "b8bc1bf767474819792c23f32d8286a45736f1c6"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/mitchellh/mapstructure"
-  packages = ["."]
-  revision = "d0303fe809921458f417bcf828397a65db30a7e4"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -130,6 +124,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7c09a4ae2f48a3bbd03921ce657c1c231d94eabf91d98581fa32a2957eadeb75"
+  inputs-digest = "c1dc2503c5f575851af55687e495f3752139b2b678e52e1f6fc8d1c4d6a103b2"
   solver-name = "gps-cdcl"
   solver-version = 1
