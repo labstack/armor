@@ -1,4 +1,4 @@
-<a href="https://armor.labstack.com"><img height="80" src="https://labstack.com/images/armor-logo.svg"></a>
+<a href="https://armor.labstack.com"><img height="80" src="https://cdn.labstack.com/images/armor-logo.svg"></a>
 
 [![Build Status](http://img.shields.io/travis/labstack/armor.svg?style=flat-square)](https://travis-ci.org/labstack/armor)
 [![Forum](https://img.shields.io/badge/community-forum-00afd1.svg?style=flat-square)](https://forum.labstack.com)
