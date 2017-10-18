@@ -31,7 +31,7 @@ be installed automatically.
 {
   "address": ":80",
   "tls": {
-    "address" ":443",
+    "address": ":443",
     "auto": true
   },
   "plugins": [{
@@ -39,7 +39,7 @@ be installed automatically.
   }],
   "hosts": {
     "test.lab.st": {
-      "paths" {
+      "paths": {
         "/": {
           "plugins": [{
             "name": "static",
