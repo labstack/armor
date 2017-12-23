@@ -11,26 +11,16 @@ import (
 type (
 	// Config defines the config for Cube middleware.
 	Config struct {
+		labstack.Cube
+
 		// Skipper defines a function to skip middleware.
 		Skipper middleware.Skipper
 
-		// Node name
-		Node string `json:"node"`
-
-		// Node group
-		Group string `json:"group"`
-
-		// LabStack API key
-		APIKey string `json:"api_key"`
-
 		// Number of requests in a batch
-		BatchSize int `json:"batch_size"`
+		BatchSize int
 
 		// Interval in seconds to dispatch the batch
-		DispatchInterval time.Duration `json:"dispatch_interval"`
-
-		// TODO: To be implemented
-		ClientLookup string `json:"client_lookup"`
+		DispatchInterval time.Duration
 	}
 )
 
@@ -44,8 +34,9 @@ var (
 )
 
 // Middleware implements Cube middleware.
-func Middleware(apiKey string) echo.MiddlewareFunc {
+func Middleware(accountID, apiKey string) echo.MiddlewareFunc {
 	c := DefaultConfig
+	c.AccountID = accountID
 	c.APIKey = apiKey
 	return MiddlewareWithConfig(c)
 }
@@ -68,9 +59,8 @@ func MiddlewareWithConfig(config Config) echo.MiddlewareFunc {
 	}
 
 	// Initialize
-	cube := labstack.NewClient(config.APIKey).Cube()
-	cube.Node = config.Node
-	cube.Group = config.Group
+	client := labstack.NewClient(config.AccountID, config.APIKey)
+	cube := client.Cube()
 	cube.APIKey = config.APIKey
 	cube.BatchSize = config.BatchSize
 	cube.DispatchInterval = config.DispatchInterval
@@ -81,12 +71,25 @@ func MiddlewareWithConfig(config Config) echo.MiddlewareFunc {
 			if config.Skipper(c) {
 				return next(c)
 			}
-			request := cube.Start(c.Request(), c.Response())
+
+			// Start
+			r := cube.Start(c.Request(), c.Response())
+
+			// Handle panic
+			defer func() {
+				// Recover
+				cube.Recover(recover(), r)
+
+				// Stop
+				cube.Stop(r, c.Response().Status, c.Response().Size)
+			}()
+
+			// Next
 			if err = next(c); err != nil {
 				c.Error(err)
 			}
-			cube.Stop(request, c.Response().Status, c.Response().Size)
-			return
+
+			return nil
 		}
 	}
 }

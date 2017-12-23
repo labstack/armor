@@ -3,6 +3,7 @@ package labstack
 import (
 	"fmt"
 	"net/http"
+	"runtime"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -13,19 +14,17 @@ import (
 )
 
 type (
-	// Cube defines the Cube service.
+	// Cube defines the LabStack cube service.
 	Cube struct {
 		sling          *sling.Sling
-		requests       []*Request
+		requests       []*CubeRequest
 		activeRequests int64
-		mutex          sync.RWMutex
+		started        int64
+		mutex          *sync.RWMutex
 		logger         *log.Logger
 
-		// Node name
-		Node string
-
-		// Node group
-		Group string
+		// LabStack Account ID
+		AccountID string
 
 		// LabStack API key
 		APIKey string
@@ -36,16 +35,18 @@ type (
 		// Interval in seconds to dispatch the batch
 		DispatchInterval time.Duration
 
+		// Additional tags
+		Tags []string `json:"tags"`
+
 		// TODO: To be implemented
 		ClientLookup string
 	}
 
-	// Request defines a request payload to be recorded.
-	Request struct {
+	// CubeRequest defines a request payload to be recorded.
+	CubeRequest struct {
+		recovered bool
 		ID        string    `json:"id"`
 		Time      time.Time `json:"time"`
-		Node      string    `json:"node"`
-		Group     string    `json:"group"`
 		Host      string    `json:"host"`
 		Path      string    `json:"path"`
 		Method    string    `json:"method"`
@@ -58,25 +59,35 @@ type (
 		UserAgent string    `json:"user_agent"`
 		Active    int64     `json:"active"`
 		// TODO: CPU, Uptime, Memory
+		Tags       []string `json:"tags"`
+		Language   string   `json:"language"`
+		Error      string   `json:"error"`
+		StackTrace string   `json:"stack_trace"`
+	}
+
+	// CubeError defines the cube error.
+	CubeError struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
 	}
 )
 
 func (c *Cube) resetRequests() {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	c.requests = make([]*Request, 0, c.BatchSize)
+	c.requests = make([]*CubeRequest, 0, c.BatchSize)
 }
 
-func (c *Cube) appendRequest(r *Request) {
+func (c *Cube) appendRequest(r *CubeRequest) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.requests = append(c.requests, r)
 }
 
-func (c *Cube) listRequests() []*Request {
+func (c *Cube) listRequests() []*CubeRequest {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	requests := make([]*Request, len(c.requests))
+	requests := make([]*CubeRequest, len(c.requests))
 	for i, r := range c.requests {
 		requests[i] = r
 	}
@@ -89,49 +100,46 @@ func (c *Cube) requestsLength() int {
 	return len(c.requests)
 }
 
-func (c *Cube) dispatch() (err error) {
+// dispatch dispatches the requests batch.
+func (c *Cube) dispatch() error {
 	if len(c.requests) == 0 {
-		return
+		return nil
 	}
-	res, err := c.sling.Post("/cube").BodyJSON(c.listRequests()).Receive(nil, nil)
-	if err != nil {
-		return
-	}
-	if res.StatusCode != http.StatusNoContent {
-		return fmt.Errorf("cube: requests dispatching error=%s", err)
-	}
-	return
-}
 
-// Cube returns the Cube service.
-func (c *Client) Cube() (cube *Cube) {
-	cube = &Cube{
-		sling:            c.sling.Path("/cube"),
-		logger:           log.New("cube"),
-		BatchSize:        60,
-		DispatchInterval: 60,
+	ce := new(CubeError)
+	_, err := c.sling.Post("").BodyJSON(c.listRequests()).Receive(nil, ce)
+	if err != nil {
+		return err
 	}
-	cube.resetRequests()
-	go func() {
-		d := time.Duration(cube.DispatchInterval) * time.Second
-		for range time.Tick(d) {
-			cube.dispatch()
-		}
-	}()
-	return
+	if ce.Code != 0 {
+		return ce
+	}
+
+	return nil
 }
 
 // Start starts recording an HTTP request.
-func (c *Cube) Start(r *http.Request, w http.ResponseWriter) (request *Request) {
-	request = &Request{
+func (c *Cube) Start(r *http.Request, w http.ResponseWriter) (request *CubeRequest) {
+	if c.started == 0 {
+		go func() {
+			d := time.Duration(c.DispatchInterval) * time.Second
+			for range time.Tick(d) {
+				c.dispatch()
+			}
+		}()
+		atomic.AddInt64(&c.started, 1)
+	}
+
+	request = &CubeRequest{
+		ID:        RequestID(r, w),
 		Time:      time.Now(),
-		Node:      c.Node,
-		Group:     c.Group,
 		Host:      r.Host,
 		Path:      r.URL.Path,
 		Method:    r.Method,
 		UserAgent: r.UserAgent(),
-		RemoteIP:  realIP(r),
+		RemoteIP:  RealIP(r),
+		Language:  "Go",
+		Tags:      c.Tags,
 	}
 	request.ClientID = request.RemoteIP
 	atomic.AddInt64(&c.activeRequests, 1)
@@ -149,15 +157,34 @@ func (c *Cube) Start(r *http.Request, w http.ResponseWriter) (request *Request) 
 	return
 }
 
+// Recover handles a panic
+func (c *Cube) Recover(r interface{}, cr *CubeRequest) {
+	if r == nil {
+		return
+	}
+	err, ok := r.(error)
+	if !ok {
+		err = fmt.Errorf("%v", r)
+	}
+	stack := make([]byte, 4<<10) // 4 KB
+	length := runtime.Stack(stack, false)
+	cr.Error = err.Error()
+	cr.StackTrace = string(stack[:length])
+	cr.recovered = true
+}
+
 // Stop stops recording an HTTP request.
-func (c *Cube) Stop(request *Request, status int, size int64) {
+func (c *Cube) Stop(r *CubeRequest, status int, size int64) {
+	if r.recovered {
+		status = http.StatusInternalServerError
+	}
 	atomic.AddInt64(&c.activeRequests, -1)
-	request.Status = status
-	request.BytesOut = size
-	request.Latency = int64(time.Now().Sub(request.Time))
+	r.Status = status
+	r.BytesOut = size
+	r.Latency = int64(time.Now().Sub(r.Time))
 
 	// Dispatch batch
-	if c.requestsLength() >= c.BatchSize {
+	if r.Status >= 500 && r.Status < 600 || c.requestsLength() >= c.BatchSize {
 		go func() {
 			if err := c.dispatch(); err != nil {
 				c.logger.Error(err)
@@ -165,4 +192,8 @@ func (c *Cube) Stop(request *Request, status int, size int64) {
 			c.resetRequests()
 		}()
 	}
+}
+
+func (e *CubeError) Error() string {
+	return fmt.Sprintf("cube error, code=%d, message=%s", e.Code, e.Message)
 }

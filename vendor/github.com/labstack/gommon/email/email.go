@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"html/template"
-	"mime/quotedprintable"
 	"net/mail"
 	"net/smtp"
 
@@ -24,15 +23,15 @@ type (
 	}
 
 	Message struct {
-		ID          string
-		From        string
-		To          string
-		CC          string
-		Subject     string
-		Text        string
-		HTML        string
-		Inlines     []*File
-		Attachments []*File
+		ID          string  `json:"id"`
+		From        string  `json:"from"`
+		To          string  `json:"to"`
+		CC          string  `json:"cc"`
+		Subject     string  `json:"subject"`
+		Text        string  `json:"text"`
+		HTML        string  `json:"html"`
+		Inlines     []*File `json:"inlines"`
+		Attachments []*File `json:"attachments"`
 		buffer      *bytes.Buffer
 		boundary    string
 	}
@@ -67,21 +66,20 @@ func (m *Message) writeBoundary() {
 func (m *Message) writeText(content string, contentType string) {
 	m.writeBoundary()
 	m.writeHeader("Content-Type", contentType+"; charset=UTF-8")
-	m.writeHeader("Content-Transfer-Encoding", "quoted-printable")
 	m.buffer.WriteString("\r\n")
-	qp := quotedprintable.NewWriter(m.buffer)
-	defer qp.Close()
-	qp.Write([]byte(content))
+	m.buffer.WriteString(content)
+	m.buffer.WriteString("\r\n")
 	m.buffer.WriteString("\r\n")
 }
 
 func (m *Message) writeFile(f *File, disposition string) {
 	m.writeBoundary()
-	m.writeHeader("Content-Type", f.Type+"; name="+f.Name)
-	m.writeHeader("Content-Disposition", disposition+"; filename="+f.Name)
+	m.writeHeader("Content-Type", f.Type+`; name="`+f.Name+`"`)
+	m.writeHeader("Content-Disposition", disposition+`; filename="`+f.Name+`"`)
 	m.writeHeader("Content-Transfer-Encoding", "base64")
 	m.buffer.WriteString("\r\n")
 	m.buffer.WriteString(f.Content)
+	m.buffer.WriteString("\r\n")
 	m.buffer.WriteString("\r\n")
 }
 
@@ -117,14 +115,14 @@ func (e *Email) Send(m *Message) (err error) {
 		// TODO:
 	}
 
-	// Attachments / inlines
+	// Inlines/attachments
 	for _, f := range m.Inlines {
 		m.writeFile(f, "inline")
 	}
 	for _, f := range m.Attachments {
-		m.writeFile(f, "disposition")
+		m.writeFile(f, "attachment")
 	}
-	m.buffer.WriteString("\r\n\r\n--")
+	m.buffer.WriteString("--")
 	m.buffer.WriteString(m.boundary)
 	m.buffer.WriteString("--")
 
