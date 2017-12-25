@@ -14,8 +14,9 @@ type (
 		TLS          *TLS             `yaml:"tls"`
 		ReadTimeout  time.Duration    `yaml:"read_timeout"`
 		WriteTimeout time.Duration    `yaml:"write_timeout"`
-		Plugins      []Plugin         `yaml:"plugins"`
+		RawPlugins   []RawPlugin      `yaml:"plugins"`
 		Hosts        map[string]*Host `yaml:"hosts"`
+		Plugins      []Plugin         `yaml:"-"`
 		Logger       *log.Logger      `yaml:"-"`
 		Colorer      *color.Color     `yaml:"-"`
 	}
@@ -29,19 +30,28 @@ type (
 	}
 
 	Host struct {
-		Name     string           `yaml:"-"`
-		CertFile string           `yaml:"cert_file"`
-		KeyFile  string           `yaml:"key_file"`
-		Plugins  []Plugin         `yaml:"plugins"`
-		Paths    map[string]*Path `yaml:"paths"`
-		Echo     *echo.Echo       `yaml:"-"`
+		Name       string           `yaml:"-"`
+		CertFile   string           `yaml:"cert_file"`
+		KeyFile    string           `yaml:"key_file"`
+		RawPlugins []RawPlugin      `yaml:"plugins"`
+		Paths      map[string]*Path `yaml:"paths"`
+		Plugins    []Plugin         `yaml:"-"`
+		Echo       *echo.Echo       `yaml:"-"`
 	}
 
 	Path struct {
-		Plugins []Plugin `yaml:"plugins"`
+		RawPlugins []RawPlugin `yaml:"plugins"`
+		Plugins    []Plugin    `yaml:"-"`
 	}
 
-	Plugin map[string]interface{}
+	RawPlugin map[string]interface{}
+
+	Plugin interface {
+		Name() string
+		Init() error
+		Process(echo.HandlerFunc) echo.HandlerFunc
+		Priority() int
+	}
 )
 
 const (

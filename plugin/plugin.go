@@ -16,13 +16,6 @@ import (
 )
 
 type (
-	Plugin interface {
-		Name() string
-		Init() error
-		Process(echo.HandlerFunc) echo.HandlerFunc
-		Priority() int
-	}
-
 	// Base defines the base struct for plugins.
 	Base struct {
 		name       string
@@ -56,7 +49,7 @@ func init() {
 }
 
 // lookup returns a plugin by name.
-func lookup(base Base) (p Plugin) {
+func lookup(base Base) (p armor.Plugin) {
 	switch base.Name() {
 	case "body-limit":
 		p = &BodyLimit{Base: base}
@@ -102,8 +95,8 @@ func lookup(base Base) (p Plugin) {
 
 // Decode searches the plugin by name, decodes the provided map into plugin and
 // calls Plugin#Init().
-func Decode(pi armor.Plugin, a *armor.Armor, e *echo.Echo) (p Plugin, err error) {
-	name := pi["name"].(string)
+func Decode(rp armor.RawPlugin, a *armor.Armor, e *echo.Echo) (p armor.Plugin, err error) {
+	name := rp["name"].(string)
 	base := Base{
 		name:   name,
 		Skip:   "false",
@@ -118,7 +111,7 @@ func Decode(pi armor.Plugin, a *armor.Armor, e *echo.Echo) (p Plugin, err error)
 		TagName: "json",
 		Result:  p,
 	})
-	if err = dec.Decode(pi); err != nil {
+	if err = dec.Decode(rp); err != nil {
 		return
 	}
 	return p, p.Init()

@@ -10,6 +10,7 @@ import (
 	"github.com/go-yaml/yaml"
 
 	"github.com/labstack/armor"
+	"github.com/labstack/armor/admin/api"
 	"github.com/labstack/armor/http"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
@@ -98,6 +99,9 @@ func main() {
 	// Initialize and load the plugins
 	h := http.Init(a)
 	h.LoadPlugins()
+
+	// Start admin
+	go api.Start(a)
 
 	// Start server - start
 	colorer.Printf(banner, colorer.Red("v"+armor.Version), colorer.Blue(armor.Website))

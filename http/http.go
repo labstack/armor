@@ -2,6 +2,7 @@ package http
 
 import (
 	"crypto/tls"
+	"net"
 	"net/http"
 	"path/filepath"
 	"time"
@@ -59,6 +60,7 @@ func Init(a *armor.Armor) (h *HTTP) {
 	e.Any("/*", func(c echo.Context) (err error) {
 		req := c.Request()
 		res := c.Response()
+		req.Host, _, _ = net.SplitHostPort(req.Host)
 		host := a.Hosts[req.Host]
 		if host == nil {
 			return echo.ErrNotFound
@@ -143,8 +145,8 @@ func (h *HTTP) LoadPlugins() {
 	e := h.echo
 
 	// Global plugins
-	for _, pi := range a.Plugins {
-		p, err := plugin.Decode(pi, a, e)
+	for _, rp := range a.RawPlugins {
+		p, err := plugin.Decode(rp, a, e)
 		if err != nil {
 			h.logger.Fatal(err)
 		}
@@ -153,6 +155,7 @@ func (h *HTTP) LoadPlugins() {
 		} else {
 			e.Use(p.Process)
 		}
+		a.Plugins = append(a.Plugins, p)
 	}
 
 	// Hosts
@@ -162,8 +165,8 @@ func (h *HTTP) LoadPlugins() {
 		host.Echo.Logger = a.Logger
 
 		// Host plugins
-		for _, pi := range host.Plugins {
-			p, err := plugin.Decode(pi, a, host.Echo)
+		for _, rp := range host.RawPlugins {
+			p, err := plugin.Decode(rp, a, host.Echo)
 			if err != nil {
 				h.logger.Error(err)
 			}
@@ -172,6 +175,7 @@ func (h *HTTP) LoadPlugins() {
 			} else {
 				host.Echo.Use(p.Process)
 			}
+			host.Plugins = append(host.Plugins, p)
 		}
 
 		// Paths
@@ -179,12 +183,13 @@ func (h *HTTP) LoadPlugins() {
 			g := host.Echo.Group(pn)
 
 			// Path plugins
-			for _, pi := range path.Plugins {
-				p, err := plugin.Decode(pi, a, host.Echo)
+			for _, rp := range path.RawPlugins {
+				p, err := plugin.Decode(rp, a, host.Echo)
 				if err != nil {
 					h.logger.Fatal(err)
 				}
 				g.Use(p.Process)
+				path.Plugins = append(path.Plugins, p)
 			}
 		}
 	}
