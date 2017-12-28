@@ -38,10 +38,6 @@
   branch = "master"
 
 [[constraint]]
-  name = "github.com/labstack/echo-contrib"
-  version = "0.4.0"
-
-[[constraint]]
   name = "github.com/labstack/gommon"
   version = "0.2.3"
 

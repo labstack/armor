@@ -55,9 +55,7 @@ func TestProxy(t *testing.T) {
 			URL: url2,
 		},
 	}
-	rb := &RandomBalancer{
-		Targets: targets,
-	}
+	rb := NewRandomBalancer(targets)
 
 	// Random
 	e := echo.New()
@@ -75,9 +73,7 @@ func TestProxy(t *testing.T) {
 	})
 
 	// Round-robin
-	rrb := &RoundRobinBalancer{
-		Targets: targets,
-	}
+	rrb := NewRoundRobinBalancer(targets)
 	e = echo.New()
 	e.Use(Proxy(rrb))
 	rec = newCloseNotifyRecorder()
@@ -88,4 +84,28 @@ func TestProxy(t *testing.T) {
 	e.ServeHTTP(rec, req)
 	body = rec.Body.String()
 	assert.Equal(t, "target 2", body)
+
+	// Rewrite
+	e = echo.New()
+	e.Use(ProxyWithConfig(ProxyConfig{
+		Balancer: rrb,
+		Rewrite: map[string]string{
+			"/old":              "/new",
+			"/api/*":            "/$1",
+			"/js/*":             "/public/javascripts/$1",
+			"/users/*/orders/*": "/user/$1/order/$2",
+		},
+	}))
+	req.URL.Path = "/api/users"
+	e.ServeHTTP(rec, req)
+	assert.Equal(t, "/users", req.URL.Path)
+	req.URL.Path = "/js/main.js"
+	e.ServeHTTP(rec, req)
+	assert.Equal(t, "/public/javascripts/main.js", req.URL.Path)
+	req.URL.Path = "/old"
+	e.ServeHTTP(rec, req)
+	assert.Equal(t, "/new", req.URL.Path)
+	req.URL.Path = "/users/jack/orders/1"
+	e.ServeHTTP(rec, req)
+	assert.Equal(t, "/user/jack/order/1", req.URL.Path)
 }

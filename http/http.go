@@ -2,13 +2,13 @@ package http
 
 import (
 	"crypto/tls"
-	"net"
 	"net/http"
 	"path/filepath"
 	"time"
 
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/plugin"
+	"github.com/labstack/armor/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	homedir "github.com/mitchellh/go-homedir"
@@ -24,12 +24,13 @@ type (
 )
 
 func Init(a *armor.Armor) (h *HTTP) {
+	e := echo.New()
+	a.Echo = e
 	h = &HTTP{
 		armor:  a,
-		echo:   echo.New(),
+		echo:   e,
 		logger: a.Logger,
 	}
-	e := h.echo
 	e.HideBanner = true
 	e.Server = &http.Server{
 		Addr:         a.Address,
@@ -60,8 +61,7 @@ func Init(a *armor.Armor) (h *HTTP) {
 	e.Any("/*", func(c echo.Context) (err error) {
 		req := c.Request()
 		res := c.Response()
-		req.Host, _, _ = net.SplitHostPort(req.Host)
-		host := a.Hosts[req.Host]
+		host := a.FindHost(util.StripPort(req.Host))
 		if host == nil {
 			return echo.ErrNotFound
 		}
@@ -150,19 +150,12 @@ func (h *HTTP) LoadPlugins() {
 		if err != nil {
 			h.logger.Fatal(err)
 		}
-		if p.Priority() < 0 {
-			e.Pre(p.Process)
-		} else {
-			e.Use(p.Process)
-		}
-		a.Plugins = append(a.Plugins, p)
+		a.AddPlugin(p)
 	}
 
 	// Hosts
-	for hn, host := range a.Hosts {
-		host.Name = hn
-		host.Echo = echo.New()
-		host.Echo.Logger = a.Logger
+	for name, host := range a.Hosts {
+		a.AddHost(name)
 
 		// Host plugins
 		for _, rp := range host.RawPlugins {
@@ -170,17 +163,12 @@ func (h *HTTP) LoadPlugins() {
 			if err != nil {
 				h.logger.Error(err)
 			}
-			if p.Priority() < 0 {
-				host.Echo.Pre(p.Process)
-			} else {
-				host.Echo.Use(p.Process)
-			}
-			host.Plugins = append(host.Plugins, p)
+			host.AddPlugin(p)
 		}
 
 		// Paths
-		for pn, path := range host.Paths {
-			g := host.Echo.Group(pn)
+		for name, path := range host.Paths {
+			host.AddPath(name)
 
 			// Path plugins
 			for _, rp := range path.RawPlugins {
@@ -188,8 +176,7 @@ func (h *HTTP) LoadPlugins() {
 				if err != nil {
 					h.logger.Fatal(err)
 				}
-				g.Use(p.Process)
-				path.Plugins = append(path.Plugins, p)
+				path.AddPlugin(p)
 			}
 		}
 	}

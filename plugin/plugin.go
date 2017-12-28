@@ -55,8 +55,6 @@ func lookup(base Base) (p armor.Plugin) {
 		p = &BodyLimit{Base: base}
 	case "logger":
 		p = &Logger{Base: base}
-	case "cube":
-		p = &Cube{Base: base}
 	case "redirect":
 		p = &Redirect{Base: base}
 	case "https-redirect":

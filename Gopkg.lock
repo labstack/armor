@@ -14,12 +14,6 @@
   version = "v1.1.0"
 
 [[projects]]
-  name = "github.com/dghubble/sling"
-  packages = ["."]
-  revision = "eb56e89ac5088bebb12eef3cb4b293300f43608b"
-  version = "v1.1.0"
-
-[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
@@ -39,33 +33,15 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/google/go-querystring"
-  packages = ["query"]
-  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
-
-[[projects]]
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
-  revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
-  version = "3.2.6"
-
-[[projects]]
-  name = "github.com/labstack/echo-contrib"
-  packages = ["cube"]
-  revision = "4036746d4b33517e42af3502522b759b0c99f44c"
-  version = "0.4.0"
+  revision = "da083ffd0a35ca933c6b315e51dc3c827dba5720"
 
 [[projects]]
   name = "github.com/labstack/gommon"
   packages = ["bytes","color","log","random"]
   revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
   version = "0.2.3"
-
-[[projects]]
-  name = "github.com/labstack/labstack-go"
-  packages = ["."]
-  revision = "1630ae83dd3c3ffa2bfd713699cf6064287f4ede"
-  version = "0.8.3"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -130,6 +106,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "40b81f3f73c1f09d78611e76f250d76b537836af023116e700fe7e4744ba5437"
+  inputs-digest = "028be4c0f82b14c1186e896bad0e853d5a980572ca8adf3821ed9b2a8e5ad730"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -27,7 +27,7 @@ func Start(a *armor.Armor) {
 	paths := hosts.Group("/paths/:path")
 
 	// Path plugins
-	pathPlugins := paths.Group("/plugins/:plugin")
+	pathPlugins := paths.Group("/plugins")
 	pathPlugins.POST("", h.addPlugin)
 	pathPlugins.GET("/:plugin", h.findPlugin)
 	pathPlugins.PUT("/:plugin", h.updatePlugin)
