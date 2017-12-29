@@ -1,7 +1,7 @@
 language: go
 go:
-    - 1.7.x
     - 1.8.x
+    - 1.9.x
     - tip
 install:
     - go get golang.org/x/tools/cmd/cover
@@ -9,6 +9,7 @@ install:
     - go get github.com/modocache/gover
 script:
     - go test -coverprofile=armor.coverprofile
+    - go test -coverprofile=http.coverprofile ./util
     - go test -coverprofile=http.coverprofile ./http
     - go test -coverprofile=plugin.coverprofile ./plugin
     - go test -coverprofile=cmd.coverprofile ./cmd/armor
