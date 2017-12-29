@@ -19,11 +19,11 @@ type (
 	// Base defines the base struct for plugins.
 	Base struct {
 		name       string
-		Skip       string              `json:"skip"`
-		Middleware echo.MiddlewareFunc `json:"-"`
-		Armor      *armor.Armor        `json:"-"`
-		Echo       *echo.Echo          `json:"-"`
-		Logger     *log.Logger         `json:"-"`
+		Skip       string              `yaml:"skip"`
+		Middleware echo.MiddlewareFunc `yaml:"-"`
+		Armor      *armor.Armor        `yaml:"-"`
+		Echo       *echo.Echo          `yaml:"-"`
+		Logger     *log.Logger         `yaml:"-"`
 	}
 
 	Template struct {
@@ -71,6 +71,8 @@ func lookup(base Base) (p armor.Plugin) {
 		p = &AddTrailingSlash{Base: base}
 	case "remove-trailing-slash":
 		p = &RemoveTrailingSlash{Base: base}
+	case "rewrite":
+		p = &Rewrite{Base: base}
 	case "secure":
 		p = &Secure{Base: base}
 	case "cors":

@@ -11,15 +11,15 @@ import (
 
 type (
 	Proxy struct {
-		Base                   `json:",squash"`
-		middleware.ProxyConfig `json:",squash"`
-		Balance                string    `json:"balance"`
-		Targets                []*Target `json:"targets"`
+		Base                   `yaml:",squash"`
+		middleware.ProxyConfig `yaml:",squash"`
+		Balance                string    `yaml:"balance"`
+		Targets                []*Target `yaml:"targets"`
 	}
 
 	Target struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
+		Name string `yaml:"name"`
+		URL  string `yaml:"url"`
 	}
 )
 

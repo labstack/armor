@@ -7,8 +7,8 @@ import (
 
 type (
 	BodyLimit struct {
-		Base                       `json:",squash"`
-		middleware.BodyLimitConfig `json:",squash"`
+		Base                       `yaml:",squash"`
+		middleware.BodyLimitConfig `yaml:",squash"`
 	}
 )
 

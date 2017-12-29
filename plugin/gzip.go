@@ -7,8 +7,8 @@ import (
 
 type (
 	Gzip struct {
-		Base                  `json:",squash"`
-		middleware.GzipConfig `json:",squash"`
+		Base                  `yaml:",squash"`
+		middleware.GzipConfig `yaml:",squash"`
 	}
 )
 

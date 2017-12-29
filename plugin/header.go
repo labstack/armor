@@ -6,10 +6,10 @@ import "github.com/labstack/echo"
 
 type (
 	Header struct {
-		Base `json:",squash"`
-		Set  map[string]string `json:"set"`
-		Add  map[string]string `json:"add"`
-		Del  []string          `json:"del"`
+		Base `yaml:",squash"`
+		Set  map[string]string `yaml:"set"`
+		Add  map[string]string `yaml:"add"`
+		Del  []string          `yaml:"del"`
 	}
 )
 

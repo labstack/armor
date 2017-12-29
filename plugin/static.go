@@ -7,8 +7,8 @@ import (
 
 type (
 	Static struct {
-		Base                    `json:",squash"`
-		middleware.StaticConfig `json:",squash"`
+		Base                    `yaml:",squash"`
+		middleware.StaticConfig `yaml:",squash"`
 	}
 )
 

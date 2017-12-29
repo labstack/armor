@@ -7,8 +7,8 @@ import (
 
 type (
 	Logger struct {
-		middleware.LoggerConfig `json:",squash"`
-		Base                    `json:",squash"`
+		middleware.LoggerConfig `yaml:",squash"`
+		Base                    `yaml:",squash"`
 	}
 )
 

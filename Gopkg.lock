@@ -35,7 +35,7 @@
   branch = "master"
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
-  revision = "da083ffd0a35ca933c6b315e51dc3c827dba5720"
+  revision = "c8bedd1cf928bcd4315f771319d3063746066c11"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -95,7 +95,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert"]
-  revision = "d585fd2cc9195196078f516b69daff6744ef5e84"
+  revision = "95a4943f35d008beabde8c11e5075a1b714e6419"
 
 [[projects]]
   branch = "master"

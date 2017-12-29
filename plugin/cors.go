@@ -7,8 +7,8 @@ import (
 
 type (
 	CORS struct {
-		Base                  `json:",squash"`
-		middleware.CORSConfig `json:",squash"`
+		Base                  `yaml:",squash"`
+		middleware.CORSConfig `yaml:",squash"`
 	}
 )
 

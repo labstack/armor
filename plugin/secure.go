@@ -7,12 +7,13 @@ import (
 
 type (
 	Secure struct {
-		Base                    `json:",squash"`
-		middleware.SecureConfig `json:",squash"`
+		Base                    `yaml:",squash"`
+		middleware.SecureConfig `yaml:",squash"`
 	}
 )
 
-func (*Secure) Init() (err error) {
+func (s *Secure) Init() (err error) {
+	s.Middleware = middleware.SecureWithConfig(s.SecureConfig)
 	return
 }
 

@@ -7,13 +7,13 @@ import (
 
 type (
 	AddTrailingSlash struct {
-		Base                           `json:",squash"`
-		middleware.TrailingSlashConfig `json:",squash"`
+		Base                           `yaml:",squash"`
+		middleware.TrailingSlashConfig `yaml:",squash"`
 	}
 
 	RemoveTrailingSlash struct {
-		Base                           `json:",squash"`
-		middleware.TrailingSlashConfig `json:",squash"`
+		Base                           `yaml:",squash"`
+		middleware.TrailingSlashConfig `yaml:",squash"`
 	}
 )
 

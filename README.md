@@ -29,6 +29,7 @@
  - http to https non www
  - non www to www
  - www to non www
+- URL path rewrite
 
 Most of the functionality is implemented via `Plugin` interface which makes writing
 a custom plugin super easy.

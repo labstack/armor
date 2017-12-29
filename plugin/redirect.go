@@ -9,35 +9,35 @@ import (
 
 type (
 	Redirect struct {
-		Base `json:",squash"`
-		From string `json:"from"`
-		To   string `json:"to"`
-		Code int    `json:"code"`
+		Base `yaml:",squash"`
+		From string `yaml:"from"`
+		To   string `yaml:"to"`
+		Code int    `yaml:"code"`
 	}
 
 	HTTPSRedirect struct {
-		Base                      `json:",squash"`
-		middleware.RedirectConfig `json:",squash"`
+		Base                      `yaml:",squash"`
+		middleware.RedirectConfig `yaml:",squash"`
 	}
 
 	HTTPSWWWRedirect struct {
-		Base                      `json:",squash"`
-		middleware.RedirectConfig `json:",squash"`
+		Base                      `yaml:",squash"`
+		middleware.RedirectConfig `yaml:",squash"`
 	}
 
 	HTTPSNonWWWRedirect struct {
-		Base                      `json:",squash"`
-		middleware.RedirectConfig `json:",squash"`
+		Base                      `yaml:",squash"`
+		middleware.RedirectConfig `yaml:",squash"`
 	}
 
 	WWWRedirect struct {
-		Base                      `json:",squash"`
-		middleware.RedirectConfig `json:",squash"`
+		Base                      `yaml:",squash"`
+		middleware.RedirectConfig `yaml:",squash"`
 	}
 
 	NonWWWRedirect struct {
-		Base                      `json:",squash"`
-		middleware.RedirectConfig `json:",squash"`
+		Base                      `yaml:",squash"`
+		middleware.RedirectConfig `yaml:",squash"`
 	}
 )
 

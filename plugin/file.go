@@ -4,8 +4,8 @@ import "github.com/labstack/echo"
 
 type (
 	File struct {
-		Base `json:",squash"`
-		Path string `json:"path"`
+		Base `yaml:",squash"`
+		Path string `yaml:"path"`
 	}
 )
 
