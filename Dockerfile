@@ -1,12 +1,21 @@
-FROM alpine:edge
+# Build image
+FROM golang:alpine AS builder
 MAINTAINER Vishal Rana <vr@labstack.com>
 
-ENV VERSION 0.3.6
+COPY . /go/src/github.com/labstack/armor
 
-# https://letsencrypt.org
-RUN apk add --no-cache ca-certificates
+WORKDIR /go/src/github.com/labstack/armor
 
-# TODO: version variable
-COPY build/armor-${VERSION}_linux-64 /usr/local/bin/armor
+RUN set -x \
+    && export CGO_ENABLED=0 \
+    && go build -v -o /go/bin/armor cmd/armor/main.go
 
-ENTRYPOINT ["armor"]
+# Executable image
+FROM scratch
+
+WORKDIR /
+
+COPY --from=builder /go/bin/armor /armor
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+ENTRYPOINT ["/armor"]

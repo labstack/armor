@@ -1,2 +1,5 @@
-vendor
-website
+Dockerfile
+*_test.go
+**/*_test.go
+*.md
+**/*.md
