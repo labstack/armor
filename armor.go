@@ -66,7 +66,7 @@ type (
 )
 
 const (
-	Version = "0.3.6"
+	Version = "0.3.7"
 	Website = "https://armor.labstack.com"
 )
 

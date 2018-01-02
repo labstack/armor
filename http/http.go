@@ -32,6 +32,7 @@ func Init(a *armor.Armor) (h *HTTP) {
 		logger: a.Logger,
 	}
 	e.HideBanner = true
+	e.HidePort = true
 	e.Server = &http.Server{
 		Addr:         a.Address,
 		ReadTimeout:  a.ReadTimeout * time.Second,
