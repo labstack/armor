@@ -1,5 +1,5 @@
 IMAGE = labstack/armor
-VERSION = 0.3.6
+VERSION = 0.3.7
 
 clean:
 	rm -rf build

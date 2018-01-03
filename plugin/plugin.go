@@ -108,7 +108,7 @@ func Decode(rp armor.RawPlugin, a *armor.Armor, e *echo.Echo) (p armor.Plugin, e
 		return p, fmt.Errorf("plugin=%s not found", name)
 	}
 	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
-		TagName: "json",
+		TagName: "yaml",
 		Result:  p,
 	})
 	if err = dec.Decode(rp); err != nil {
