@@ -14,6 +14,6 @@ Add/remove HTTP response header
 Name | Type | Value | Description
 :--- | :--- | :--- | :----------
 `name` | string | `header` | Plugin name
-`set` | string | | Set header
-`add` | string | | Add header
-`del` | string | | Delete header
+`set` | map | | Set header
+`add` | map | | Add header
+`del` | array | | Delete header
