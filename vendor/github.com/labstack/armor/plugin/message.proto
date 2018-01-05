@@ -1,0 +1,7 @@
+syntax = "proto3";
+package plugin;
+
+message Message {
+  string externalId = 1;
+  bytes body = 2;
+}

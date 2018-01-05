@@ -23,13 +23,19 @@
   branch = "v2"
   name = "github.com/go-yaml/yaml"
   packages = ["."]
-  revision = "287cf08546ab5e7e37d55a84f7ed3fd1db036de5"
+  revision = "0e4404da71227dcc02fb1deee803d93e86d08f72"
 
 [[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
+
+[[projects]]
+  name = "github.com/labstack/armor"
+  packages = [".","http","plugin","util"]
+  revision = "771ad332f7a047af5904db303244cf222eba2196"
+  version = "0.3.7"
 
 [[projects]]
   branch = "master"
@@ -76,8 +82,8 @@
 [[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
-  version = "v1.1.4"
+  revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -95,17 +101,17 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert"]
-  revision = "95a4943f35d008beabde8c11e5075a1b714e6419"
+  revision = "0fcca4842a8d74bfddc2c96a073bd2a4d2a7a2e8"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "83801418e1b59fb1880e363299581ee543af32ca"
+  revision = "a3f2cbd54cf5dfe3fbaccf76375fdb12f67654c8"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "028be4c0f82b14c1186e896bad0e853d5a980572ca8adf3821ed9b2a8e5ad730"
+  inputs-digest = "a11264f11e0a381cc3572a22862da013a2ffe8bc4b447744d7d7531d692adf65"
   solver-name = "gps-cdcl"
   solver-version = 1
