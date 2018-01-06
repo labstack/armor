@@ -1,5 +1,2 @@
-Dockerfile
-*_test.go
-**/*_test.go
-*.md
-**/*.md
+vendor
+website
