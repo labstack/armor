@@ -1,4 +1,3 @@
-# Build image
 FROM  alpine:3.7
 MAINTAINER Vishal Rana <vr@labstack.com>
 
