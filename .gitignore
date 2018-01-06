@@ -1,4 +1,2 @@
-.DS_Store
-build
-website/public
-_test
+vendor
+website
