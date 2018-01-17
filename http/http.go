@@ -25,6 +25,9 @@ type (
 
 func Init(a *armor.Armor) (h *HTTP) {
 	e := echo.New()
+	// To get some info, when cert expire for example
+	e.AutoTLSManager.Email = a.TLS.Email
+
 	a.Echo = e
 	h = &HTTP{
 		armor:  a,

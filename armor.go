@@ -30,6 +30,7 @@ type (
 		KeyFile  string `yaml:"key_file"`
 		Auto     bool   `yaml:"auto"`
 		CacheDir string `yaml:"cache_dir"`
+		Email    string `yaml:"email"`
 	}
 
 	Host struct {
