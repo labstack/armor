@@ -27,6 +27,7 @@ Name | Type | Description
 `key_file` | string | Key file
 `auto` | bool | Enable automatic certificates from https://letsencrypt.org
 `cache_dir` | string | Cache directory to store certificates from https://letsencrypt.org. Default value `~/.armor/cache`.
+`email` | string | Email optionally specifies a contact email address.
 
 `hosts`
 
