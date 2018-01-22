@@ -10,6 +10,8 @@ import (
 	"github.com/go-yaml/yaml"
 
 	"github.com/labstack/armor"
+	"github.com/labstack/armor/admin"
+	"github.com/labstack/armor/cluster"
 	"github.com/labstack/armor/http"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
@@ -100,7 +102,14 @@ func main() {
 	h.LoadPlugins()
 
 	// Start admin
-	// go api.Start(a)
+	if a.Admin != nil {
+		go admin.Start(a)
+	}
+
+	// Start cluster
+	if a.Cluster != nil {
+		go cluster.Start(a)
+	}
 
 	// Start server - start
 	colorer.Printf(banner, colorer.Red("v"+armor.Version), colorer.Blue(armor.Website))

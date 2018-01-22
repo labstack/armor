@@ -60,3 +60,11 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
+
+[[constraint]]
+  name = "github.com/coreos/etcd"
+  version = "3.2.14"
+
+[[constraint]]
+  name = "github.com/hashicorp/serf"
+  version = "0.7.0"

@@ -4,6 +4,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/hashicorp/serf/serf"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
@@ -12,8 +14,12 @@ import (
 type (
 	Armor struct {
 		mutex        sync.RWMutex
+		Name         string        `yaml:"name"`
 		Address      string        `yaml:"address"`
 		TLS          *TLS          `yaml:"tls"`
+		Admin        *Admin        `yaml:"admin"`
+		Cockroach    *Cockroach    `yaml:"cockroach"`
+		Cluster      *Cluster      `yaml:"cluster"`
 		ReadTimeout  time.Duration `yaml:"read_timeout"`
 		WriteTimeout time.Duration `yaml:"write_timeout"`
 		RawPlugins   []RawPlugin   `yaml:"plugins"`
@@ -31,6 +37,20 @@ type (
 		Auto     bool   `yaml:"auto"`
 		CacheDir string `yaml:"cache_dir"`
 		Email    string `yaml:"email"`
+	}
+
+	Admin struct {
+		Address string `yaml:"address"`
+	}
+
+	Cockroach struct {
+		URI string `yaml:"uri"`
+	}
+
+	Cluster struct {
+		Address string   `yaml:"address"`
+		Peers   []string `yaml:"peers"`
+		Serf    *serf.Serf
 	}
 
 	Host struct {
