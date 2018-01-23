@@ -11,6 +11,7 @@ import (
 type (
 	handler struct {
 		armor *armor.Armor
+		store armor.Store
 	}
 
 	Node struct {
@@ -23,10 +24,10 @@ func (h *handler) getPath(c echo.Context) string {
 }
 
 func (h *handler) nodes(c echo.Context) error {
-	serf := h.armor.Cluster.Serf
+	cluster := h.armor.Cluster
 	nodes := []*Node{}
 
-	for _, m := range serf.Members() {
+	for _, m := range cluster.Members() {
 		nodes = append(nodes, &Node{
 			Name: m.Name,
 		})
@@ -85,6 +86,9 @@ func (h *handler) addPlugin(c echo.Context) (err error) {
 		}
 		p, err := plugin.Decode(rawPlugin, h.armor, host.Echo)
 		if err != nil {
+			return err
+		}
+		if err = h.store.AddPlugin(rawPlugin); err != nil {
 			return err
 		}
 		path.AddPlugin(p)

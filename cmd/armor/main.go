@@ -13,6 +13,7 @@ import (
 	"github.com/labstack/armor/admin"
 	"github.com/labstack/armor/cluster"
 	"github.com/labstack/armor/http"
+	"github.com/labstack/armor/store"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
 )
@@ -100,6 +101,11 @@ func main() {
 	// Initialize and load the plugins
 	h := http.Init(a)
 	h.LoadPlugins()
+
+	a.Store, err = store.New(a)
+	if err != nil {
+		logger.Fatal(err)
+	}
 
 	// Start admin
 	if a.Admin != nil {

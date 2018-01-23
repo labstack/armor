@@ -18,7 +18,8 @@ type (
 		Address      string        `yaml:"address"`
 		TLS          *TLS          `yaml:"tls"`
 		Admin        *Admin        `yaml:"admin"`
-		Cockroach    *Cockroach    `yaml:"cockroach"`
+		Store        Store         `yaml:"-"`
+		Postgres     *Postgres     `yaml:"postgres"`
 		Cluster      *Cluster      `yaml:"cluster"`
 		ReadTimeout  time.Duration `yaml:"read_timeout"`
 		WriteTimeout time.Duration `yaml:"write_timeout"`
@@ -43,14 +44,18 @@ type (
 		Address string `yaml:"address"`
 	}
 
-	Cockroach struct {
+	Store interface {
+		AddPlugin(RawPlugin) error
+	}
+
+	Postgres struct {
 		URI string `yaml:"uri"`
 	}
 
 	Cluster struct {
+		*serf.Serf
 		Address string   `yaml:"address"`
 		Peers   []string `yaml:"peers"`
-		Serf    *serf.Serf
 	}
 
 	Host struct {

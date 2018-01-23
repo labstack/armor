@@ -3,16 +3,15 @@ package admin
 import (
 	"github.com/labstack/armor"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 )
 
 func Start(a *armor.Armor) {
 	e := echo.New()
 	e.HideBanner = true
-	e.Use(middleware.BasicAuth(func(usr, pwd string, _ echo.Context) (bool, error) {
-		return usr == "admin" && pwd == "L@B$t@ck0709", nil
-	}))
-	h := &handler{armor: a}
+	// e.Use(middleware.BasicAuth(func(usr, pwd string, _ echo.Context) (bool, error) {
+	// 	return usr == "admin" && pwd == "L@B$t@ck0709", nil
+	// }))
+	h := &handler{armor: a, store: a.Store}
 
 	// Nodes
 	nodes := e.Group("/nodes")

@@ -12,6 +12,15 @@ import (
 	"github.com/labstack/armor"
 )
 
+type (
+	EventType int
+)
+
+const (
+	EventAddPlugin EventType = iota
+	EventUpdatePlugin
+)
+
 func Start(a *armor.Armor) {
 	conf := serf.DefaultConfig()
 	filter := &logutils.LevelFilter{
@@ -39,7 +48,7 @@ func Start(a *armor.Armor) {
 	if err != nil {
 		a.Logger.Fatal(err)
 	}
-	a.Cluster.Serf.Join(a.Cluster.Peers, true)
+	a.Cluster.Join(a.Cluster.Peers, true)
 	ch := make(chan serf.Event, 64)
 	conf.EventCh = ch
 	for {
