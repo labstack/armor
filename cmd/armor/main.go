@@ -97,12 +97,15 @@ func main() {
 	if a.Address == "" {
 		a.Address = ":80"
 	}
+	if a.Hosts == nil {
+		a.Hosts = make(armor.Hosts)
+	}
 
 	// Initialize and load the plugins
 	h := http.Init(a)
 	h.LoadPlugins()
 
-	a.Store, err = store.New(a)
+	a.Store, err = store.New(a.Postgres.URI)
 	if err != nil {
 		logger.Fatal(err)
 	}

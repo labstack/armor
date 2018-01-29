@@ -34,7 +34,7 @@ func (t Target) ProxyTarget() (target *middleware.ProxyTarget, err error) {
 	}, nil
 }
 
-func (p *Proxy) Init() (err error) {
+func (p *Proxy) Initialize() error {
 	// Targets
 	targets := make([]*middleware.ProxyTarget, len(p.Targets))
 	for i, t := range p.Targets {
@@ -56,7 +56,14 @@ func (p *Proxy) Init() (err error) {
 	// Need to be initialied in the end to reflect config changes.
 	p.Middleware = middleware.ProxyWithConfig(p.ProxyConfig)
 
-	return
+	return nil
+}
+
+func (p *Proxy) Update(plugin Plugin) {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	p.ProxyConfig = plugin.(*Proxy).ProxyConfig
+	p.Initialize()
 }
 
 func (*Proxy) Priority() int {

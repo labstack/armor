@@ -12,9 +12,16 @@ type (
 	}
 )
 
-func (s *Static) Init() (err error) {
+func (s *Static) Initialize() error {
 	s.Middleware = middleware.StaticWithConfig(s.StaticConfig)
-	return
+	return nil
+}
+
+func (s *Static) Update(p Plugin) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	s.StaticConfig = p.(*Static).StaticConfig
+	s.Initialize()
 }
 
 func (*Static) Priority() int {

@@ -9,27 +9,9 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/armon/circbuf"
-  packages = ["."]
-  revision = "bbbad097214e2918d8543d5201d12bfd7bca254d"
-
-[[projects]]
-  branch = "master"
   name = "github.com/armon/go-metrics"
   packages = ["."]
   revision = "7aa49fde808223f8dadfdbfd3a20ff6c19e5f9ec"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/armon/go-radix"
-  packages = ["."]
-  revision = "1fca145dffbcaa8fe914309b1ec0cfc67500fe61"
-
-[[projects]]
-  name = "github.com/bgentry/speakeasy"
-  packages = ["."]
-  revision = "4aabc24848ce5fd31929f7d1e4ea74d3709c14cd"
-  version = "v0.1.0"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -47,13 +29,13 @@
   branch = "v2"
   name = "github.com/go-yaml/yaml"
   packages = ["."]
-  revision = "287cf08546ab5e7e37d55a84f7ed3fd1db036de5"
+  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
 
 [[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
+  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
 
 [[projects]]
   branch = "master"
@@ -87,18 +69,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/hashicorp/go-syslog"
-  packages = ["."]
-  revision = "326bf4a7f709d263f964a6a96558676b103f3534"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/hashicorp/go.net"
-  packages = ["internal/iana","ipv4","ipv6"]
-  revision = "104dcad90073cd8d1e6828b2af19185b60cf3e29"
-
-[[projects]]
-  branch = "master"
   name = "github.com/hashicorp/golang-lru"
   packages = ["simplelru"]
   revision = "0a025b7e63adc15a622f29b0b2c4c3848243bbf6"
@@ -110,12 +80,6 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/hashicorp/mdns"
-  packages = ["."]
-  revision = "4e527d9d808175f132f949523e640c699e4253bb"
-
-[[projects]]
   name = "github.com/hashicorp/memberlist"
   packages = ["."]
   revision = "ce8abaa0c60c2d6bee7219f5ddf500e0a1457b28"
@@ -123,21 +87,33 @@
 
 [[projects]]
   name = "github.com/hashicorp/serf"
-  packages = [".","client","command","command/agent","coordinate","serf"]
-  revision = "0df3e3df1703f838243a7f3f12bf0b88566ade5a"
-  version = "v0.7.0"
+  packages = ["coordinate","serf"]
+  revision = "d6574a5bb1226678d7010325fb6c985db20ee458"
+  version = "v0.8.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jmoiron/sqlx"
+  packages = [".","reflectx","types"]
+  revision = "05cef0741ade10ca668982355b3f3f0bcf0ff0a8"
 
 [[projects]]
   branch = "master"
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
-  revision = "c8bedd1cf928bcd4315f771319d3063746066c11"
+  revision = "40cae8377233b83d932ae780473a3fa701987c91"
 
 [[projects]]
   name = "github.com/labstack/gommon"
   packages = ["bytes","color","log","random"]
   revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
   version = "0.2.3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/lib/pq"
+  packages = [".","oid"]
+  revision = "19c8e9ad00952ce0c64489b60e8df88bb16dd514"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -154,14 +130,8 @@
 [[projects]]
   name = "github.com/miekg/dns"
   packages = ["."]
-  revision = "5ec25f2a5044291b6c8abf43ed8a201da241e69e"
-  version = "v1.0.3"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/mitchellh/cli"
-  packages = ["."]
-  revision = "518dc677a1e1222682f4e7db06721942cb8e9e4c"
+  revision = "5364553f1ee9cddc7ac8b62dce148309c386695b"
+  version = "v1.0.4"
 
 [[projects]]
   branch = "master"
@@ -173,25 +143,13 @@
   branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
+  revision = "b4575eea38cca1123ec2dc90c26529b5c5acfcff"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/posener/complete"
-  packages = [".","cmd","cmd/install","match"]
-  revision = "dc2bc5a81accba8782bebea28628224643a8286a"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/ryanuber/columnize"
-  packages = ["."]
-  revision = "983d3a5fab1bf04d1b412465d2d9f8430e2e917e"
-  version = "v2.1.0"
 
 [[projects]]
   branch = "master"
@@ -202,8 +160,8 @@
 [[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
-  version = "v1.1.4"
+  revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -221,23 +179,23 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert","ed25519","ed25519/internal/edwards25519"]
-  revision = "95a4943f35d008beabde8c11e5075a1b714e6419"
+  revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["bpf","internal/iana","internal/socket","ipv4","ipv6"]
-  revision = "5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec"
+  revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "83801418e1b59fb1880e363299581ee543af32ca"
+  revision = "ff2a66f350cefa5c93a634eadb5d25bb60c85a9c"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9c741eed7b1de324f148c4be48ae9ff72ca4b6fe7222467ec0e33fdb519ad5f8"
+  inputs-digest = "1d3d728eb897d9c846bf579506a7549369613327eabe367ea17afd154a741aac"
   solver-name = "gps-cdcl"
   solver-version = 1

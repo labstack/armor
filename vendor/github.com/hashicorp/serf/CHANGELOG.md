@@ -1,3 +1,31 @@
+## 0.8.1 (February 6, 2017)
+
+IMPROVEMENTS:
+
+ * agent: Added support for relaying query responses through N other nodes for redundancy. [GH-439]
+ * agent: Added the ability to tune the broadcast timeout, which might be necessary in very large clusters that experience very large, simultaneous changes to the cluster. [GH-412]
+ * agent: Added a checksum to UDP gossip messages to guard against packet corruption. [GH-432]
+ * agent: Added a short window where gossip will still flow to dead nodes so that they can more quickly refute. [GH-440]
+ * build: Serf now builds with Go 1.7.5. [GH-443]
+
+## 0.8 (September 14, 2016)
+
+FEATURES:
+
+ * **Lifeguard Updates:** Implemented a new set of feedback controls for the gossip layer that help prevent degraded nodes that can't meet the soft real-time requirements from erroneously causing flapping in other, healthy nodes. This feature tunes itself automatically and requires no configuration. [GH-394]
+
+IMRPOVEMENTS:
+
+ * Modified management of intents to be per-node to avoid intent queue overflow errors in large clusters. [GH-402]
+ * Joins based on a DNS lookup will use TCP and attempt to join with the full list of returned addresses. [GH-387]
+ * Serf's Go dependencies are now vendored using govendor. [GH-383]
+ * Updated all of Serf's dependencies. [GH-387] [GH-401]
+ * Moved dist build into a Docker container. [GH-409]
+
+BUG FIXES:
+
+ * Updated memberlist to pull in a fix for leaking goroutines when performing TCP fallback pings. This affected users with frequent UDP connectivity problems. [GH-381]
+
 ## 0.7 (December 21, 2015)
 
 FEATURES:

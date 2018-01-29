@@ -2,16 +2,21 @@ package admin
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/labstack/armor"
+	"github.com/labstack/armor/cluster"
 	"github.com/labstack/armor/plugin"
+	"github.com/labstack/armor/store"
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/random"
 )
 
 type (
 	handler struct {
-		armor *armor.Armor
-		store armor.Store
+		armor   *armor.Armor
+		store   store.Store
+		cluster *armor.Cluster
 	}
 
 	Node struct {
@@ -36,8 +41,8 @@ func (h *handler) nodes(c echo.Context) error {
 	return c.JSON(http.StatusOK, nodes)
 }
 
-func (h *handler) lookupPlugin(host *armor.Host, path *armor.Path, plugin string) (p armor.Plugin) {
-	plugins := []armor.Plugin{}
+func (h *handler) lookupPlugin(name string, host *armor.Host, path *armor.Path) (p plugin.Plugin) {
+	plugins := []plugin.Plugin{}
 
 	// Global
 	if host == nil && path == nil {
@@ -50,7 +55,7 @@ func (h *handler) lookupPlugin(host *armor.Host, path *armor.Path, plugin string
 	}
 
 	for _, p := range plugins {
-		if p.Name() == plugin {
+		if p.Name() == name {
 			return p
 		}
 	}
@@ -58,51 +63,82 @@ func (h *handler) lookupPlugin(host *armor.Host, path *armor.Path, plugin string
 }
 
 func (h *handler) addPlugin(c echo.Context) (err error) {
-	hostName := c.Param("host")
-	pathName := h.getPath(c)
-	rawPlugin := armor.RawPlugin{}
-
-	if err = c.Bind(&rawPlugin); err != nil {
+	p := new(store.Plugin)
+	if err = c.Bind(&p); err != nil {
 		return
 	}
 
-	if hostName == "" && pathName == "" {
-		// Global
-
-	} else if hostName != "" && pathName == "" {
-		// host := h.armor.Hosts[hostName]
-		// if host == nil {
-		// 	host = new(armor.Host)
-		// 	host.Init(hostName, h.armor)
-		// }
-	} else if hostName != "" && pathName != "" {
-		host := h.armor.FindHost(hostName)
-		if host == nil {
-			host = h.armor.AddHost(hostName)
-		}
-		path := host.FindPath(pathName)
-		if path == nil {
-			path = host.AddPath(pathName)
-		}
-		p, err := plugin.Decode(rawPlugin, h.armor, host.Echo)
-		if err != nil {
-			return err
-		}
-		if err = h.store.AddPlugin(rawPlugin); err != nil {
-			return err
-		}
-		path.AddPlugin(p)
+	p.ID = random.String(8)
+	now := time.Now()
+	p.CreatedAt = now
+	p.UpdatedAt = now
+	if err = h.store.AddPlugin(p); err != nil {
+		return err
 	}
 
-	return nil
+	h.cluster.UserEvent(cluster.EventPluginAdd, []byte(p.ID), true)
+
+	return c.JSON(http.StatusCreated, p)
+
+	// hostName := c.Param("host")
+	// pathName := h.getPath(c)
+	// rawPlugin := armor.RawPlugin{}
+
+	// if err = c.Bind(&rawPlugin); err != nil {
+	// 	return
+	// }
+	// name := rawPlugin["name"].(string)
+
+	// if hostName == "" && pathName == "" {
+	// Global
+
+	// } else if hostName != "" && pathName == "" {
+	// host := h.armor.Hosts[hostName]
+	// if host == nil {
+	// 	host = new(armor.Host)
+	// 	host.Init(hostName, h.armor)
+	// }
+	// } else if hostName != "" && pathName != "" {
+	// host := h.armor.FindHost(hostName)
+	// if host == nil {
+	// 	host = h.armor.AddHost(hostName)
+	// }
+	// path := host.FindPath(pathName)
+	// if path == nil {
+	// 	path = host.AddPath(pathName)
+	// }
+	// p, err := plugin.Decode(rawPlugin, h.armor, host.Echo)
+	// if err != nil {
+	// 	return err
+	// }
+	// h.cluster.UserEvent(cluster.EventPluginAdd, []byte(name), true)
+	// if err = h.store.AddPlugin(name, hostName, pathName, rawPlugin); err != nil {
+	// 	return err
+	// }
+	// path.AddPlugin(p)
+	// }
+
 }
 
 func (h *handler) findPlugin(c echo.Context) (err error) {
-	return nil
+	id := c.Param("id")
+	p, err := h.store.FindPlugin(id)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, p)
 }
 
 func (h *handler) updatePlugin(c echo.Context) (err error) {
-	return nil
+	p := new(store.Plugin)
+	if err = c.Bind(&p); err != nil {
+		return
+	}
+	p.ID = c.Param("id")
+	p.UpdatedAt = time.Now()
+	err = h.store.UpdatePlugin(p)
+	h.cluster.UserEvent(cluster.EventPluginUpdate, []byte(p.ID), true)
+	return
 }
 
 func (h *handler) removePlugin(c echo.Context) (err error) {
@@ -112,7 +148,7 @@ func (h *handler) removePlugin(c echo.Context) (err error) {
 func (h *handler) addProxyTarget(c echo.Context) (err error) {
 	host := h.armor.FindHost(c.Param("host"))
 	path := host.FindPath(h.getPath(c))
-	p := h.lookupPlugin(host, path, c.Param("plugin"))
+	p := h.lookupPlugin(c.Param("plugin"), host, path)
 	proxy := p.(*plugin.Proxy)
 	return proxy.AddTarget(c)
 }
@@ -120,7 +156,7 @@ func (h *handler) addProxyTarget(c echo.Context) (err error) {
 func (h *handler) removeProxyTarget(c echo.Context) (err error) {
 	host := h.armor.FindHost(c.Param("host"))
 	path := host.FindPath(h.getPath(c))
-	p := h.lookupPlugin(host, path, c.Param("plugin"))
+	p := h.lookupPlugin(c.Param("plugin"), host, path)
 	proxy := p.(*plugin.Proxy)
 	return proxy.RemoveTarget(c)
 }

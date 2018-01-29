@@ -34,12 +34,28 @@
   name = "github.com/golang/protobuf"
 
 [[constraint]]
-  name = "github.com/labstack/echo"
   branch = "master"
+  name = "github.com/hashicorp/logutils"
+
+[[constraint]]
+  name = "github.com/hashicorp/serf"
+  version = "0.8.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/jmoiron/sqlx"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/labstack/echo"
 
 [[constraint]]
   name = "github.com/labstack/gommon"
   version = "0.2.3"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/lib/pq"
 
 [[constraint]]
   branch = "master"
@@ -51,7 +67,7 @@
 
 [[constraint]]
   name = "github.com/stretchr/testify"
-  version = "1.1.4"
+  version = "1.2.0"
 
 [[constraint]]
   branch = "master"
@@ -60,11 +76,3 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
-
-[[constraint]]
-  name = "github.com/coreos/etcd"
-  version = "3.2.14"
-
-[[constraint]]
-  name = "github.com/hashicorp/serf"
-  version = "0.7.0"

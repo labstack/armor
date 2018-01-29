@@ -12,15 +12,24 @@ type (
 	}
 )
 
-func (l *BodyLimit) Init() (err error) {
-	l.Middleware = middleware.BodyLimitWithConfig(l.BodyLimitConfig)
-	return
+func (b *BodyLimit) Initialize() error {
+	b.Middleware = middleware.BodyLimitWithConfig(b.BodyLimitConfig)
+	return nil
+}
+
+func (b *BodyLimit) Update(p Plugin) {
+	b.mutex.Lock()
+	defer b.mutex.Unlock()
+	b.BodyLimitConfig = p.(*BodyLimit).BodyLimitConfig
+	b.Initialize()
 }
 
 func (*BodyLimit) Priority() int {
 	return 1
 }
 
-func (l *BodyLimit) Process(next echo.HandlerFunc) echo.HandlerFunc {
-	return l.Middleware(next)
+func (b *BodyLimit) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	b.mutex.RLock()
+	defer b.mutex.RUnlock()
+	return b.Middleware(next)
 }

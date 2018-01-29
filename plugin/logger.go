@@ -7,14 +7,21 @@ import (
 
 type (
 	Logger struct {
-		middleware.LoggerConfig `yaml:",squash"`
 		Base                    `yaml:",squash"`
+		middleware.LoggerConfig `yaml:",squash"`
 	}
 )
 
-func (l *Logger) Init() (err error) {
+func (l *Logger) Initialize() error {
 	l.Middleware = middleware.LoggerWithConfig(l.LoggerConfig)
-	return
+	return nil
+}
+
+func (l *Logger) Update(p Plugin) {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+	l.LoggerConfig = p.(*Logger).LoggerConfig
+	l.Initialize()
 }
 
 func (*Logger) Priority() int {

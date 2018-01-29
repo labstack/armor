@@ -12,15 +12,24 @@ type (
 	}
 )
 
-func (c *CORS) Init() (err error) {
+func (c *CORS) Initialize() error {
 	c.Middleware = middleware.CORSWithConfig(c.CORSConfig)
-	return
+	return nil
 }
 
 func (*CORS) Priority() int {
 	return 1
 }
 
+func (c *CORS) Update(p Plugin) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.CORSConfig = p.(*CORS).CORSConfig
+	c.Initialize()
+}
+
 func (c *CORS) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
 	return c.Middleware(next)
 }

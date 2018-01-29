@@ -5,16 +5,27 @@ import "github.com/labstack/echo"
 // Add/remove HTTP response headers.
 
 type (
+	HeaderConfig struct {
+		Set map[string]string `yaml:"set"`
+		Add map[string]string `yaml:"add"`
+		Del []string          `yaml:"del"`
+	}
+
 	Header struct {
-		Base `yaml:",squash"`
-		Set  map[string]string `yaml:"set"`
-		Add  map[string]string `yaml:"add"`
-		Del  []string          `yaml:"del"`
+		Base         `yaml:",squash"`
+		HeaderConfig `yaml:",squash"`
 	}
 )
 
-func (*Header) Init() (err error) {
-	return
+func (*Header) Initialize() error {
+	return nil
+}
+
+func (h *Header) Update(p Plugin) {
+	h.mutex.Lock()
+	defer h.mutex.Unlock()
+	h.HeaderConfig = p.(*Header).HeaderConfig
+	h.Initialize()
 }
 
 func (*Header) Priority() int {

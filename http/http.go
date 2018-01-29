@@ -149,7 +149,7 @@ func (h *HTTP) LoadPlugins() {
 
 	// Global plugins
 	for _, rp := range a.RawPlugins {
-		p, err := plugin.Decode(rp, a, e)
+		p, err := plugin.Decode(rp, e, a.Logger)
 		if err != nil {
 			h.logger.Fatal(err)
 		}
@@ -162,7 +162,7 @@ func (h *HTTP) LoadPlugins() {
 
 		// Host plugins
 		for _, rp := range host.RawPlugins {
-			p, err := plugin.Decode(rp, a, host.Echo)
+			p, err := plugin.Decode(rp, host.Echo, a.Logger)
 			if err != nil {
 				h.logger.Error(err)
 			}
@@ -175,7 +175,7 @@ func (h *HTTP) LoadPlugins() {
 
 			// Path plugins
 			for _, rp := range path.RawPlugins {
-				p, err := plugin.Decode(rp, a, host.Echo)
+				p, err := plugin.Decode(rp, host.Echo, a.Logger)
 				if err != nil {
 					h.logger.Fatal(err)
 				}

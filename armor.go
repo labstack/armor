@@ -6,6 +6,8 @@ import (
 
 	"github.com/hashicorp/serf/serf"
 
+	"github.com/labstack/armor/plugin"
+	"github.com/labstack/armor/store"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
@@ -14,21 +16,21 @@ import (
 type (
 	Armor struct {
 		mutex        sync.RWMutex
-		Name         string        `yaml:"name"`
-		Address      string        `yaml:"address"`
-		TLS          *TLS          `yaml:"tls"`
-		Admin        *Admin        `yaml:"admin"`
-		Store        Store         `yaml:"-"`
-		Postgres     *Postgres     `yaml:"postgres"`
-		Cluster      *Cluster      `yaml:"cluster"`
-		ReadTimeout  time.Duration `yaml:"read_timeout"`
-		WriteTimeout time.Duration `yaml:"write_timeout"`
-		RawPlugins   []RawPlugin   `yaml:"plugins"`
-		Hosts        Hosts         `yaml:"hosts"`
-		Plugins      []Plugin      `yaml:"-"`
-		Echo         *echo.Echo    `yaml:"-"`
-		Logger       *log.Logger   `yaml:"-"`
-		Colorer      *color.Color  `yaml:"-"`
+		Name         string             `yaml:"name"`
+		Address      string             `yaml:"address"`
+		TLS          *TLS               `yaml:"tls"`
+		Admin        *Admin             `yaml:"admin"`
+		Postgres     *Postgres          `yaml:"postgres"`
+		Cluster      *Cluster           `yaml:"cluster"`
+		ReadTimeout  time.Duration      `yaml:"read_timeout"`
+		WriteTimeout time.Duration      `yaml:"write_timeout"`
+		RawPlugins   []plugin.RawPlugin `yaml:"plugins"`
+		Hosts        Hosts              `yaml:"hosts"`
+		Store        store.Store        `yaml:"-"`
+		Plugins      []plugin.Plugin    `yaml:"-"`
+		Echo         *echo.Echo         `yaml:"-"`
+		Logger       *log.Logger        `yaml:"-"`
+		Colorer      *color.Color       `yaml:"-"`
 	}
 
 	TLS struct {
@@ -44,10 +46,6 @@ type (
 		Address string `yaml:"address"`
 	}
 
-	Store interface {
-		AddPlugin(RawPlugin) error
-	}
-
 	Postgres struct {
 		URI string `yaml:"uri"`
 	}
@@ -60,35 +58,26 @@ type (
 
 	Host struct {
 		mutex      sync.RWMutex
-		Name       string      `yaml:"-"`
-		CertFile   string      `yaml:"cert_file"`
-		KeyFile    string      `yaml:"key_file"`
-		RawPlugins []RawPlugin `yaml:"plugins"`
-		Paths      Paths       `yaml:"paths"`
-		Plugins    []Plugin    `yaml:"-"`
-		Echo       *echo.Echo  `yaml:"-"`
+		Name       string             `yaml:"-"`
+		CertFile   string             `yaml:"cert_file"`
+		KeyFile    string             `yaml:"key_file"`
+		RawPlugins []plugin.RawPlugin `yaml:"plugins"`
+		Paths      Paths              `yaml:"paths"`
+		Plugins    []plugin.Plugin    `yaml:"-"`
+		Echo       *echo.Echo         `yaml:"-"`
 	}
 
 	Path struct {
 		mutex      sync.RWMutex
-		Name       string      `yaml:"-"`
-		RawPlugins []RawPlugin `yaml:"plugins"`
-		Plugins    []Plugin    `yaml:"-"`
-		Group      *echo.Group `yaml:"-"`
+		Name       string             `yaml:"-"`
+		RawPlugins []plugin.RawPlugin `yaml:"plugins"`
+		Plugins    []plugin.Plugin    `yaml:"-"`
+		Group      *echo.Group        `yaml:"-"`
 	}
 
 	Hosts map[string]*Host
 
 	Paths map[string]*Path
-
-	RawPlugin map[string]interface{}
-
-	Plugin interface {
-		Name() string
-		Init() error
-		Process(echo.HandlerFunc) echo.HandlerFunc
-		Priority() int
-	}
 )
 
 const (
@@ -116,7 +105,7 @@ func (a *Armor) FindHost(name string) *Host {
 	return a.Hosts[name]
 }
 
-func (a *Armor) AddPlugin(p Plugin) {
+func (a *Armor) AddPlugin(p plugin.Plugin) {
 	if p.Priority() < 0 {
 		a.Echo.Pre(p.Process)
 	} else {
@@ -125,6 +114,14 @@ func (a *Armor) AddPlugin(p Plugin) {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
 	a.Plugins = append(a.Plugins, p)
+}
+
+func (a *Armor) UpdatePlugin(plugin plugin.Plugin) {
+	for _, p := range a.Plugins {
+		if p.Name() == plugin.Name() {
+			p.Update(plugin)
+		}
+	}
 }
 
 func (h *Host) AddPath(name string) *Path {
@@ -146,7 +143,7 @@ func (h *Host) FindPath(name string) *Path {
 	return h.Paths[name]
 }
 
-func (h *Host) AddPlugin(p Plugin) {
+func (h *Host) AddPlugin(p plugin.Plugin) {
 	if p.Priority() < 0 {
 		h.Echo.Pre(p.Process)
 	} else {
@@ -157,9 +154,25 @@ func (h *Host) AddPlugin(p Plugin) {
 	h.Plugins = append(h.Plugins, p)
 }
 
-func (p *Path) AddPlugin(plugin Plugin) {
+func (h *Host) UpdatePlugin(plugin plugin.Plugin) {
+	for _, p := range h.Plugins {
+		if p.Name() == plugin.Name() {
+			p.Update(plugin)
+		}
+	}
+}
+
+func (p *Path) AddPlugin(plugin plugin.Plugin) {
 	p.Group.Use(plugin.Process)
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 	p.Plugins = append(p.Plugins, plugin)
+}
+
+func (p *Path) UpdatePlugin(plugin plugin.Plugin) {
+	for _, p := range p.Plugins {
+		if p.Name() == plugin.Name() {
+			p.Update(plugin)
+		}
+	}
 }

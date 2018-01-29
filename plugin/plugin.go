@@ -8,7 +8,6 @@ import (
 	"sync"
 
 	"github.com/Knetic/govaluate"
-	"github.com/labstack/armor"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	"github.com/mitchellh/mapstructure"
@@ -16,12 +15,22 @@ import (
 )
 
 type (
+	Plugin interface {
+		Name() string
+		Initialize() error
+		Update(Plugin)
+		Process(echo.HandlerFunc) echo.HandlerFunc
+		Priority() int
+	}
+
+	RawPlugin map[string]interface{}
+
 	// Base defines the base struct for plugins.
 	Base struct {
 		name       string
+		mutex      *sync.RWMutex
 		Skip       string              `yaml:"skip"`
 		Middleware echo.MiddlewareFunc `yaml:"-"`
-		Armor      *armor.Armor        `yaml:"-"`
 		Echo       *echo.Echo          `yaml:"-"`
 		Logger     *log.Logger         `yaml:"-"`
 	}
@@ -49,7 +58,7 @@ func init() {
 }
 
 // lookup returns a plugin by name.
-func lookup(base Base) (p armor.Plugin) {
+func lookup(base Base) (p Plugin) {
 	switch base.Name() {
 	case "body-limit":
 		p = &BodyLimit{Base: base}
@@ -94,15 +103,15 @@ func lookup(base Base) (p armor.Plugin) {
 }
 
 // Decode searches the plugin by name, decodes the provided map into plugin and
-// calls Plugin#Init().
-func Decode(rp armor.RawPlugin, a *armor.Armor, e *echo.Echo) (p armor.Plugin, err error) {
-	name := rp["name"].(string)
+// calls Plugin#Initialize().
+func Decode(r RawPlugin, e *echo.Echo, l *log.Logger) (p Plugin, err error) {
+	name := r["name"].(string)
 	base := Base{
 		name:   name,
+		mutex:  new(sync.RWMutex),
 		Skip:   "false",
-		Armor:  a,
 		Echo:   e,
-		Logger: a.Logger,
+		Logger: l,
 	}
 	if p = lookup(base); p == nil {
 		return p, fmt.Errorf("plugin=%s not found", name)
@@ -111,10 +120,10 @@ func Decode(rp armor.RawPlugin, a *armor.Armor, e *echo.Echo) (p armor.Plugin, e
 		TagName: "yaml",
 		Result:  p,
 	})
-	if err = dec.Decode(rp); err != nil {
+	if err = dec.Decode(r); err != nil {
 		return
 	}
-	return p, p.Init()
+	return p, p.Initialize()
 }
 
 func (b *Base) Name() string {

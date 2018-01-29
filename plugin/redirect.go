@@ -8,11 +8,15 @@ import (
 )
 
 type (
-	Redirect struct {
-		Base `yaml:",squash"`
+	RedirectConfig struct {
 		From string `yaml:"from"`
 		To   string `yaml:"to"`
 		Code int    `yaml:"code"`
+	}
+
+	Redirect struct {
+		Base           `yaml:",squash"`
+		RedirectConfig `yaml:",squash"`
 	}
 
 	HTTPSRedirect struct {
@@ -41,7 +45,7 @@ type (
 	}
 )
 
-func (r *Redirect) Init() (err error) {
+func (r *Redirect) Initialize() error {
 	t := NewTemplate(r.To)
 	// Defaults
 	if r.Code == 0 {
@@ -54,7 +58,14 @@ func (r *Redirect) Init() (err error) {
 		}
 		return c.Redirect(r.Code, to)
 	})
-	return
+	return nil
+}
+
+func (r *Redirect) Update(p Plugin) {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	r.RedirectConfig = p.(*Redirect).RedirectConfig
+	r.Initialize()
 }
 
 func (*Redirect) Priority() int {
@@ -67,9 +78,16 @@ func (r *Redirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func (r *HTTPSRedirect) Init() (err error) {
+func (r *HTTPSRedirect) Initialize() error {
 	r.Middleware = middleware.HTTPSRedirectWithConfig(r.RedirectConfig)
-	return
+	return nil
+}
+
+func (r *HTTPSRedirect) Update(p Plugin) {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	r.RedirectConfig = p.(*HTTPSRedirect).RedirectConfig
+	r.Initialize()
 }
 
 func (*HTTPSRedirect) Priority() int {
@@ -80,9 +98,16 @@ func (r *HTTPSRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (r *HTTPSWWWRedirect) Init() (err error) {
+func (r *HTTPSWWWRedirect) Initialize() error {
 	r.Middleware = middleware.HTTPSWWWRedirectWithConfig(r.RedirectConfig)
-	return
+	return nil
+}
+
+func (r *HTTPSWWWRedirect) Update(p Plugin) {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	r.RedirectConfig = p.(*HTTPSWWWRedirect).RedirectConfig
+	r.Initialize()
 }
 
 func (*HTTPSWWWRedirect) Priority() int {
@@ -93,7 +118,7 @@ func (r *HTTPSWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (r *HTTPSNonWWWRedirect) Init() (err error) {
+func (r *HTTPSNonWWWRedirect) Initialize() error {
 	e := NewExpression(r.Skip)
 	r.RedirectConfig.Skipper = func(c echo.Context) bool {
 		skip, err := e.Evaluate(c)
@@ -103,7 +128,14 @@ func (r *HTTPSNonWWWRedirect) Init() (err error) {
 		return skip.(bool)
 	}
 	r.Middleware = middleware.HTTPSNonWWWRedirectWithConfig(r.RedirectConfig)
-	return
+	return nil
+}
+
+func (r *HTTPSNonWWWRedirect) Update(p Plugin) {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	r.RedirectConfig = p.(*HTTPSNonWWWRedirect).RedirectConfig
+	r.Initialize()
 }
 
 func (*HTTPSNonWWWRedirect) Priority() int {
@@ -114,9 +146,16 @@ func (r *HTTPSNonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (r *WWWRedirect) Init() (err error) {
+func (r *WWWRedirect) Initialize() error {
 	r.Middleware = middleware.WWWRedirectWithConfig(r.RedirectConfig)
-	return
+	return nil
+}
+
+func (r *WWWRedirect) Update(p Plugin) {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	r.RedirectConfig = p.(*WWWRedirect).RedirectConfig
+	r.Initialize()
 }
 
 func (*WWWRedirect) Priority() int {
@@ -127,9 +166,16 @@ func (r *WWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (r *NonWWWRedirect) Init() (err error) {
+func (r *NonWWWRedirect) Initialize() error {
 	r.Middleware = middleware.NonWWWRedirectWithConfig(r.RedirectConfig)
-	return
+	return nil
+}
+
+func (r *NonWWWRedirect) Update(p Plugin) {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	r.RedirectConfig = p.(*NonWWWRedirect).RedirectConfig
+	r.Initialize()
 }
 
 func (*NonWWWRedirect) Priority() int {

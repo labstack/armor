@@ -12,9 +12,16 @@ type (
 	}
 )
 
-func (r *Rewrite) Init() (err error) {
+func (r *Rewrite) Initialize() error {
 	r.Middleware = middleware.RewriteWithConfig(r.RewriteConfig)
-	return
+	return nil
+}
+
+func (r *Rewrite) Update(p Plugin) {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	r.RewriteConfig = p.(*Rewrite).RewriteConfig
+	r.Initialize()
 }
 
 func (*Rewrite) Priority() int {

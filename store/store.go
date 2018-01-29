@@ -1,21 +1,39 @@
 package store
 
 import (
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	"time"
 
-	"github.com/labstack/armor"
+	"github.com/jmoiron/sqlx"
+	"github.com/jmoiron/sqlx/types"
+	"github.com/labstack/armor/plugin"
+	_ "github.com/lib/pq"
 )
 
-func New(a *armor.Armor) (armor.Store, error) {
-	if a.Postgres != nil {
-		db, err := sqlx.Connect("postgres", a.Postgres.URI)
-		if err != nil {
-			return nil, err
-		}
-		return &Postgres{
-			db: db,
-		}, nil
+type (
+	Store interface {
+		AddPlugin(*Plugin) error
+		FindPlugin(string) (*Plugin, error)
+		UpdatePlugin(*Plugin) error
 	}
-	return nil, nil
+
+	Plugin struct {
+		ID        string           `json:"id" db:"id"`
+		Name      string           `json:"name" db:"name"`
+		Host      string           `json:"host" db:"host"`
+		Path      string           `json:"path" db:"path"`
+		Config    types.JSONText   `json:"config" db:"config"`
+		CreatedAt time.Time        `json:"created_at" db:"created_at"`
+		UpdatedAt time.Time        `json:"updated_at" db:"updated_at"`
+		Raw       plugin.RawPlugin `json:"-" db:"-"`
+	}
+)
+
+func New(uri string) (Store, error) {
+	db, err := sqlx.Connect("postgres", uri)
+	if err != nil {
+		return nil, err
+	}
+	return &Postgres{
+		db: db,
+	}, nil
 }

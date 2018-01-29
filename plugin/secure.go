@@ -12,9 +12,16 @@ type (
 	}
 )
 
-func (s *Secure) Init() (err error) {
+func (s *Secure) Initialize() error {
 	s.Middleware = middleware.SecureWithConfig(s.SecureConfig)
-	return
+	return nil
+}
+
+func (s *Secure) Update(p Plugin) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	s.SecureConfig = p.(*Secure).SecureConfig
+	s.Initialize()
 }
 
 func (*Secure) Priority() int {
