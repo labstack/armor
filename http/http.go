@@ -153,6 +153,9 @@ func (h *HTTP) LoadPlugins() {
 		if err != nil {
 			h.logger.Fatal(err)
 		}
+		if err = p.Initialize(); err != nil {
+			h.logger.Fatal(err)
+		}
 		a.AddPlugin(p)
 	}
 
@@ -166,6 +169,9 @@ func (h *HTTP) LoadPlugins() {
 			if err != nil {
 				h.logger.Error(err)
 			}
+			if err = p.Initialize(); err != nil {
+				h.logger.Fatal(err)
+			}
 			host.AddPlugin(p)
 		}
 
@@ -177,6 +183,9 @@ func (h *HTTP) LoadPlugins() {
 			for _, rp := range path.RawPlugins {
 				p, err := plugin.Decode(rp, host.Echo, a.Logger)
 				if err != nil {
+					h.logger.Fatal(err)
+				}
+				if err = p.Initialize(); err != nil {
 					h.logger.Fatal(err)
 				}
 				path.AddPlugin(p)

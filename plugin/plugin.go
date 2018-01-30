@@ -46,6 +46,54 @@ type (
 
 var (
 	bufferPool sync.Pool
+
+	// DefaultLookup function
+	DefaultLookup = func(base Base) (p Plugin) {
+		switch base.Name() {
+		case "body-limit":
+			p = &BodyLimit{Base: base}
+		case "logger":
+			p = &Logger{Base: base}
+		case "redirect":
+			p = &Redirect{Base: base}
+		case "https-redirect":
+			p = &HTTPSRedirect{Base: base}
+		case "https-www-redirect":
+			p = &HTTPSWWWRedirect{Base: base}
+		case "https-non-www-redirect":
+			p = &HTTPSNonWWWRedirect{Base: base}
+		case "www-redirect":
+			p = &WWWRedirect{Base: base}
+		case "non-www-redirect":
+			p = &NonWWWRedirect{Base: base}
+		case "add-trailing-slash":
+			p = &AddTrailingSlash{Base: base}
+		case "remove-trailing-slash":
+			p = &RemoveTrailingSlash{Base: base}
+		case "rewrite":
+			p = &Rewrite{Base: base}
+		case "secure":
+			p = &Secure{Base: base}
+		case "cors":
+			p = &CORS{Base: base}
+		case "gzip":
+			p = &Gzip{Base: base}
+		case "header":
+			p = &Header{Base: base}
+		case "proxy":
+			p = &Proxy{Base: base}
+		case "static":
+			p = &Static{Base: base}
+		case "file":
+			p = &File{Base: base}
+		case "nats":
+			// p = &NATS{Base: base}
+		}
+		return
+	}
+
+	// Lookup function
+	Lookup = DefaultLookup
 )
 
 // Initialize
@@ -57,53 +105,7 @@ func init() {
 	}
 }
 
-// lookup returns a plugin by name.
-func lookup(base Base) (p Plugin) {
-	switch base.Name() {
-	case "body-limit":
-		p = &BodyLimit{Base: base}
-	case "logger":
-		p = &Logger{Base: base}
-	case "redirect":
-		p = &Redirect{Base: base}
-	case "https-redirect":
-		p = &HTTPSRedirect{Base: base}
-	case "https-www-redirect":
-		p = &HTTPSWWWRedirect{Base: base}
-	case "https-non-www-redirect":
-		p = &HTTPSNonWWWRedirect{Base: base}
-	case "www-redirect":
-		p = &WWWRedirect{Base: base}
-	case "non-www-redirect":
-		p = &NonWWWRedirect{Base: base}
-	case "add-trailing-slash":
-		p = &AddTrailingSlash{Base: base}
-	case "remove-trailing-slash":
-		p = &RemoveTrailingSlash{Base: base}
-	case "rewrite":
-		p = &Rewrite{Base: base}
-	case "secure":
-		p = &Secure{Base: base}
-	case "cors":
-		p = &CORS{Base: base}
-	case "gzip":
-		p = &Gzip{Base: base}
-	case "header":
-		p = &Header{Base: base}
-	case "proxy":
-		p = &Proxy{Base: base}
-	case "static":
-		p = &Static{Base: base}
-	case "file":
-		p = &File{Base: base}
-	case "nats":
-		// p = &NATS{Base: base}
-	}
-	return
-}
-
-// Decode searches the plugin by name, decodes the provided map into plugin and
-// calls Plugin#Initialize().
+// Decode searches the plugin by name, decodes the provided map into plugin.
 func Decode(r RawPlugin, e *echo.Echo, l *log.Logger) (p Plugin, err error) {
 	name := r["name"].(string)
 	base := Base{
@@ -113,17 +115,15 @@ func Decode(r RawPlugin, e *echo.Echo, l *log.Logger) (p Plugin, err error) {
 		Echo:   e,
 		Logger: l,
 	}
-	if p = lookup(base); p == nil {
+	if p = Lookup(base); p == nil {
 		return p, fmt.Errorf("plugin=%s not found", name)
 	}
 	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		TagName: "yaml",
 		Result:  p,
 	})
-	if err = dec.Decode(r); err != nil {
-		return
-	}
-	return p, p.Initialize()
+	err = dec.Decode(r)
+	return
 }
 
 func (b *Base) Name() string {

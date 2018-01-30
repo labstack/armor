@@ -106,17 +106,19 @@ func (a *Armor) FindHost(name string) *Host {
 }
 
 func (a *Armor) AddPlugin(p plugin.Plugin) {
+	a.mutex.Lock()
+	defer a.mutex.Unlock()
 	if p.Priority() < 0 {
 		a.Echo.Pre(p.Process)
 	} else {
 		a.Echo.Use(p.Process)
 	}
-	a.mutex.Lock()
-	defer a.mutex.Unlock()
 	a.Plugins = append(a.Plugins, p)
 }
 
 func (a *Armor) UpdatePlugin(plugin plugin.Plugin) {
+	a.mutex.RLock()
+	defer a.mutex.RUnlock()
 	for _, p := range a.Plugins {
 		if p.Name() == plugin.Name() {
 			p.Update(plugin)
@@ -144,17 +146,19 @@ func (h *Host) FindPath(name string) *Path {
 }
 
 func (h *Host) AddPlugin(p plugin.Plugin) {
+	h.mutex.Lock()
+	defer h.mutex.Unlock()
 	if p.Priority() < 0 {
 		h.Echo.Pre(p.Process)
 	} else {
 		h.Echo.Use(p.Process)
 	}
-	h.mutex.Lock()
-	defer h.mutex.Unlock()
 	h.Plugins = append(h.Plugins, p)
 }
 
 func (h *Host) UpdatePlugin(plugin plugin.Plugin) {
+	h.mutex.RLock()
+	defer h.mutex.RUnlock()
 	for _, p := range h.Plugins {
 		if p.Name() == plugin.Name() {
 			p.Update(plugin)
@@ -163,13 +167,15 @@ func (h *Host) UpdatePlugin(plugin plugin.Plugin) {
 }
 
 func (p *Path) AddPlugin(plugin plugin.Plugin) {
-	p.Group.Use(plugin.Process)
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
+	p.Group.Use(plugin.Process)
 	p.Plugins = append(p.Plugins, plugin)
 }
 
 func (p *Path) UpdatePlugin(plugin plugin.Plugin) {
+	p.mutex.RLock()
+	defer p.mutex.RUnlock()
 	for _, p := range p.Plugins {
 		if p.Name() == plugin.Name() {
 			p.Update(plugin)

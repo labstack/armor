@@ -78,6 +78,9 @@ func Start(a *armor.Armor) {
 						if err != nil {
 							a.Logger.Error(err)
 						}
+						if err = p.Initialize(); err != nil {
+							a.Logger.Fatal(err)
+						}
 						if t.Name == EventPluginAdd {
 							path.AddPlugin(p)
 						} else {
