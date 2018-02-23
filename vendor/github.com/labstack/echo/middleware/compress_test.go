@@ -35,9 +35,9 @@ func TestGzip(t *testing.T) {
 	assert.Equal(t, gzipScheme, rec.Header().Get(echo.HeaderContentEncoding))
 	assert.Contains(t, rec.Header().Get(echo.HeaderContentType), echo.MIMETextPlain)
 	r, err := gzip.NewReader(rec.Body)
-	defer r.Close()
 	if assert.NoError(t, err) {
 		buf := new(bytes.Buffer)
+		defer r.Close()
 		buf.ReadFrom(r)
 		assert.Equal(t, "test", buf.String())
 	}
@@ -93,7 +93,7 @@ func TestGzipWithStatic(t *testing.T) {
 	defer r.Close()
 	want, err := ioutil.ReadFile("../_fixture/images/walle.png")
 	if assert.NoError(t, err) {
-		var buf bytes.Buffer
+		buf := new(bytes.Buffer)
 		buf.ReadFrom(r)
 		assert.Equal(t, want, buf.Bytes())
 	}

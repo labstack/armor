@@ -11,7 +11,7 @@
   branch = "master"
   name = "github.com/armon/go-metrics"
   packages = ["."]
-  revision = "7aa49fde808223f8dadfdbfd3a20ff6c19e5f9ec"
+  revision = "783273d703149aaeb9897cf58613d5af48861c25"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -32,10 +32,10 @@
   revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
 
 [[projects]]
-  branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "925541529c1fa6821df4e44ce2723319eb2be768"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -47,7 +47,7 @@
   branch = "master"
   name = "github.com/hashicorp/go-immutable-radix"
   packages = ["."]
-  revision = "59b67882ec612f43b9d4c4fd97cebd507be4b3ee"
+  revision = "7f3cd4390caab3250a57f30efdb2a65dd7649ecf"
 
 [[projects]]
   branch = "master"
@@ -65,13 +65,13 @@
   branch = "master"
   name = "github.com/hashicorp/go-sockaddr"
   packages = ["."]
-  revision = "9b4c5fa5b10a683339a270d664474b9f4aee62fc"
+  revision = "7165ee14aff120ee3642aa2bcf2dea8eebef29c3"
 
 [[projects]]
   branch = "master"
   name = "github.com/hashicorp/golang-lru"
   packages = ["simplelru"]
-  revision = "0a025b7e63adc15a622f29b0b2c4c3848243bbf6"
+  revision = "0fb14efe8c47ae851c0034ed7a448854d3d34cf3"
 
 [[projects]]
   branch = "master"
@@ -101,7 +101,7 @@
   branch = "master"
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
-  revision = "40cae8377233b83d932ae780473a3fa701987c91"
+  revision = "4f3080c197fb03bd488e822b71bd0e0792a19a72"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -113,7 +113,7 @@
   branch = "master"
   name = "github.com/lib/pq"
   packages = [".","oid"]
-  revision = "19c8e9ad00952ce0c64489b60e8df88bb16dd514"
+  revision = "88edab0803230a3898347e77b474f8c1820a1f20"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -143,7 +143,7 @@
   branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "b4575eea38cca1123ec2dc90c26529b5c5acfcff"
+  revision = "00c29f56e2386353d58c599509e8dc3801b0d716"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -160,8 +160,8 @@
 [[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
-  version = "v1.2.0"
+  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
+  version = "v1.2.1"
 
 [[projects]]
   branch = "master"
@@ -179,23 +179,23 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert","ed25519","ed25519/internal/edwards25519"]
-  revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
+  revision = "49796115aa4b964c318aad4f3084fdb41e9aa067"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["bpf","internal/iana","internal/socket","ipv4","ipv6"]
-  revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
+  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "ff2a66f350cefa5c93a634eadb5d25bb60c85a9c"
+  revision = "c1138c84af3a9927aee1a1b8b7ce06c9b7ea52bc"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1d3d728eb897d9c846bf579506a7549369613327eabe367ea17afd154a741aac"
+  inputs-digest = "d833866cc29a39912485dbc77b0a426d3ed848f5e745ba79475d2a2f151ae380"
   solver-name = "gps-cdcl"
   solver-version = 1

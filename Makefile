@@ -1,5 +1,5 @@
 IMAGE = labstack/armor
-VERSION = 0.3.7
+VERSION = 0.3.8
 WORKDIR = /go/src/github.com/labstack/armor
 
 clean:

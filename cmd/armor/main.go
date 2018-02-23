@@ -105,9 +105,11 @@ func main() {
 	h := http.Init(a)
 	h.LoadPlugins()
 
-	a.Store, err = store.New(a.Postgres.URI)
-	if err != nil {
-		logger.Fatal(err)
+	if a.Postgres != nil {
+		a.Store, err = store.New(a.Postgres.URI)
+		if err != nil {
+			logger.Fatal(err)
+		}
 	}
 
 	// Start admin

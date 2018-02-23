@@ -30,8 +30,8 @@
   name = "github.com/go-yaml/yaml"
 
 [[constraint]]
-  branch = "master"
   name = "github.com/golang/protobuf"
+  version = "1.0.0"
 
 [[constraint]]
   branch = "master"
@@ -67,7 +67,7 @@
 
 [[constraint]]
   name = "github.com/stretchr/testify"
-  version = "1.2.0"
+  version = "1.2.1"
 
 [[constraint]]
   branch = "master"
