@@ -17,14 +17,13 @@ func TestHeader(t *testing.T) {
 	ok := func(c echo.Context) error {
 		return c.String(http.StatusOK, "OK")
 	}
-	h := &Header{
-		Set: map[string]string{"Name": "Jon"},
-		Add: map[string]string{"Name": "Joe"},
-		Del: []string{"Delete"},
-	}
+	h := new(Header)
+	h.Set = map[string]string{"Name": "Jon"}
+	h.Add = map[string]string{"Name": "Joe"}
+	h.Del = []string{"Delete"}
 	rec.Header().Set("Delete", "me")
 
-	h.Init()
+	h.Initialize()
 	h.Process(ok)(c)
 
 	assert.Equal(t, "Jon", rec.Header().Get("Name"))                    // Set
