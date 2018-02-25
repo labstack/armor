@@ -12,9 +12,8 @@ type (
 	}
 )
 
-func (s *Secure) Initialize() error {
+func (s *Secure) Initialize() {
 	s.Middleware = middleware.SecureWithConfig(s.SecureConfig)
-	return nil
 }
 
 func (s *Secure) Update(p Plugin) {

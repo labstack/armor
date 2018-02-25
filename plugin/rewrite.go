@@ -12,9 +12,8 @@ type (
 	}
 )
 
-func (r *Rewrite) Initialize() error {
+func (r *Rewrite) Initialize() {
 	r.Middleware = middleware.RewriteWithConfig(r.RewriteConfig)
-	return nil
 }
 
 func (r *Rewrite) Update(p Plugin) {

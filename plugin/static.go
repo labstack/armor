@@ -12,9 +12,8 @@ type (
 	}
 )
 
-func (s *Static) Initialize() error {
+func (s *Static) Initialize() {
 	s.Middleware = middleware.StaticWithConfig(s.StaticConfig)
-	return nil
 }
 
 func (s *Static) Update(p Plugin) {

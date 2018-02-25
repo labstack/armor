@@ -12,9 +12,8 @@ type (
 	}
 )
 
-func (l *Logger) Initialize() error {
+func (l *Logger) Initialize() {
 	l.Middleware = middleware.LoggerWithConfig(l.LoggerConfig)
-	return nil
 }
 
 func (l *Logger) Update(p Plugin) {

@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -17,7 +18,7 @@ import (
 type (
 	Plugin interface {
 		Name() string
-		Initialize() error
+		Initialize()
 		Update(Plugin)
 		Process(echo.HandlerFunc) echo.HandlerFunc
 		Priority() int
@@ -27,8 +28,9 @@ type (
 
 	// Base defines the base struct for plugins.
 	Base struct {
-		name       string
-		mutex      *sync.RWMutex
+		name  string
+		mutex *sync.RWMutex
+		// TODO: to disable
 		Skip       string              `yaml:"skip"`
 		Middleware echo.MiddlewareFunc `yaml:"-"`
 		Echo       *echo.Echo          `yaml:"-"`
@@ -105,9 +107,23 @@ func init() {
 	}
 }
 
+func (rp RawPlugin) Name() string {
+	name := rp["name"].(string)
+	delete(rp, "name")
+	return name
+}
+
+func (rp RawPlugin) Bytes() []byte {
+	b, err := json.Marshal(rp)
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
+
 // Decode searches the plugin by name, decodes the provided map into plugin.
-func Decode(r RawPlugin, e *echo.Echo, l *log.Logger) (p Plugin, err error) {
-	name := r["name"].(string)
+func Decode(r RawPlugin, e *echo.Echo, l *log.Logger) (p Plugin) {
+	name := r.Name()
 	base := Base{
 		name:   name,
 		mutex:  new(sync.RWMutex),
@@ -116,13 +132,16 @@ func Decode(r RawPlugin, e *echo.Echo, l *log.Logger) (p Plugin, err error) {
 		Logger: l,
 	}
 	if p = Lookup(base); p == nil {
-		return p, fmt.Errorf("plugin=%s not found", name)
+		panic(fmt.Sprintf("plugin=%s not found", name))
 	}
 	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		TagName: "yaml",
 		Result:  p,
 	})
 	err = dec.Decode(r)
+	if err != nil {
+		panic(err)
+	}
 	return
 }
 

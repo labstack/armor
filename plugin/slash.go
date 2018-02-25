@@ -17,9 +17,8 @@ type (
 	}
 )
 
-func (s *AddTrailingSlash) Initialize() error {
+func (s *AddTrailingSlash) Initialize() {
 	s.Middleware = middleware.AddTrailingSlashWithConfig(s.TrailingSlashConfig)
-	return nil
 }
 
 func (s *AddTrailingSlash) Update(p Plugin) {
@@ -37,9 +36,8 @@ func (s *AddTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return s.Middleware(next)
 }
 
-func (s *RemoveTrailingSlash) Initialize() error {
+func (s *RemoveTrailingSlash) Initialize() {
 	s.Middleware = middleware.RemoveTrailingSlashWithConfig(s.TrailingSlashConfig)
-	return nil
 }
 
 func (s *RemoveTrailingSlash) Update(p Plugin) {

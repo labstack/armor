@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/labstack/armor"
-	"github.com/labstack/armor/plugin"
 	"github.com/labstack/armor/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
@@ -141,55 +140,4 @@ func (h *HTTP) StartTLS() error {
 
 	a.Colorer.Printf("⇨ https server started on %s\n", a.Colorer.Green(a.TLS.Address))
 	return e.StartServer(s)
-}
-
-func (h *HTTP) LoadPlugins() {
-	a := h.armor
-	e := h.echo
-
-	// Global plugins
-	for _, rp := range a.RawPlugins {
-		p, err := plugin.Decode(rp, e, a.Logger)
-		if err != nil {
-			h.logger.Fatal(err)
-		}
-		if err = p.Initialize(); err != nil {
-			h.logger.Fatal(err)
-		}
-		a.AddPlugin(p)
-	}
-
-	// Hosts
-	for name, host := range a.Hosts {
-		a.AddHost(name)
-
-		// Host plugins
-		for _, rp := range host.RawPlugins {
-			p, err := plugin.Decode(rp, host.Echo, a.Logger)
-			if err != nil {
-				h.logger.Error(err)
-			}
-			if err = p.Initialize(); err != nil {
-				h.logger.Fatal(err)
-			}
-			host.AddPlugin(p)
-		}
-
-		// Paths
-		for name, path := range host.Paths {
-			host.AddPath(name)
-
-			// Path plugins
-			for _, rp := range path.RawPlugins {
-				p, err := plugin.Decode(rp, host.Echo, a.Logger)
-				if err != nil {
-					h.logger.Fatal(err)
-				}
-				if err = p.Initialize(); err != nil {
-					h.logger.Fatal(err)
-				}
-				path.AddPlugin(p)
-			}
-		}
-	}
 }

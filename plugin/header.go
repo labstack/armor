@@ -17,8 +17,7 @@ type (
 	}
 )
 
-func (*Header) Initialize() error {
-	return nil
+func (*Header) Initialize() {
 }
 
 func (h *Header) Update(p Plugin) {

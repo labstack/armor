@@ -126,6 +126,49 @@ func (a *Armor) UpdatePlugin(plugin plugin.Plugin) {
 	}
 }
 
+func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
+	if p.Host == "" && p.Path == "" {
+		// Global level
+		p := plugin.Decode(p.Raw, a.Echo, a.Logger)
+		p.Initialize()
+		if update {
+			a.UpdatePlugin(p)
+		} else {
+			a.AddPlugin(p)
+		}
+	} else if p.Host != "" && p.Path == "" {
+		// Host level
+		host := a.FindHost(p.Host)
+		if host == nil {
+			host = a.AddHost(p.Host)
+		}
+		p := plugin.Decode(p.Raw, host.Echo, a.Logger)
+		p.Initialize()
+		if update {
+			host.UpdatePlugin(p)
+		} else {
+			host.AddPlugin(p)
+		}
+	} else if p.Host != "" && p.Path != "" {
+		// Path level
+		host := a.FindHost(p.Host)
+		if host == nil {
+			host = a.AddHost(p.Host)
+		}
+		path := host.FindPath(p.Path)
+		if path == nil {
+			path = host.AddPath(p.Path)
+		}
+		p := plugin.Decode(p.Raw, host.Echo, a.Logger)
+		p.Initialize()
+		if update {
+			path.UpdatePlugin(p)
+		} else {
+			path.AddPlugin(p)
+		}
+	}
+}
+
 func (h *Host) AddPath(name string) *Path {
 	h.mutex.Lock()
 	defer h.mutex.Unlock()

@@ -8,12 +8,11 @@ import (
 	"github.com/hashicorp/logutils"
 	"github.com/hashicorp/serf/serf"
 	"github.com/labstack/armor"
-	"github.com/labstack/armor/plugin"
 )
 
 // Events
 const (
-	EventPluginAdd    = "1"
+	EventPluginLoad   = "1"
 	EventPluginUpdate = "2"
 )
 
@@ -53,40 +52,13 @@ func Start(a *armor.Armor) {
 			switch t := e.(type) {
 			case serf.UserEvent:
 				switch t.Name {
-				case EventPluginAdd, EventPluginUpdate:
+				case EventPluginLoad, EventPluginUpdate:
 					id := string(t.Payload)
 					p, err := a.Store.FindPlugin(id)
 					if err != nil {
 						a.Logger.Error(err)
 					}
-
-					if p.Host == "" && p.Path == "" {
-						// Global level
-					} else if p.Host != "" && p.Path == "" {
-						// Host level
-					} else if p.Host != "" && p.Path != "" {
-						// Path level
-						host := a.FindHost(p.Host)
-						if host == nil {
-							host = a.AddHost(p.Host)
-						}
-						path := host.FindPath(p.Path)
-						if path == nil {
-							path = host.AddPath(p.Path)
-						}
-						p, err := plugin.Decode(p.Raw, host.Echo, a.Logger)
-						if err != nil {
-							a.Logger.Error(err)
-						}
-						if err = p.Initialize(); err != nil {
-							a.Logger.Fatal(err)
-						}
-						if t.Name == EventPluginAdd {
-							path.AddPlugin(p)
-						} else {
-							path.UpdatePlugin(p)
-						}
-					}
+					a.LoadPlugin(p, t.Name == EventPluginUpdate)
 				}
 			}
 		}

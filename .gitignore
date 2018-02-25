@@ -1,4 +1,6 @@
 .DS_Store
+*.db
 build
-website/public
+public
+node_modules
 _test

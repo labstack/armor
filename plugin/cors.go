@@ -12,9 +12,8 @@ type (
 	}
 )
 
-func (c *CORS) Initialize() error {
+func (c *CORS) Initialize() {
 	c.Middleware = middleware.CORSWithConfig(c.CORSConfig)
-	return nil
 }
 
 func (*CORS) Priority() int {

@@ -12,9 +12,8 @@ type (
 	}
 )
 
-func (b *BodyLimit) Initialize() error {
+func (b *BodyLimit) Initialize() {
 	b.Middleware = middleware.BodyLimitWithConfig(b.BodyLimitConfig)
-	return nil
 }
 
 func (b *BodyLimit) Update(p Plugin) {

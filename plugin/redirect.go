@@ -45,7 +45,7 @@ type (
 	}
 )
 
-func (r *Redirect) Initialize() error {
+func (r *Redirect) Initialize() {
 	t := NewTemplate(r.To)
 	// Defaults
 	if r.Code == 0 {
@@ -58,7 +58,6 @@ func (r *Redirect) Initialize() error {
 		}
 		return c.Redirect(r.Code, to)
 	})
-	return nil
 }
 
 func (r *Redirect) Update(p Plugin) {
@@ -78,9 +77,8 @@ func (r *Redirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func (r *HTTPSRedirect) Initialize() error {
+func (r *HTTPSRedirect) Initialize() {
 	r.Middleware = middleware.HTTPSRedirectWithConfig(r.RedirectConfig)
-	return nil
 }
 
 func (r *HTTPSRedirect) Update(p Plugin) {
@@ -98,9 +96,8 @@ func (r *HTTPSRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (r *HTTPSWWWRedirect) Initialize() error {
+func (r *HTTPSWWWRedirect) Initialize() {
 	r.Middleware = middleware.HTTPSWWWRedirectWithConfig(r.RedirectConfig)
-	return nil
 }
 
 func (r *HTTPSWWWRedirect) Update(p Plugin) {
@@ -118,7 +115,7 @@ func (r *HTTPSWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (r *HTTPSNonWWWRedirect) Initialize() error {
+func (r *HTTPSNonWWWRedirect) Initialize() {
 	e := NewExpression(r.Skip)
 	r.RedirectConfig.Skipper = func(c echo.Context) bool {
 		skip, err := e.Evaluate(c)
@@ -128,7 +125,6 @@ func (r *HTTPSNonWWWRedirect) Initialize() error {
 		return skip.(bool)
 	}
 	r.Middleware = middleware.HTTPSNonWWWRedirectWithConfig(r.RedirectConfig)
-	return nil
 }
 
 func (r *HTTPSNonWWWRedirect) Update(p Plugin) {
@@ -146,9 +142,8 @@ func (r *HTTPSNonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (r *WWWRedirect) Initialize() error {
+func (r *WWWRedirect) Initialize() {
 	r.Middleware = middleware.WWWRedirectWithConfig(r.RedirectConfig)
-	return nil
 }
 
 func (r *WWWRedirect) Update(p Plugin) {
@@ -166,9 +161,8 @@ func (r *WWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return r.Middleware(next)
 }
 
-func (r *NonWWWRedirect) Initialize() error {
+func (r *NonWWWRedirect) Initialize() {
 	r.Middleware = middleware.NonWWWRedirectWithConfig(r.RedirectConfig)
-	return nil
 }
 
 func (r *NonWWWRedirect) Update(p Plugin) {

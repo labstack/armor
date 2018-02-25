@@ -13,8 +13,7 @@ type (
 	}
 )
 
-func (f *File) Initialize() error {
-	return nil
+func (f *File) Initialize() {
 }
 
 func (f *File) Update(p Plugin) {

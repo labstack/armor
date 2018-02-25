@@ -12,9 +12,8 @@ type (
 	}
 )
 
-func (g *Gzip) Initialize() error {
+func (g *Gzip) Initialize() {
 	g.Middleware = middleware.GzipWithConfig(g.GzipConfig)
-	return nil
 }
 
 func (g *Gzip) Update(p Plugin) {
