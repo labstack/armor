@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	stdLog "log"
 	"net"
@@ -46,6 +47,8 @@ ________________________O/_______
       address: :8082
       peers:
         - 127.0.0.1:8082
+    sqlite:
+      uri: %s
     plugins:
       -
         name: logger
@@ -152,12 +155,15 @@ func main() {
 	}
 
 	// Config - start
+	wd, err := os.Getwd()
+	if err != nil {
+		logger.Fatal(err)
+	}
 	// Load
 	data, err := ioutil.ReadFile(*config)
 	if err != nil {
-		// log.Fatal(err)
 		// Use default config
-		data = []byte(defaultConfig)
+		data = []byte(fmt.Sprintf(defaultConfig, filepath.Join(wd, "armor.db")))
 	}
 	if err = yaml.Unmarshal(data, a); err != nil {
 		logger.Fatalf("armor: not able to parse the config file, error=%v", err)
@@ -181,14 +187,11 @@ func main() {
 	h := http.Init(a)
 
 	// Store
+	if a.SQLite != nil {
+		a.Store = store.NewSqlite(a.SQLite.URI)
+	}
 	if a.Postgres != nil {
 		a.Store = store.NewPostgres(a.Postgres.URI)
-	} else {
-		path, err := os.Getwd()
-		if err != nil {
-			logger.Fatal(err)
-		}
-		a.Store = store.NewSqlite(filepath.Join(path, "armor.db"))
 	}
 	savePlugins(a)
 

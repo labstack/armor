@@ -21,6 +21,7 @@ type (
 		TLS          *TLS               `yaml:"tls"`
 		Admin        *Admin             `yaml:"admin"`
 		Postgres     *Postgres          `yaml:"postgres"`
+		SQLite       *SQLite            `yaml:"sqlite"`
 		Cluster      *Cluster           `yaml:"cluster"`
 		ReadTimeout  time.Duration      `yaml:"read_timeout"`
 		WriteTimeout time.Duration      `yaml:"write_timeout"`
@@ -47,6 +48,10 @@ type (
 	}
 
 	Postgres struct {
+		URI string `yaml:"uri"`
+	}
+
+	SQLite struct {
 		URI string `yaml:"uri"`
 	}
 
@@ -81,7 +86,7 @@ type (
 )
 
 const (
-	Version = "0.3.8"
+	Version = "0.4.0-dev"
 	Website = "https://armor.labstack.com"
 )
 
