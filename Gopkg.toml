@@ -80,3 +80,15 @@
 [[constraint]]
   name = "github.com/mattn/go-sqlite3"
   version = "1.6.0"
+
+[[constraint]]
+  name = "github.com/coreos/etcd"
+  version = "3.3.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/samuel/go-zookeeper"
+
+[[constraint]]
+  name = "github.com/hashicorp/consul"
+  version = "1.0.6"

@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/labstack/armor"
@@ -12,7 +13,11 @@ import (
 	"github.com/labstack/echo"
 )
 
-func (h *handler) lookupPlugin(name string, host *armor.Host, path *armor.Path) (p plugin.Plugin) {
+func decodePath(c echo.Context) string {
+	return strings.Replace(c.Param("path"), "~", "/", 1)
+}
+
+func lookupPlugin(name string, host *armor.Host, path *armor.Path) (p plugin.Plugin) {
 	plugins := []plugin.Plugin{}
 
 	// Global
@@ -38,17 +43,17 @@ func (h *handler) addPlugin(c echo.Context) (err error) {
 	if err = c.Bind(p); err != nil {
 		return
 	}
-
 	p.ID = util.ID()
+	p.Host = c.Param("host")
+	p.Path = decodePath(c)
+	p.Source = store.API
 	now := time.Now()
 	p.CreatedAt = now
 	p.UpdatedAt = now
 	if err = h.store.AddPlugin(p); err != nil {
 		return err
 	}
-
 	h.cluster.UserEvent(cluster.EventPluginLoad, []byte(p.ID), true)
-
 	return c.JSON(http.StatusCreated, p)
 
 	// hostName := c.Param("host")
@@ -115,7 +120,9 @@ func (h *handler) savePlugin(c echo.Context) (err error) {
 	if err = c.Bind(p); err != nil {
 		return
 	}
-	p.ID = c.Param("id")
+	p.Host = c.Param("host")
+	p.Path = decodePath(c)
+	p.Source = store.API
 	p.UpdatedAt = time.Now()
 	err = h.store.UpdatePlugin(p)
 	if err != nil {

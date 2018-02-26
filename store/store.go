@@ -29,15 +29,25 @@ type (
 		Host      string           `json:"host" db:"host"`
 		Path      string           `json:"path" db:"path"`
 		Config    types.JSONText   `json:"config" db:"config"`
+		Source    string           `json:"source,omitempty" db:"source"`
 		CreatedAt time.Time        `json:"created_at" db:"created_at"`
 		UpdatedAt time.Time        `json:"updated_at" db:"updated_at"`
 		Raw       plugin.RawPlugin `json:"-" db:"-"`
 	}
 )
 
+const (
+	API       = "api"
+	Consul    = "consul"
+	ETCD      = "etcd"
+	File      = "file"
+	Zookeeper = "zookeeper"
+)
+
 func (b *Base) AddPlugin(plugin *Plugin) (err error) {
-	query := `insert into plugins (id, name, host, path, config, created_at, updated_at)
-		values (:id, :name, :host, :path, :config, :created_at, :updated_at)`
+	query := `insert into plugins (id, name, host, path, config, source, created_at,
+		updated_at) values (:id, :name, :host, :path, :config, :source, :created_at,
+		:updated_at)`
 	_, err = b.db.NamedExec(query, plugin)
 	return
 }
@@ -78,8 +88,8 @@ func (b *Base) FindPlugins() (plugins []*Plugin, err error) {
 }
 
 func (b *Base) UpdatePlugin(p *Plugin) (err error) {
-	query := `update plugins set name = :name, host = :host, path = :path,
-		config = :config, updated_at = :updated_at where id = :id`
+	query := `update plugins set config = :config, updated_at = :updated_at
+		where name = :id and host = :host and path = :path`
 	_, err = b.db.NamedExec(query, p)
 	return
 }

@@ -27,10 +27,25 @@ func Init(a *armor.Armor, e *echo.Echo) error {
 
 	// Plugins
 	plugins := e.Group("/plugins")
-	plugins.POST("", h.addPlugin)
 	plugins.GET("/:id", h.findPlugin)
 	plugins.GET("", h.findPlugins)
-	plugins.PUT("/:id", h.savePlugin)
+
+	// Hosts
+	hosts := e.Group("/hosts/:host")
+	hostPlugins := hosts.Group("/plugins")
+	hostPlugins.POST("", h.addPlugin)
+	// hostPlugins.GET("/:id", h.findPlugin)
+	// hostPlugins.GET("", h.findPlugins)
+	hostPlugins.PUT("/:id", h.savePlugin)
+
+	// Paths
+	paths := hosts.Group("/paths/:path")
+	pathPlugins := paths.Group("/plugins")
+	pathPlugins.POST("", h.addPlugin)
+	// pathPlugins.GET("/:id", h.findPlugin)
+	// pathPlugins.GET("", h.findPlugins)
+	pathPlugins.PUT("/:id", h.savePlugin)
+
 	// plugins.PATCH("/:id/config", h.updatePluginConfig)
 	// plugins.DELETE("/:id", h.removePlugin)
 	// plugins.POST("/targets", h.addProxyTarget)

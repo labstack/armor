@@ -12,7 +12,7 @@ import (
 
 	"github.com/go-yaml/yaml"
 	"github.com/lib/pq"
-	sqlite3 "github.com/mattn/go-sqlite3"
+	"github.com/mattn/go-sqlite3"
 
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/admin"
@@ -95,22 +95,25 @@ func savePlugins(a *armor.Armor) {
 
 	// Save
 	for _, p := range plugins {
-		now := time.Now()
+		p.Source = store.File
 		p.ID = util.ID()
+		now := time.Now()
 		p.CreatedAt = now
 		p.UpdatedAt = now
 
+		// TODO: Implement upsert?
 		if err := a.Store.AddPlugin(p); err != nil {
 			switch e := err.(type) {
 			case sqlite3.Error:
-				if e.Code != sqlite3.ErrConstraint {
-					panic(err)
+				if e.Code == sqlite3.ErrConstraint {
+					continue
 				}
 			case *pq.Error:
-				if e.Code != "23505" {
-					panic(err)
+				if e.Code == "23505" {
+					continue
 				}
 			}
+			panic(err)
 		}
 	}
 }

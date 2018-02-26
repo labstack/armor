@@ -19,6 +19,7 @@ const (
 			host text not null,
 			path text not null,
 			config blob not null,
+			source text not null,
 			created_at timestamp not null,
 			updated_at timestamp not null,
 			unique (name, host, path)

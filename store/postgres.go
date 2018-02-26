@@ -18,6 +18,7 @@ const (
 			host text not null,
 			path text not null,
 			config jsonb not null,
+			source text not null,
 			created_at timestamptz not null,
 			updated_at timestamptz not null,
 			unique (name, host, path)
