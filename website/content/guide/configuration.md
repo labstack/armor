@@ -28,6 +28,7 @@ Name | Type | Description
 `auto` | bool | Enable automatic certificates from https://letsencrypt.org
 `cache_dir` | string | Cache directory to store certificates from https://letsencrypt.org. Default value `~/.armor/cache`.
 `email` | string | Email optionally specifies a contact email address.
+`directory_url` | string | Let user define his ACME directory endpoint. If empty, it uses Let's Encrypt infrastructure (acme.LetsEncryptURL).
 
 `hosts`
 
