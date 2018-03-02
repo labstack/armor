@@ -34,12 +34,13 @@ type (
 	}
 
 	TLS struct {
-		Address  string `yaml:"address"`
-		CertFile string `yaml:"cert_file"`
-		KeyFile  string `yaml:"key_file"`
-		Auto     bool   `yaml:"auto"`
-		CacheDir string `yaml:"cache_dir"`
-		Email    string `yaml:"email"`
+		Address      string `yaml:"address"`
+		CertFile     string `yaml:"cert_file"`
+		KeyFile      string `yaml:"key_file"`
+		Auto         bool   `yaml:"auto"`
+		CacheDir     string `yaml:"cache_dir"`
+		Email        string `yaml:"email"`
+		DirectoryURL string `yaml:"directory_url"`
 	}
 
 	Admin struct {

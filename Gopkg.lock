@@ -87,32 +87,50 @@
 
 [[projects]]
   name = "github.com/hashicorp/serf"
-  packages = ["coordinate","serf"]
+  packages = [
+    "coordinate",
+    "serf"
+  ]
   revision = "d6574a5bb1226678d7010325fb6c985db20ee458"
   version = "v0.8.1"
 
 [[projects]]
   branch = "master"
   name = "github.com/jmoiron/sqlx"
-  packages = [".","reflectx","types"]
+  packages = [
+    ".",
+    "reflectx",
+    "types"
+  ]
   revision = "05cef0741ade10ca668982355b3f3f0bcf0ff0a8"
 
 [[projects]]
   branch = "master"
   name = "github.com/labstack/echo"
-  packages = [".","middleware"]
-  revision = "4f3080c197fb03bd488e822b71bd0e0792a19a72"
+  packages = [
+    ".",
+    "middleware"
+  ]
+  revision = "3cdcc65b23540bffa1d271a22e77014f627de569"
 
 [[projects]]
   name = "github.com/labstack/gommon"
-  packages = ["bytes","color","log","random"]
+  packages = [
+    "bytes",
+    "color",
+    "log",
+    "random"
+  ]
   revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
   version = "0.2.3"
 
 [[projects]]
   branch = "master"
   name = "github.com/lib/pq"
-  packages = [".","oid"]
+  packages = [
+    ".",
+    "oid"
+  ]
   revision = "88edab0803230a3898347e77b474f8c1820a1f20"
 
 [[projects]]
@@ -178,13 +196,24 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert","ed25519","ed25519/internal/edwards25519"]
+  packages = [
+    "acme",
+    "acme/autocert",
+    "ed25519",
+    "ed25519/internal/edwards25519"
+  ]
   revision = "49796115aa4b964c318aad4f3084fdb41e9aa067"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["bpf","internal/iana","internal/socket","ipv4","ipv6"]
+  packages = [
+    "bpf",
+    "internal/iana",
+    "internal/socket",
+    "ipv4",
+    "ipv6"
+  ]
   revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
 
 [[projects]]

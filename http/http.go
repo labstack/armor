@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	homedir "github.com/mitchellh/go-homedir"
+	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -47,6 +48,8 @@ func Init(a *armor.Armor) (h *HTTP) {
 			WriteTimeout: a.WriteTimeout * time.Second,
 		}
 		e.AutoTLSManager.Email = a.TLS.Email
+		e.AutoTLSManager.Client = new(acme.Client)
+		e.AutoTLSManager.Client.DirectoryURL = a.TLS.DirectoryURL
 	}
 	e.Logger = h.logger
 
