@@ -90,6 +90,9 @@ func (h *HTTP) StartTLS() error {
 	s.TLSConfig.NextProtos = append(s.TLSConfig.NextProtos, "h2")
 
 	if a.TLS.Auto {
+		// Enable the "http-01" challenge
+		e.Server.Handler = e.AutoTLSManager.HTTPHandler(e.Server.Handler)
+
 		hosts := []string{}
 		for host := range a.Hosts {
 			hosts = append(hosts, host)
