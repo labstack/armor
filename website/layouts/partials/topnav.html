@@ -1,12 +1,9 @@
 <div class="topnav">
   <nav class="w3-content">
     <a href="/"><img class="logo" src="https://cdn.labstack.com/images/armor-logo.svg" alt="Armor"></a>
-    <span class="hide-small w3-hide-medium menu">
-      {{ $currentNode := . }}
-      {{ range .Site.Menus.main }}
-        <a{{ if or ($currentNode.HasMenuCurrent "main" .) ($currentNode.IsMenuCurrent "main" .) }} class="active"{{ end }} href="{{ .URL }}">{{ .Name }}</a>
-      {{ end }}
+    <span class="menu hide-small hide-medium">
       <a href="https://forum.labstack.com">Forum</a>
+      <a href="https://gitter.im/labstack/armor">Chat</a>
     </span>
     <button class="hamburger hide-large" onclick="toggleSidenav()">
       <span></span>

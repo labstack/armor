@@ -14,14 +14,16 @@
               {{ .Content }}
             </section>
             <footer>
-              <div class="w3-panel w3-pale-blue w3-leftbar w3-border-blue">
-                <p>
-                  <i class="fa fa-pencil" aria-hidden="true"></i>
-                  <a href="https://github.com/labstack/armor/blob/master/website/content/{{ .File.Path }}">
-                    Edit this page on GitHub
-                  </a>
-                </p>
-              </div>
+              Caught a mistake?
+              <a 
+                href="https://github.com/labstack/echox/blob/master/website/content/{{ .File.Path }}">
+                <i class="far fa-edit"></i> Edit this page on GitHub!
+              </a>
+              <hr>
+              <h2>
+                <a href="https://forum.labstack.com">Forum</a> ✧
+                <a href="https://gitter.im/labstack/armor">Chat</a>
+              </h2>
             </footer>
           </article>
         </div>

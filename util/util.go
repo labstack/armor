@@ -7,7 +7,7 @@ import (
 )
 
 func ID() string {
-	return random.String(8)
+	return random.String(8, random.Lowercase, random.Numeric)
 }
 
 // StripPort strips port from the host.
