@@ -10,6 +10,18 @@
           {{ partial "notice.html" }}
           <article class="content">
             <section>
+              {{ $url := replace .Permalink (printf "%s" .Site.BaseURL) "" }}
+              {{ $.Scratch.Add "path" .Site.BaseURL }}
+              <ul class="breadcrumb">
+                <!-- <li><a href="/">home</a></li> -->
+                {{ range $index, $element := split $url "/" }}
+                {{ $.Scratch.Add "path" $element }}
+                {{ if ne $element "" }}
+                <li><a href='{{ $.Scratch.Get "path" }}'>{{ . }}</a></li>
+                {{ $.Scratch.Add "path" "/" }}
+                {{ end }}
+                {{ end }}
+              </ul>
               <h1>{{ .Title }}</h1>
               {{ .Content }}
             </section>

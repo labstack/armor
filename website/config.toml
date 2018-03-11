@@ -1,4 +1,4 @@
-baseURL = "https://armor.labstack.com"
+baseURL = "https://armor.labstack.com/"
 languageCode = "en-us"
 title = "Armor - Uncomplicated, modern HTTP server"
 googleAnalytics = "UA-85059636-1"
