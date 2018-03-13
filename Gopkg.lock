@@ -50,12 +50,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/go-yaml/yaml"
-  packages = ["."]
-  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
-  version = "v2.1.1"
-
-[[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "925541529c1fa6821df4e44ce2723319eb2be768"
@@ -143,7 +137,7 @@
   branch = "master"
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
-  revision = "f5491fda0d4d526a1dad6fdf066f5e1c95ba9be4"
+  revision = "bdb49be73456afc6b3da03d938e188f3c44fe6f4"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -245,13 +239,13 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["bpf","context","internal/iana","internal/socket","ipv4","ipv6"]
-  revision = "ae89d30ce0c63142b652837da33d782e2b0a9b25"
+  revision = "803fdb99c0f72e493c28ef2099d250a9c989d8ff"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "c28acc882ebcbfbe8ce9f0f14b9ac26ee138dd51"
+  revision = "8c0ece68c28377f4c326d85b94f8df0dace46f80"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -262,6 +256,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7f62e14c4dcb7707f5dedae891dede1678efef293e9bfabaf34d9d4b6dc80ea4"
+  inputs-digest = "9af503154cb343ed223e95f2d43a11448845c5e721dbf04e16ab8229a0ca80b5"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -30,8 +30,8 @@
   version = "0.2.1"
 
 [[constraint]]
-  name = "github.com/go-yaml/yaml"
-  version = "2.1.1"
+  name = "github.com/ghodss/yaml"
+  version = "1.0.0"
 
 [[constraint]]
   name = "github.com/golang/protobuf"
@@ -62,6 +62,10 @@
   name = "github.com/lib/pq"
 
 [[constraint]]
+  name = "github.com/mattn/go-sqlite3"
+  version = "1.6.0"
+
+[[constraint]]
   branch = "master"
   name = "github.com/mitchellh/go-homedir"
 
@@ -80,7 +84,3 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
-
-[[constraint]]
-  name = "github.com/ghodss/yaml"
-  version = "1.0.0"

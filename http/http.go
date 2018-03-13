@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	"github.com/mitchellh/go-homedir"
+	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -19,21 +20,6 @@ type (
 		armor  *armor.Armor
 		echo   *echo.Echo
 		logger *log.Logger
-	}
-)
-
-var (
-	methods = []string{
-		"CONNECT",
-		"DELETE",
-		"GET",
-		"HEAD",
-		"OPTIONS",
-		"PATCH",
-		"POST",
-		"PROPFIND",
-		"PUT",
-		"TRACE",
 	}
 )
 
@@ -61,6 +47,10 @@ func Init(a *armor.Armor) (h *HTTP) {
 			WriteTimeout: a.WriteTimeout * time.Second,
 		}
 		e.AutoTLSManager.Email = a.TLS.Email
+		e.AutoTLSManager.Client = new(acme.Client)
+		if a.TLS.DirectoryURL != "" {
+			e.AutoTLSManager.Client.DirectoryURL = a.TLS.DirectoryURL
+		}
 	}
 	e.Logger = h.logger
 
@@ -75,18 +65,16 @@ func Init(a *armor.Armor) (h *HTTP) {
 	})
 
 	// Route all requests
-	for _, m := range methods {
-		e.Add(m, "/*", func(c echo.Context) (err error) {
-			req := c.Request()
-			res := c.Response()
-			host := a.FindHost(util.StripPort(req.Host))
-			if host == nil {
-				return echo.ErrNotFound
-			}
-			host.Echo.ServeHTTP(res, req)
-			return
-		})
-	}
+	e.Any("/*", func(c echo.Context) (err error) {
+		req := c.Request()
+		res := c.Response()
+		host := a.FindHost(util.StripPort(req.Host))
+		if host == nil {
+			return echo.ErrNotFound
+		}
+		host.Echo.ServeHTTP(res, req)
+		return
+	})
 
 	return
 }
@@ -107,6 +95,9 @@ func (h *HTTP) StartTLS() error {
 	s.TLSConfig.NextProtos = append(s.TLSConfig.NextProtos, "h2")
 
 	if a.TLS.Auto {
+		// Enable the "http-01" challenge
+		e.Server.Handler = e.AutoTLSManager.HTTPHandler(e.Server.Handler)
+
 		hosts := []string{}
 		for host := range a.Hosts {
 			hosts = append(hosts, host)

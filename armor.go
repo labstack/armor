@@ -16,68 +16,71 @@ import (
 type (
 	Armor struct {
 		mutex        sync.RWMutex
-		Name         string             `yaml:"name"`
-		Address      string             `yaml:"address"`
-		TLS          *TLS               `yaml:"tls"`
-		Admin        *Admin             `yaml:"admin"`
-		Postgres     *Postgres          `yaml:"postgres"`
-		SQLite       *SQLite            `yaml:"sqlite"`
-		Cluster      *Cluster           `yaml:"cluster"`
-		ReadTimeout  time.Duration      `yaml:"read_timeout"`
-		WriteTimeout time.Duration      `yaml:"write_timeout"`
-		RawPlugins   []plugin.RawPlugin `yaml:"plugins"`
-		Hosts        Hosts              `yaml:"hosts"`
-		Store        store.Store        `yaml:"-"`
-		Plugins      []plugin.Plugin    `yaml:"-"`
-		Echo         *echo.Echo         `yaml:"-"`
-		Logger       *log.Logger        `yaml:"-"`
-		Colorer      *color.Color       `yaml:"-"`
+		Name         string             `json:"name"`
+		Address      string             `json:"address"`
+		TLS          *TLS               `json:"tls"`
+		Admin        *Admin             `json:"admin"`
+		Postgres     *Postgres          `json:"postgres"`
+		SQLite       *SQLite            `json:"sqlite"`
+		Cluster      *Cluster           `json:"cluster"`
+		ReadTimeout  time.Duration      `json:"read_timeout"`
+		WriteTimeout time.Duration      `json:"write_timeout"`
+		RawPlugins   []plugin.RawPlugin `json:"plugins"`
+		Hosts        Hosts              `json:"hosts"`
+		Store        store.Store        `json:"-"`
+		Plugins      []plugin.Plugin    `json:"-"`
+		Echo         *echo.Echo         `json:"-"`
+		Logger       *log.Logger        `json:"-"`
+		Colorer      *color.Color       `json:"-"`
 	}
 
 	TLS struct {
-		Address  string `yaml:"address"`
-		CertFile string `yaml:"cert_file"`
-		KeyFile  string `yaml:"key_file"`
-		Auto     bool   `yaml:"auto"`
-		CacheDir string `yaml:"cache_dir"`
-		Email    string `yaml:"email"`
+		Address      string `json:"address"`
+		CertFile     string `json:"cert_file"`
+		KeyFile      string `json:"key_file"`
+		Auto         bool   `json:"auto"`
+		CacheDir     string `json:"cache_dir"`
+		Email        string `json:"email"`
+		DirectoryURL string `yaml:"directory_url"`
 	}
 
 	Admin struct {
-		Address string `yaml:"address"`
+		Address string `json:"address"`
 	}
 
 	Postgres struct {
-		URI string `yaml:"uri"`
+		URI string `json:"uri"`
 	}
 
 	SQLite struct {
-		URI string `yaml:"uri"`
+		URI string `json:"uri"`
 	}
 
 	Cluster struct {
 		*serf.Serf
-		Address string   `yaml:"address"`
-		Peers   []string `yaml:"peers"`
+		Address string   `json:"address"`
+		Peers   []string `json:"peers"`
 	}
 
 	Host struct {
-		mutex      sync.RWMutex
-		Name       string             `yaml:"-"`
-		CertFile   string             `yaml:"cert_file"`
-		KeyFile    string             `yaml:"key_file"`
-		RawPlugins []plugin.RawPlugin `yaml:"plugins"`
-		Paths      Paths              `yaml:"paths"`
-		Plugins    []plugin.Plugin    `yaml:"-"`
-		Echo       *echo.Echo         `yaml:"-"`
+		mutex       sync.RWMutex
+		initialized bool
+		Name        string             `json:"-"`
+		CertFile    string             `json:"cert_file"`
+		KeyFile     string             `json:"key_file"`
+		RawPlugins  []plugin.RawPlugin `json:"plugins"`
+		Paths       Paths              `json:"paths"`
+		Plugins     []plugin.Plugin    `json:"-"`
+		Echo        *echo.Echo         `json:"-"`
 	}
 
 	Path struct {
-		mutex      sync.RWMutex
-		Name       string             `yaml:"-"`
-		RawPlugins []plugin.RawPlugin `yaml:"plugins"`
-		Plugins    []plugin.Plugin    `yaml:"-"`
-		Group      *echo.Group        `yaml:"-"`
+		mutex       sync.RWMutex
+		initialized bool
+		Name        string             `json:"-"`
+		RawPlugins  []plugin.RawPlugin `json:"plugins"`
+		Plugins     []plugin.Plugin    `json:"-"`
+		Group       *echo.Group        `json:"-"`
 	}
 
 	Hosts map[string]*Host
@@ -86,28 +89,31 @@ type (
 )
 
 const (
-	Version = "0.4.0-dev"
+	Version = "0.4.0"
 	Website = "https://armor.labstack.com"
 )
-
-func (a *Armor) AddHost(name string) *Host {
-	a.mutex.Lock()
-	defer a.mutex.Unlock()
-	h, ok := a.Hosts[name]
-	if !ok {
-		h = &Host{Paths: make(Paths)}
-		a.Hosts[name] = h
-	}
-	h.Echo = echo.New()
-	h.Name = name
-	h.Echo.Logger = a.Logger
-	return h
-}
 
 func (a *Armor) FindHost(name string) *Host {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
-	return a.Hosts[name]
+	h := a.Hosts[name]
+
+	// Add host
+	if h == nil {
+		h = new(Host)
+		a.Hosts[name] = h
+	}
+
+	// Initialize host
+	if !h.initialized {
+		h.Paths = make(Paths)
+		h.Echo = echo.New()
+		h.Name = name
+		h.Echo.Logger = a.Logger
+		h.initialized = true
+	}
+
+	return h
 }
 
 func (a *Armor) AddPlugin(p plugin.Plugin) {
@@ -144,9 +150,6 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 	} else if p.Host != "" && p.Path == "" {
 		// Host level
 		host := a.FindHost(p.Host)
-		if host == nil {
-			host = a.AddHost(p.Host)
-		}
 		p := plugin.Decode(p.Raw, host.Echo, a.Logger)
 		p.Initialize()
 		if update {
@@ -157,13 +160,7 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 	} else if p.Host != "" && p.Path != "" {
 		// Path level
 		host := a.FindHost(p.Host)
-		if host == nil {
-			host = a.AddHost(p.Host)
-		}
 		path := host.FindPath(p.Path)
-		if path == nil {
-			path = host.AddPath(p.Path)
-		}
 		p := plugin.Decode(p.Raw, host.Echo, a.Logger)
 		p.Initialize()
 		if update {
@@ -174,23 +171,25 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 	}
 }
 
-func (h *Host) AddPath(name string) *Path {
-	h.mutex.Lock()
-	defer h.mutex.Unlock()
-	p, ok := h.Paths[name]
-	if !ok {
-		p = new(Path)
-		h.Paths[name] = p
-	}
-	p.Name = name
-	p.Group = h.Echo.Group(name)
-	return p
-}
-
 func (h *Host) FindPath(name string) *Path {
 	h.mutex.Lock()
 	defer h.mutex.Unlock()
-	return h.Paths[name]
+	p := h.Paths[name]
+
+	// Add path
+	if p == nil {
+		p = new(Path)
+		h.Paths[name] = p
+	}
+
+	// Initialize path
+	if !p.initialized {
+		p.Name = name
+		p.Group = h.Echo.Group(name)
+		p.initialized = true
+	}
+
+	return p
 }
 
 func (h *Host) AddPlugin(p plugin.Plugin) {

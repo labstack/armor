@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"testing"
 	"time"
 
@@ -173,11 +174,45 @@ func TestUtimesNanoAt(t *testing.T) {
 	}
 }
 
-func TestGetrlimit(t *testing.T) {
+func TestRlimitAs(t *testing.T) {
+	// disable GC during to avoid flaky test
+	defer debug.SetGCPercent(debug.SetGCPercent(-1))
+
 	var rlim unix.Rlimit
 	err := unix.Getrlimit(unix.RLIMIT_AS, &rlim)
 	if err != nil {
 		t.Fatalf("Getrlimit: %v", err)
+	}
+	var zero unix.Rlimit
+	if zero == rlim {
+		t.Fatalf("Getrlimit: got zero value %#v", rlim)
+	}
+	set := rlim
+	set.Cur = uint64(unix.Getpagesize())
+	err = unix.Setrlimit(unix.RLIMIT_AS, &set)
+	if err != nil {
+		t.Fatalf("Setrlimit: set failed: %#v %v", set, err)
+	}
+
+	// RLIMIT_AS was set to the page size, so mmap()'ing twice the page size
+	// should fail. See 'man 2 getrlimit'.
+	_, err = unix.Mmap(-1, 0, 2*unix.Getpagesize(), unix.PROT_NONE, unix.MAP_ANON|unix.MAP_PRIVATE)
+	if err == nil {
+		t.Fatal("Mmap: unexpectedly suceeded after setting RLIMIT_AS")
+	}
+
+	err = unix.Setrlimit(unix.RLIMIT_AS, &rlim)
+	if err != nil {
+		t.Fatalf("Setrlimit: restore failed: %#v %v", rlim, err)
+	}
+
+	b, err := unix.Mmap(-1, 0, 2*unix.Getpagesize(), unix.PROT_NONE, unix.MAP_ANON|unix.MAP_PRIVATE)
+	if err != nil {
+		t.Fatalf("Mmap: %v", err)
+	}
+	err = unix.Munmap(b)
+	if err != nil {
+		t.Fatalf("Munmap: %v", err)
 	}
 }
 

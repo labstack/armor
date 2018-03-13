@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/go-yaml/yaml"
+	"github.com/ghodss/yaml"
 	"github.com/lib/pq"
 	"github.com/mattn/go-sqlite3"
 
@@ -56,7 +56,7 @@ func savePlugins(a *armor.Armor) {
 	for _, rp := range a.RawPlugins {
 		plugins = append(plugins, &store.Plugin{
 			Name:   rp.Name(),
-			Config: rp.Bytes(),
+			Config: rp.JSON(),
 		})
 	}
 
@@ -66,7 +66,7 @@ func savePlugins(a *armor.Armor) {
 			plugins = append(plugins, &store.Plugin{
 				Name:   rp.Name(),
 				Host:   hn,
-				Config: rp.Bytes(),
+				Config: rp.JSON(),
 			})
 		}
 
@@ -77,7 +77,7 @@ func savePlugins(a *armor.Armor) {
 					Name:   rp.Name(),
 					Host:   hn,
 					Path:   pn,
-					Config: rp.Bytes(),
+					Config: rp.JSON(),
 				})
 			}
 		}

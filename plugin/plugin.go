@@ -113,12 +113,12 @@ func (rp RawPlugin) Name() string {
 	return name
 }
 
-func (rp RawPlugin) Bytes() []byte {
-	b, err := json.Marshal(rp)
+func (rp RawPlugin) JSON() []byte {
+	j, err := json.Marshal(rp)
 	if err != nil {
 		panic(err)
 	}
-	return b
+	return j
 }
 
 // Decode searches the plugin by name, decodes the provided map into plugin.

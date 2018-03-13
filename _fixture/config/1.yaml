@@ -1,0 +1,12 @@
+name: test
+address: :8080
+plugins:
+  - name: logger
+hosts:
+  localhost:
+    plugins:
+      - name: proxy
+        targets:
+        - name: cloud
+          url: http://localhost:9090
+    
