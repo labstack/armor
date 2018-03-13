@@ -41,19 +41,9 @@ ________________________O/_______
 	defaultConfig = `
     name: armor
     address: :8080
-    admin:
-      address: 127.0.0.1:8081
-    cluster:
-      address: :8082
-      peers:
-        - 127.0.0.1:8082
-    sqlite:
-      uri: %s
     plugins:
-      -
-        name: logger
-      -
-        name: static
+      - name: logger
+      - name: static
         browse: true
         root: .
   `
@@ -158,17 +148,14 @@ func main() {
 	}
 
 	// Config - start
-	wd, err := os.Getwd()
-	if err != nil {
-		logger.Fatal(err)
-	}
 	// Load
 	data, err := ioutil.ReadFile(*config)
 	if err != nil {
 		// Use default config
-		data = []byte(fmt.Sprintf(defaultConfig, filepath.Join(wd, "armor.db")))
+		data = []byte(fmt.Sprintf(defaultConfig))
 	}
 	if err = yaml.Unmarshal(data, a); err != nil {
+		fmt.Printf("%s", data)
 		logger.Fatalf("armor: not able to parse the config file, error=%v", err)
 	}
 
@@ -177,9 +164,31 @@ func main() {
 		a.Address = net.JoinHostPort("", *port)
 	}
 
+	// Working directory
+	wd, err := os.Getwd()
+	if err != nil {
+		logger.Fatal(err)
+	}
+
 	// Defaults
 	if a.Address == "" {
 		a.Address = ":80"
+	}
+	if a.SQLite == nil {
+		a.SQLite = &armor.SQLite{
+			URI: filepath.Join(wd, "armor.db"),
+		}
+	}
+	if a.Admin == nil {
+		a.Admin = &armor.Admin{
+			Address: "127.0.0.1:8081",
+		}
+	}
+	if a.Cluster == nil {
+		a.Cluster = &armor.Cluster{
+			Address: ":8082",
+			Peers:   []string{"127.0.0.1:8082"},
+		}
 	}
 	if a.Hosts == nil {
 		a.Hosts = make(armor.Hosts)
@@ -190,23 +199,18 @@ func main() {
 	h := http.Init(a)
 
 	// Store
-	if a.SQLite != nil {
-		a.Store = store.NewSqlite(a.SQLite.URI)
-	}
 	if a.Postgres != nil {
 		a.Store = store.NewPostgres(a.Postgres.URI)
+	} else {
+		a.Store = store.NewSqlite(a.SQLite.URI)
 	}
 	savePlugins(a)
 
 	// Start cluster
-	if a.Cluster != nil {
-		go cluster.Start(a)
-	}
+	go cluster.Start(a)
 
 	// Start admin
-	if a.Admin != nil {
-		go admin.Start(a)
-	}
+	go admin.Start(a)
 
 	// Start server - start
 	colorer.Printf(banner, colorer.Red("v"+armor.Version), colorer.Blue(armor.Website))

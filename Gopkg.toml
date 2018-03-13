@@ -80,3 +80,7 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
+
+[[constraint]]
+  name = "github.com/ghodss/yaml"
+  version = "1.0.0"

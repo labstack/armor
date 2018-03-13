@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/armor/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/mitchellh/go-homedir"
 	"golang.org/x/crypto/acme/autocert"
 )
 
