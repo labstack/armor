@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	homedir "github.com/mitchellh/go-homedir"
+	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -61,6 +62,10 @@ func Init(a *armor.Armor) (h *HTTP) {
 			WriteTimeout: a.WriteTimeout * time.Second,
 		}
 		e.AutoTLSManager.Email = a.TLS.Email
+		e.AutoTLSManager.Client = new(acme.Client)
+		if a.TLS.DirectoryURL != "" {
+			e.AutoTLSManager.Client.DirectoryURL = a.TLS.DirectoryURL
+		}
 	}
 	e.Logger = h.logger
 
@@ -107,6 +112,9 @@ func (h *HTTP) StartTLS() error {
 	s.TLSConfig.NextProtos = append(s.TLSConfig.NextProtos, "h2")
 
 	if a.TLS.Auto {
+		// Enable the "http-01" challenge
+		e.Server.Handler = e.AutoTLSManager.HTTPHandler(e.Server.Handler)
+
 		hosts := []string{}
 		for host := range a.Hosts {
 			hosts = append(hosts, host)
