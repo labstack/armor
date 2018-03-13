@@ -22,6 +22,21 @@ type (
 	}
 )
 
+var (
+	methods = []string{
+		"CONNECT",
+		"DELETE",
+		"GET",
+		"HEAD",
+		"OPTIONS",
+		"PATCH",
+		"POST",
+		"PROPFIND",
+		"PUT",
+		"TRACE",
+	}
+)
+
 func Init(a *armor.Armor) (h *HTTP) {
 	e := echo.New()
 
@@ -60,16 +75,18 @@ func Init(a *armor.Armor) (h *HTTP) {
 	})
 
 	// Route all requests
-	e.Any("/*", func(c echo.Context) (err error) {
-		req := c.Request()
-		res := c.Response()
-		host := a.FindHost(util.StripPort(req.Host))
-		if host == nil {
-			return echo.ErrNotFound
-		}
-		host.Echo.ServeHTTP(res, req)
-		return
-	})
+	for _, m := range methods {
+		e.Add(m, "/*", func(c echo.Context) (err error) {
+			req := c.Request()
+			res := c.Response()
+			host := a.FindHost(util.StripPort(req.Host))
+			if host == nil {
+				return echo.ErrNotFound
+			}
+			host.Echo.ServeHTTP(res, req)
+			return
+		})
+	}
 
 	return
 }

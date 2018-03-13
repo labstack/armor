@@ -16,8 +16,8 @@
 [[projects]]
   name = "github.com/coreos/etcd"
   packages = ["client","pkg/pathutil","pkg/srv","pkg/types","version"]
-  revision = "28f3f26c0e303392556035b694f75768d449d33d"
-  version = "v3.3.1"
+  revision = "c9d46ab3799b7f2174268e75f72d01e6d6aac953"
+  version = "v3.3.2"
 
 [[projects]]
   name = "github.com/coreos/go-semver"
@@ -34,8 +34,8 @@
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
-  revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
-  version = "v3.1.0"
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
 
 [[projects]]
   name = "github.com/docker/libkv"
@@ -44,10 +44,10 @@
   version = "v0.2.1"
 
 [[projects]]
-  branch = "v2"
   name = "github.com/go-yaml/yaml"
   packages = ["."]
-  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
+  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
+  version = "v2.1.1"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -101,7 +101,7 @@
   branch = "master"
   name = "github.com/hashicorp/go-sockaddr"
   packages = ["."]
-  revision = "7165ee14aff120ee3642aa2bcf2dea8eebef29c3"
+  revision = "d9a0390d2f53eca0e692e01e2e34c490f4fa6ca8"
 
 [[projects]]
   branch = "master"
@@ -131,19 +131,19 @@
   branch = "master"
   name = "github.com/jmoiron/sqlx"
   packages = [".","reflectx","types"]
-  revision = "05cef0741ade10ca668982355b3f3f0bcf0ff0a8"
+  revision = "cf35089a197953c69420c8d0cecda90809764b1d"
 
 [[projects]]
   branch = "master"
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
-  revision = "4f3080c197fb03bd488e822b71bd0e0792a19a72"
+  revision = "f5491fda0d4d526a1dad6fdf066f5e1c95ba9be4"
 
 [[projects]]
   name = "github.com/labstack/gommon"
   packages = ["bytes","color","log","random"]
-  revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
-  version = "0.2.3"
+  revision = "6fe1405d73ec4bd4cd8a4ac8e2a2b2bf95d03954"
+  version = "0.2.4"
 
 [[projects]]
   branch = "master"
@@ -233,23 +233,23 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert","ed25519","ed25519/internal/edwards25519"]
-  revision = "49796115aa4b964c318aad4f3084fdb41e9aa067"
+  revision = "182114d582623c1caa54f73de9c7224e23a48487"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["bpf","context","internal/iana","internal/socket","ipv4","ipv6"]
-  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+  revision = "ae89d30ce0c63142b652837da33d782e2b0a9b25"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "c1138c84af3a9927aee1a1b8b7ce06c9b7ea52bc"
+  revision = "c28acc882ebcbfbe8ce9f0f14b9ac26ee138dd51"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2871184609a5d75254b8a9adbd13506bd77023ce0530f26c7b42a957ffa71d05"
+  inputs-digest = "cb9f9f3cc8e36cb84fec4eb55ef6577f01899d085c8407a2bee5aa66304f877b"
   solver-name = "gps-cdcl"
   solver-version = 1

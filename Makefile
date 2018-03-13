@@ -5,11 +5,7 @@ clean:
 	rm -rf build
 
 build: clean
-	GOOS=linux GOARCH=amd64 go build -o build/armor-$(VERSION)_linux-64 cmd/armor/main.go
-	GOOS=linux GOARCH=arm go build -o build/armor-$(VERSION)_linux-arm32 cmd/armor/main.go
-	GOOS=linux GOARCH=arm64 go build -o build/armor-$(VERSION)_linux-arm64 cmd/armor/main.go
-	GOOS=darwin GOARCH=amd64 go build -o build/armor-$(VERSION)_darwin-64 cmd/armor/main.go
-	GOOS=windows GOARCH=amd64 go build -o build/armor-$(VERSION)_windows-64.exe cmd/armor/main.go
+	xgo --pkg cmd/armor -out build/armor-$(VERSION) github.com/labstack/armor
 	docker build -t $(IMAGE):$(VERSION) -t $(IMAGE) .
 
 push: build

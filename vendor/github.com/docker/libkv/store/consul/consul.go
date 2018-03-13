@@ -290,8 +290,8 @@ func (s *Consul) Watch(key string, stopCh <-chan struct{}) (<-chan *store.KVPair
 		for {
 			// Check if we should quit
 			select {
-			// case <-stopCh:
-			// 	return
+			case <-stopCh:
+				return
 			default:
 			}
 

@@ -191,6 +191,7 @@ const (
 	HeaderXHTTPMethodOverride = "X-HTTP-Method-Override"
 	HeaderXRealIP             = "X-Real-IP"
 	HeaderXRequestID          = "X-Request-ID"
+	HeaderXRequestedWith      = "X-Requested-With"
 	HeaderServer              = "Server"
 	HeaderOrigin              = "Origin"
 
@@ -609,6 +610,10 @@ func (e *Echo) StartTLS(address string, certFile, keyFile string) (err error) {
 
 // StartAutoTLS starts an HTTPS server using certificates automatically installed from https://letsencrypt.org.
 func (e *Echo) StartAutoTLS(address string) error {
+	if e.Listener == nil {
+		go http.ListenAndServe(":http", e.AutoTLSManager.HTTPHandler(nil))
+	}
+
 	s := e.TLSServer
 	s.TLSConfig = new(tls.Config)
 	s.TLSConfig.GetCertificate = e.AutoTLSManager.GetCertificate
