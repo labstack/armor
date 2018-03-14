@@ -33,6 +33,8 @@ func (*AddTrailingSlash) Priority() int {
 }
 
 func (s *AddTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
 	return s.Middleware(next)
 }
 
@@ -52,5 +54,7 @@ func (*RemoveTrailingSlash) Priority() int {
 }
 
 func (s *RemoveTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
 	return s.Middleware(next)
 }

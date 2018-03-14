@@ -28,5 +28,7 @@ func (*Rewrite) Priority() int {
 }
 
 func (r *Rewrite) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
 	return r.Middleware(next)
 }

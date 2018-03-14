@@ -69,6 +69,8 @@ func (*Proxy) Priority() int {
 }
 
 func (p *Proxy) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	p.mutex.RLock()
+	defer p.mutex.RUnlock()
 	return p.Middleware(next)
 }
 

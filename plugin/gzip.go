@@ -28,5 +28,7 @@ func (*Gzip) Priority() int {
 }
 
 func (g *Gzip) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	g.mutex.RLock()
+	defer g.mutex.RUnlock()
 	return g.Middleware(next)
 }

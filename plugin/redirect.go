@@ -72,6 +72,8 @@ func (*Redirect) Priority() int {
 }
 
 func (r *Redirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
 	return func(c echo.Context) error {
 		return next(c)
 	}
@@ -93,6 +95,8 @@ func (*HTTPSRedirect) Priority() int {
 }
 
 func (r *HTTPSRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
 	return r.Middleware(next)
 }
 
@@ -112,6 +116,8 @@ func (*HTTPSWWWRedirect) Priority() int {
 }
 
 func (r *HTTPSWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
 	return r.Middleware(next)
 }
 
@@ -139,6 +145,8 @@ func (*HTTPSNonWWWRedirect) Priority() int {
 }
 
 func (r *HTTPSNonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
 	return r.Middleware(next)
 }
 
@@ -158,6 +166,8 @@ func (*WWWRedirect) Priority() int {
 }
 
 func (r *WWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
 	return r.Middleware(next)
 }
 
@@ -177,5 +187,7 @@ func (*NonWWWRedirect) Priority() int {
 }
 
 func (r *NonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
 	return r.Middleware(next)
 }

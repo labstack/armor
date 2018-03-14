@@ -28,5 +28,7 @@ func (*Logger) Priority() int {
 }
 
 func (l *Logger) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	l.mutex.RLock()
+	defer l.mutex.RUnlock()
 	return l.Middleware(next)
 }

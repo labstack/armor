@@ -28,5 +28,7 @@ func (*Secure) Priority() int {
 }
 
 func (s *Secure) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
 	return s.Middleware(next)
 }

@@ -88,6 +88,8 @@ var (
 			p = &Static{Base: base}
 		case "file":
 			p = &File{Base: base}
+		case "cube":
+			p = &Cube{Base: base}
 		case "nats":
 			// p = &NATS{Base: base}
 		}

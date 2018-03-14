@@ -8,6 +8,12 @@
   version = "v3.0.0"
 
 [[projects]]
+  name = "github.com/StackExchange/wmi"
+  packages = ["."]
+  revision = "5d049714c4a64225c3c79a7cf7d02f7fb5b96338"
+  version = "1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/armon/go-metrics"
   packages = ["."]
@@ -15,7 +21,13 @@
 
 [[projects]]
   name = "github.com/coreos/etcd"
-  packages = ["client","pkg/pathutil","pkg/srv","pkg/types","version"]
+  packages = [
+    "client",
+    "pkg/pathutil",
+    "pkg/srv",
+    "pkg/types",
+    "version"
+  ]
   revision = "c9d46ab3799b7f2174268e75f72d01e6d6aac953"
   version = "v3.3.2"
 
@@ -39,7 +51,13 @@
 
 [[projects]]
   name = "github.com/docker/libkv"
-  packages = [".","store","store/consul","store/etcd","store/zookeeper"]
+  packages = [
+    ".",
+    "store",
+    "store/consul",
+    "store/etcd",
+    "store/zookeeper"
+  ]
   revision = "aabc039ad04deb721e234f99cd1b4aa28ac71a40"
   version = "v0.2.1"
 
@@ -50,10 +68,19 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/golang/protobuf"
-  packages = ["proto"]
-  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
-  version = "v1.0.0"
+  name = "github.com/go-ole/go-ole"
+  packages = [
+    ".",
+    "oleutil"
+  ]
+  revision = "a41e3c4b706f6ae8dfbff342b06e40fa4d2d0506"
+  version = "v1.2.1"
+
+[[projects]]
+  name = "github.com/go-resty/resty"
+  packages = ["."]
+  revision = "65798e030a35b911602b4d1d743d6f50ac93b665"
+  version = "v1.3"
 
 [[projects]]
   name = "github.com/hashicorp/consul"
@@ -123,32 +150,60 @@
 
 [[projects]]
   name = "github.com/hashicorp/serf"
-  packages = ["coordinate","serf"]
+  packages = [
+    "coordinate",
+    "serf"
+  ]
   revision = "d6574a5bb1226678d7010325fb6c985db20ee458"
   version = "v0.8.1"
 
 [[projects]]
   branch = "master"
   name = "github.com/jmoiron/sqlx"
-  packages = [".","reflectx","types"]
+  packages = [
+    ".",
+    "reflectx",
+    "types"
+  ]
   revision = "cf35089a197953c69420c8d0cecda90809764b1d"
 
 [[projects]]
-  branch = "master"
   name = "github.com/labstack/echo"
-  packages = [".","middleware"]
+  packages = [
+    ".",
+    "middleware"
+  ]
   revision = "bdb49be73456afc6b3da03d938e188f3c44fe6f4"
+  version = "3.3.1"
 
 [[projects]]
   name = "github.com/labstack/gommon"
-  packages = ["bytes","color","log","random"]
+  packages = [
+    "bytes",
+    "color",
+    "log",
+    "random"
+  ]
   revision = "6fe1405d73ec4bd4cd8a4ac8e2a2b2bf95d03954"
   version = "0.2.4"
 
 [[projects]]
+  name = "github.com/labstack/labstack-go"
+  packages = [
+    "cube",
+    "echo",
+    "util"
+  ]
+  revision = "bf8db5beaed5b160e1f26c8b2e5755f4ccfb4df9"
+  version = "0.21.10"
+
+[[projects]]
   branch = "master"
   name = "github.com/lib/pq"
-  packages = [".","oid"]
+  packages = [
+    ".",
+    "oid"
+  ]
   revision = "88edab0803230a3898347e77b474f8c1820a1f20"
 
 [[projects]]
@@ -206,6 +261,25 @@
   revision = "e2103e2c35297fb7e17febb81e49b312087a2372"
 
 [[projects]]
+  name = "github.com/shirou/gopsutil"
+  packages = [
+    "cpu",
+    "host",
+    "internal/common",
+    "mem",
+    "net",
+    "process"
+  ]
+  revision = "5776ff9c7c5d063d574ef53d740f75c68b448e53"
+  version = "v2.18.02"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/shirou/w32"
+  packages = ["."]
+  revision = "bb4de0191aa41b5507caa14b0650cdbddcd9280b"
+
+[[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
@@ -232,20 +306,58 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert","ed25519","ed25519/internal/edwards25519"]
-  revision = "182114d582623c1caa54f73de9c7224e23a48487"
+  packages = [
+    "acme",
+    "acme/autocert",
+    "ed25519",
+    "ed25519/internal/edwards25519"
+  ]
+  revision = "c4a91bd4f524f10d064139674cf55852e055ad01"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["bpf","context","internal/iana","internal/socket","ipv4","ipv6"]
-  revision = "803fdb99c0f72e493c28ef2099d250a9c989d8ff"
+  packages = [
+    "bpf",
+    "context",
+    "idna",
+    "internal/iana",
+    "internal/socket",
+    "ipv4",
+    "ipv6",
+    "publicsuffix"
+  ]
+  revision = "892bf7b0c6e2f93b51166bf3882e50277fa5afc6"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
-  revision = "8c0ece68c28377f4c326d85b94f8df0dace46f80"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "932fb2287bee613f2a65e71685c9d9c0020da979"
+
+[[projects]]
+  name = "golang.org/x/text"
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable"
+  ]
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -256,6 +368,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9af503154cb343ed223e95f2d43a11448845c5e721dbf04e16ab8229a0ca80b5"
+  inputs-digest = "85c1f3164cff7630fc45a8d3e3fdc6f6af9787799e5a437ff7228b96c5e27f4e"
   solver-name = "gps-cdcl"
   solver-version = 1
