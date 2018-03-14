@@ -3,6 +3,7 @@ package plugin
 import (
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 
 	"github.com/labstack/echo"
@@ -18,6 +19,7 @@ func TestHeader(t *testing.T) {
 		return c.String(http.StatusOK, "OK")
 	}
 	h := new(Header)
+	h.Base = Base{mutex: new(sync.RWMutex)}
 	h.Set = map[string]string{"Name": "Jon"}
 	h.Add = map[string]string{"Name": "Joe"}
 	h.Del = []string{"Delete"}
