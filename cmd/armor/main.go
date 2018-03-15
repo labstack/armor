@@ -11,9 +11,6 @@ import (
 	"time"
 
 	"github.com/ghodss/yaml"
-	"github.com/lib/pq"
-	"github.com/mattn/go-sqlite3"
-
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/admin"
 	"github.com/labstack/armor/cluster"
@@ -25,7 +22,6 @@ import (
 )
 
 const (
-
 	// http://patorjk.com/software/taag/#p=display&f=Small%20Slant&t=Armor
 	banner = `
    ___                     
@@ -83,6 +79,11 @@ func savePlugins(a *armor.Armor) {
 		}
 	}
 
+	// Delete
+	if err := a.Store.DeleteBySource("file"); err != nil {
+		panic(err)
+	}
+
 	// Save
 	for _, p := range plugins {
 		p.Source = store.File
@@ -91,18 +92,8 @@ func savePlugins(a *armor.Armor) {
 		p.CreatedAt = now
 		p.UpdatedAt = now
 
-		// TODO: Implement upsert?
+		// Insert
 		if err := a.Store.AddPlugin(p); err != nil {
-			switch e := err.(type) {
-			case sqlite3.Error:
-				if e.Code == sqlite3.ErrConstraint {
-					continue
-				}
-			case *pq.Error:
-				if e.Code == "23505" {
-					continue
-				}
-			}
 			panic(err)
 		}
 	}

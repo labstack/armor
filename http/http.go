@@ -68,7 +68,7 @@ func Init(a *armor.Armor) (h *HTTP) {
 	e.Any("/*", func(c echo.Context) (err error) {
 		req := c.Request()
 		res := c.Response()
-		host := a.FindHost(util.StripPort(req.Host))
+		host := a.FindHost(util.StripPort(req.Host), false)
 		if host == nil {
 			return echo.ErrNotFound
 		}

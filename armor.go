@@ -89,14 +89,19 @@ type (
 )
 
 const (
-	Version = "0.4.0"
+	Version = "0.4.1"
 	Website = "https://armor.labstack.com"
 )
 
-func (a *Armor) FindHost(name string) *Host {
+func (a *Armor) FindHost(name string, add bool) (h *Host) {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
-	h := a.Hosts[name]
+	h = a.Hosts[name]
+
+	// Host lookup
+	if h == nil && !add {
+		return
+	}
 
 	// Add host
 	if h == nil {
@@ -113,7 +118,7 @@ func (a *Armor) FindHost(name string) *Host {
 		h.initialized = true
 	}
 
-	return h
+	return
 }
 
 func (a *Armor) AddPlugin(p plugin.Plugin) {
@@ -149,7 +154,7 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 		}
 	} else if p.Host != "" && p.Path == "" {
 		// Host level
-		host := a.FindHost(p.Host)
+		host := a.FindHost(p.Host, true)
 		p := plugin.Decode(p.Raw, host.Echo, a.Logger)
 		p.Initialize()
 		if update {
@@ -159,7 +164,7 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 		}
 	} else if p.Host != "" && p.Path != "" {
 		// Path level
-		host := a.FindHost(p.Host)
+		host := a.FindHost(p.Host, true)
 		path := host.FindPath(p.Path)
 		p := plugin.Decode(p.Raw, host.Echo, a.Logger)
 		p.Initialize()
@@ -171,10 +176,10 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 	}
 }
 
-func (h *Host) FindPath(name string) *Path {
+func (h *Host) FindPath(name string) (p *Path) {
 	h.mutex.Lock()
 	defer h.mutex.Unlock()
-	p := h.Paths[name]
+	p = h.Paths[name]
 
 	// Add path
 	if p == nil {
@@ -189,7 +194,7 @@ func (h *Host) FindPath(name string) *Path {
 		p.initialized = true
 	}
 
-	return p
+	return
 }
 
 func (h *Host) AddPlugin(p plugin.Plugin) {

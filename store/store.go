@@ -17,6 +17,7 @@ type (
 		FindPlugin(string) (*Plugin, error)
 		FindPlugins() ([]*Plugin, error)
 		UpdatePlugin(*Plugin) error
+		DeleteBySource(source string) error
 	}
 
 	Base struct {
@@ -91,5 +92,11 @@ func (b *Base) UpdatePlugin(p *Plugin) (err error) {
 	query := `update plugins set config = :config, updated_at = :updated_at
 		where name = :id and host = :host and path = :path`
 	_, err = b.db.NamedExec(query, p)
+	return
+}
+
+func (b *Base) DeleteBySource(source string) (err error) {
+	query := `delete from plugins where source = $1`
+	_, err = b.db.Exec(query, source)
 	return
 }
