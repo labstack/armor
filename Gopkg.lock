@@ -173,8 +173,8 @@
     ".",
     "middleware"
   ]
-  revision = "bdb49be73456afc6b3da03d938e188f3c44fe6f4"
-  version = "3.3.1"
+  revision = "a5d81b8d4a627f3f49dcb3164ef2bb5239682227"
+  version = "3.3.4"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -194,8 +194,8 @@
     "echo",
     "util"
   ]
-  revision = "bf8db5beaed5b160e1f26c8b2e5755f4ccfb4df9"
-  version = "0.21.10"
+  revision = "673b8cf3d29fbc46da1c083cc1a4586a8aafae74"
+  version = "0.21.12"
 
 [[projects]]
   branch = "master"
@@ -204,7 +204,7 @@
     ".",
     "oid"
   ]
-  revision = "88edab0803230a3898347e77b474f8c1820a1f20"
+  revision = "b2004221932bd6b13167ef654c81cffac36f7537"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -312,7 +312,7 @@
     "ed25519",
     "ed25519/internal/edwards25519"
   ]
-  revision = "c4a91bd4f524f10d064139674cf55852e055ad01"
+  revision = "c3a3ad6d03f7a915c0f7e194b7152974bb73d287"
 
 [[projects]]
   branch = "master"
@@ -327,7 +327,7 @@
     "ipv6",
     "publicsuffix"
   ]
-  revision = "892bf7b0c6e2f93b51166bf3882e50277fa5afc6"
+  revision = "6078986fec03a1dcc236c34816c71b0e05018fda"
 
 [[projects]]
   branch = "master"
@@ -336,7 +336,7 @@
     "unix",
     "windows"
   ]
-  revision = "932fb2287bee613f2a65e71685c9d9c0020da979"
+  revision = "d8e400bc7db4870d786864138af681469693d18c"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -368,6 +368,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "85c1f3164cff7630fc45a8d3e3fdc6f6af9787799e5a437ff7228b96c5e27f4e"
+  inputs-digest = "6ae21d0299804941276e6d842ff31e57e832fb709045d6b27f7fc7d43455e660"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -165,7 +165,7 @@ func (c *Cube) Dispatch() {
 func (c *Cube) Start(r *Request) {
 	atomic.AddInt64(&c.activeRequests, 1)
 
-	r.Time = time.Now().UnixNano() / 1000000
+	r.Time = time.Now().UnixNano() / 1000
 	r.Active = c.activeRequests
 	r.Node = c.Node
 	r.Uptime = c.uptime
@@ -180,7 +180,7 @@ func (c *Cube) Start(r *Request) {
 func (c *Cube) Stop(r *Request) {
 	atomic.AddInt64(&c.activeRequests, -1)
 
-	r.Latency = time.Now().UnixNano()/1000000 - r.Time
+	r.Latency = time.Now().UnixNano()/1000 - r.Time
 
 	// Dispatch batch
 	if c.requestsLength() >= c.BatchSize {
