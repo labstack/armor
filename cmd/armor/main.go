@@ -24,7 +24,7 @@ import (
 const (
 	// http://patorjk.com/software/taag/#p=display&f=Small%20Slant&t=Armor
 	banner = `
-   ___                     
+   ___
   / _ | ______ _  ___  ____
  / __ |/ __/  ' \/ _ \/ __/
 /_/ |_/_/ /_/_/_/\___/_/    %s
