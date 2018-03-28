@@ -41,7 +41,7 @@ type (
 		Auto         bool   `json:"auto"`
 		CacheDir     string `json:"cache_dir"`
 		Email        string `json:"email"`
-		DirectoryURL string `yaml:"directory_url"`
+		DirectoryURL string `json:"directory_url"`
 	}
 
 	Admin struct {
