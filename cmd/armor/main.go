@@ -19,6 +19,7 @@ import (
 	"github.com/labstack/armor/util"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
+	"github.com/mitchellh/go-homedir"
 )
 
 const (
@@ -111,8 +112,18 @@ func main() {
 		Colorer: colorer,
 	}
 
+	// Home dir
+	homeDir, err := homedir.Dir()
+	if err != nil {
+		log.Fatalf("Failed to find home directory %v\n", err)
+	}
+	configDir := filepath.Join(homeDir, ".armor")
+	if err = os.MkdirAll(configDir, 0755); err != nil {
+		log.Fatalf("Failed to create config directory %v\n", err)
+	}
+
 	// Global flags
-	config := flag.String("c", "", "config file")
+	config := flag.String("c", filepath.Join(configDir, "config.yaml"), "config file")
 	port := flag.String("p", "", "listen port")
 	version := flag.Bool("v", false, "armor version")
 
@@ -139,7 +150,7 @@ func main() {
 	}
 
 	// Config - start
-	// Load
+	// Load config
 	data, err := ioutil.ReadFile(*config)
 	if err != nil {
 		// Use default config
@@ -155,19 +166,13 @@ func main() {
 		a.Address = net.JoinHostPort("", *port)
 	}
 
-	// Working directory
-	wd, err := os.Getwd()
-	if err != nil {
-		logger.Fatal(err)
-	}
-
 	// Defaults
 	if a.Address == "" {
 		a.Address = ":80"
 	}
 	if a.SQLite == nil {
 		a.SQLite = &armor.SQLite{
-			URI: filepath.Join(wd, "armor.db"),
+			URI: filepath.Join(configDir, "db"),
 		}
 	}
 	if a.Admin == nil {
