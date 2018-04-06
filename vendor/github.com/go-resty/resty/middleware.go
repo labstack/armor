@@ -93,7 +93,9 @@ func parseRequestHeader(c *Client, r *Request) error {
 		hdr.Set(hdrUserAgentKey, fmt.Sprintf(hdrUserAgentValue, Version))
 	}
 
-	if IsStringEmpty(hdr.Get(hdrAcceptKey)) && !IsStringEmpty(hdr.Get(hdrContentTypeKey)) {
+	ct := hdr.Get(hdrContentTypeKey)
+	if IsStringEmpty(hdr.Get(hdrAcceptKey)) && !IsStringEmpty(ct) &&
+		(IsJSONType(ct) || IsXMLType(ct)) {
 		hdr.Set(hdrAcceptKey, hdr.Get(hdrContentTypeKey))
 	}
 
@@ -141,7 +143,11 @@ CL:
 
 func createHTTPRequest(c *Client, r *Request) (err error) {
 	if r.bodyBuf == nil {
-		r.RawRequest, err = http.NewRequest(r.Method, r.URL, nil)
+		if reader, ok := r.Body.(io.Reader); ok {
+			r.RawRequest, err = http.NewRequest(r.Method, r.URL, reader)
+		} else {
+			r.RawRequest, err = http.NewRequest(r.Method, r.URL, nil)
+		}
 	} else {
 		r.RawRequest, err = http.NewRequest(r.Method, r.URL, r.bodyBuf)
 	}
@@ -367,8 +373,14 @@ func handleRequestBody(c *Client, r *Request) (err error) {
 	r.bodyBuf = nil
 
 	if reader, ok := r.Body.(io.Reader); ok {
-		r.bodyBuf = acquireBuffer()
-		_, err = r.bodyBuf.ReadFrom(reader)
+		if c.setContentLength || r.setContentLength { // keep backward compability
+			r.bodyBuf = acquireBuffer()
+			_, err = r.bodyBuf.ReadFrom(reader)
+			r.Body = nil
+		} else {
+			// Otherwise buffer less processing for `io.Reader`, sounds good.
+			return
+		}
 	} else if b, ok := r.Body.([]byte); ok {
 		bodyBytes = b
 	} else if s, ok := r.Body.(string); ok {

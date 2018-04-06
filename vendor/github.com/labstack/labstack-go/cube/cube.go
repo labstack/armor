@@ -14,7 +14,8 @@ import (
 type (
 	Cube struct {
 		Options
-		uptime         uint64
+		startTime      int64
+		uptime         int64
 		cpu            float32
 		memory         uint64
 		requests       []*Request
@@ -56,7 +57,7 @@ type (
 		Error      string   `json:"error,omitempty"`
 		StackTrace string   `json:"stack_trace,omitempty"`
 		Node       string   `json:"node,omitempty"`
-		Uptime     uint64   `json:"uptime,omitempty"`
+		Uptime     int64    `json:"uptime,omitempty"`
 		CPU        float32  `json:"cpu,omitempty"`
 		Memory     uint64   `json:"memory,omitempty"`
 	}
@@ -68,12 +69,15 @@ type (
 )
 
 func New(apiKey string, options Options) *Cube {
-	c := new(Cube)
+	c := &Cube{
+		startTime: time.Now().Unix(),
+		client: resty.New().
+			SetHostURL("https://api.labstack.com").
+			SetAuthToken(apiKey).
+			SetHeader("User-Agent", "labstack/cube"),
+		logger: log.New("cube"),
+	}
 	c.Options = options
-	c.client = resty.New().
-		SetHostURL("https://api.labstack.com").
-		SetAuthToken(apiKey).
-		SetHeader("User-Agent", "labstack/cube")
 
 	// Defaults
 	if c.Node == "" {
@@ -97,10 +101,9 @@ func New(apiKey string, options Options) *Cube {
 	// System daemon
 	go func() {
 		p, _ := process.NewProcess(int32(os.Getpid()))
-		t, _ := p.CreateTime()
 
 		for range time.Tick(time.Second) {
-			c.uptime = uint64(time.Now().Unix() - t/1000)
+			c.uptime = time.Now().Unix() - c.startTime
 			cpu, _ := p.CPUPercent()
 			c.cpu = float32(cpu)
 			mem, _ := p.MemoryInfo()

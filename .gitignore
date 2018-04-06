@@ -4,3 +4,5 @@ build
 public
 node_modules
 _test
+.vscode
+.idea
