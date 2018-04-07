@@ -20,13 +20,14 @@ type (
 		Address      string             `json:"address"`
 		TLS          *TLS               `json:"tls"`
 		Admin        *Admin             `json:"admin"`
+		Storm        *Storm             `json:"storm"`
 		Postgres     *Postgres          `json:"postgres"`
-		SQLite       *SQLite            `json:"sqlite"`
 		Cluster      *Cluster           `json:"cluster"`
 		ReadTimeout  time.Duration      `json:"read_timeout"`
 		WriteTimeout time.Duration      `json:"write_timeout"`
 		RawPlugins   []plugin.RawPlugin `json:"plugins"`
 		Hosts        Hosts              `json:"hosts"`
+		HomeDir      string             `json:"-"`
 		Store        store.Store        `json:"-"`
 		Plugins      []plugin.Plugin    `json:"-"`
 		Echo         *echo.Echo         `json:"-"`
@@ -48,11 +49,11 @@ type (
 		Address string `json:"address"`
 	}
 
-	Postgres struct {
+	Storm struct {
 		URI string `json:"uri"`
 	}
 
-	SQLite struct {
+	Postgres struct {
 		URI string `json:"uri"`
 	}
 
@@ -89,7 +90,7 @@ type (
 )
 
 const (
-	Version = "0.4.4"
+	Version = "0.4.5"
 	Website = "https://armor.labstack.com"
 )
 

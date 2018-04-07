@@ -1,8 +1,8 @@
-FROM frolvlad/alpine-glibc
+FROM alpine:3.7
 
 # https://letsencrypt.org
 RUN apk add --no-cache ca-certificates
 
-COPY build/armor-*-linux-amd64 /usr/local/bin/armor
+COPY dist/linux_amd64/armor /usr/local/bin
 
 ENTRYPOINT ["armor"]

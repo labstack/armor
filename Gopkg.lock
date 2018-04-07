@@ -20,6 +20,25 @@
   revision = "783273d703149aaeb9897cf58613d5af48861c25"
 
 [[projects]]
+  name = "github.com/asdine/storm"
+  packages = [
+    ".",
+    "codec",
+    "codec/json",
+    "index",
+    "internal",
+    "q"
+  ]
+  revision = "a86fa5e09c9c50a06416b08fd9acd4839fb2d62e"
+  version = "v2.1.0"
+
+[[projects]]
+  name = "github.com/coreos/bbolt"
+  packages = ["."]
+  revision = "583e8937c61f1af6513608ccc75c97b6abdf4ff9"
+  version = "v1.3.0"
+
+[[projects]]
   name = "github.com/coreos/etcd"
   packages = [
     "client",
@@ -165,7 +184,7 @@
     "reflectx",
     "types"
   ]
-  revision = "cf35089a197953c69420c8d0cecda90809764b1d"
+  revision = "2aeb6a910c2b94f2d5eb53d9895d80e27264ec41"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -217,12 +236,6 @@
   packages = ["."]
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
-
-[[projects]]
-  name = "github.com/mattn/go-sqlite3"
-  packages = ["."]
-  revision = "6c771bb9887719704b210e87e934f08be014bdb1"
-  version = "v1.6.0"
 
 [[projects]]
   name = "github.com/miekg/dns"
@@ -327,7 +340,7 @@
     "ipv6",
     "publicsuffix"
   ]
-  revision = "b3c676e531a6dc479fa1b35ac961c13f5e2b4d2e"
+  revision = "61147c48b25b599e5b561d2e9c4f3e1ef489ca41"
 
 [[projects]]
   branch = "master"
@@ -336,7 +349,7 @@
     "unix",
     "windows"
   ]
-  revision = "1d206c9fa8975fb4cf00df1dc8bf3283dc24ba0e"
+  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -368,6 +381,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a32f25ff3c943b7c2d1f9f64fbe928a16d1db7f2b92998629f3e89995ed9dc71"
+  inputs-digest = "35bd9bebbb7c03dc434ff851c2c95aa690836fa77a99a3571232b6eb34aa111a"
   solver-name = "gps-cdcl"
   solver-version = 1

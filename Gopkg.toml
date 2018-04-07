@@ -30,6 +30,10 @@
   version = "3.0.0"
 
 [[constraint]]
+  name = "github.com/asdine/storm"
+  version = "2.1.0"
+
+[[constraint]]
   name = "github.com/docker/libkv"
   version = "0.2.1"
 
@@ -64,10 +68,6 @@
 [[constraint]]
   branch = "master"
   name = "github.com/lib/pq"
-
-[[constraint]]
-  name = "github.com/mattn/go-sqlite3"
-  version = "1.6.0"
 
 [[constraint]]
   branch = "master"

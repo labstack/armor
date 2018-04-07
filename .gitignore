@@ -1,8 +1,9 @@
 .DS_Store
 *.db
-build
+dist
 public
 node_modules
 _test
 .vscode
 .idea
+*.iml

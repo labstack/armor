@@ -117,13 +117,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to find home directory %v\n", err)
 	}
-	configDir := filepath.Join(homeDir, ".armor")
-	if err = os.MkdirAll(configDir, 0755); err != nil {
+	a.HomeDir = filepath.Join(homeDir, ".armor")
+	if err = os.MkdirAll(a.HomeDir, 0755); err != nil {
 		log.Fatalf("Failed to create config directory %v\n", err)
 	}
 
 	// Global flags
-	config := flag.String("c", filepath.Join(configDir, "config.yaml"), "config file")
+	config := flag.String("c", filepath.Join(a.HomeDir, "config.yaml"), "config file")
 	port := flag.String("p", "", "listen port")
 	version := flag.Bool("v", false, "armor version")
 
@@ -170,9 +170,9 @@ func main() {
 	if a.Address == "" {
 		a.Address = ":80"
 	}
-	if a.SQLite == nil {
-		a.SQLite = &armor.SQLite{
-			URI: filepath.Join(configDir, "db"),
+	if a.Storm == nil {
+		a.Storm = &armor.Storm{
+			URI: filepath.Join(a.HomeDir, "storm.db"),
 		}
 	}
 	if a.Admin == nil {
@@ -198,8 +198,11 @@ func main() {
 	if a.Postgres != nil {
 		a.Store = store.NewPostgres(a.Postgres.URI)
 	} else {
-		a.Store = store.NewSqlite(a.SQLite.URI)
+		if a.Store, err = store.NewStorm(a.Storm.URI); err != nil {
+			logger.Fatalf("armor: storm error=%v", err)
+		}
 	}
+	defer a.Store.Close()
 	savePlugins(a)
 
 	// Start cluster
