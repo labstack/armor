@@ -16,8 +16,7 @@ HTML page.
 - Copy config `config.json` to `/etc/armor`
 - Copy `index.html` to `/var/www/test`
 - Start Armor `armor -c /etc/armor/config.json`
-- Browse to `http://test.lab.st`, and in a few seconds TLS certificate will
-be installed automatically.
+- Browse to `http://test.lab.st`, and in a few seconds TLS certificate will be installed automatically.
 
 ## Maintainers
 
@@ -27,29 +26,19 @@ be installed automatically.
 
 `config.json`
 
-```js
-{
-  "address": ":80",
-  "tls": {
-    "address": ":443",
-    "auto": true
-  },
-  "plugins": [{
-    "name": "https-redirect"
-  }],
-  "hosts": {
-    "test.lab.st": {
-      "paths": {
-        "/": {
-          "plugins": [{
-            "name": "static",
-            "root": "/var/www/test"
-          }]
-        }
-      }
-    }
-  }
-}
+```yaml
+---
+address: :80
+tls:
+  address: :443
+  auto: true
+plugins:
+- name: https-redirect
+hosts:
+  test.lab.st:
+    plugins:
+    - name: static
+      root: /var/www/test
 ```
 
 `index.html`
