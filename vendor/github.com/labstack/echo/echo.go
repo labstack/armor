@@ -38,6 +38,7 @@ package echo
 
 import (
 	"bytes"
+	stdContext "context"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -45,6 +46,7 @@ import (
 	stdLog "log"
 	"net"
 	"net/http"
+	"net/url"
 	"path"
 	"path/filepath"
 	"reflect"
@@ -93,9 +95,9 @@ type (
 
 	// HTTPError represents an error that occurred while handling a request.
 	HTTPError struct {
-		Code    int
-		Message interface{}
-		Inner   error // Stores the error returned by an external dependency
+		Code     int
+		Message  interface{}
+		Internal error // Stores the error returned by an external dependency
 	}
 
 	// MiddlewareFunc defines a function to process middleware.
@@ -215,7 +217,7 @@ const (
 )
 
 const (
-	version = "3.3.0"
+	Version = "3.3.5"
 	website = "https://echo.labstack.com"
 	// http://patorjk.com/software/taag/#p=display&f=Small%20Slant&t=Echo
 	banner = `
@@ -323,8 +325,8 @@ func (e *Echo) DefaultHTTPErrorHandler(err error, c Context) {
 	if he, ok := err.(*HTTPError); ok {
 		code = he.Code
 		msg = he.Message
-		if he.Inner != nil {
-			msg = fmt.Sprintf("%v, %v", err, he.Inner)
+		if he.Internal != nil {
+			msg = fmt.Sprintf("%v, %v", err, he.Internal)
 		}
 	} else if e.Debug {
 		msg = err.Error()
@@ -445,7 +447,7 @@ func (e *Echo) Static(prefix, root string) *Route {
 
 func static(i i, prefix, root string) *Route {
 	h := func(c Context) error {
-		p, err := PathUnescape(c.Param("*"))
+		p, err := url.PathUnescape(c.Param("*"))
 		if err != nil {
 			return err
 		}
@@ -650,7 +652,7 @@ func (e *Echo) StartServer(s *http.Server) (err error) {
 	}
 
 	if !e.HideBanner {
-		e.colorer.Printf(banner, e.colorer.Red("v"+version), e.colorer.Blue(website))
+		e.colorer.Printf(banner, e.colorer.Red("v"+Version), e.colorer.Blue(website))
 	}
 
 	if s.TLSConfig == nil {
@@ -676,6 +678,24 @@ func (e *Echo) StartServer(s *http.Server) (err error) {
 		e.colorer.Printf("⇨ https server started on %s\n", e.colorer.Green(e.TLSListener.Addr()))
 	}
 	return s.Serve(e.TLSListener)
+}
+
+// Close immediately stops the server.
+// It internally calls `http.Server#Close()`.
+func (e *Echo) Close() error {
+	if err := e.TLSServer.Close(); err != nil {
+		return err
+	}
+	return e.Server.Close()
+}
+
+// Shutdown stops server the gracefully.
+// It internally calls `http.Server#Shutdown()`.
+func (e *Echo) Shutdown(ctx stdContext.Context) error {
+	if err := e.TLSServer.Shutdown(ctx); err != nil {
+		return err
+	}
+	return e.Server.Shutdown(ctx)
 }
 
 // NewHTTPError creates a new HTTPError instance.
@@ -728,6 +748,11 @@ func handlerName(h HandlerFunc) string {
 	}
 	return t.String()
 }
+
+// // PathUnescape is wraps `url.PathUnescape`
+// func PathUnescape(s string) (string, error) {
+// 	return url.PathUnescape(s)
+// }
 
 // tcpKeepAliveListener sets TCP keep-alive timeouts on accepted
 // connections. It's used by ListenAndServe and ListenAndServeTLS so

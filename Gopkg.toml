@@ -55,7 +55,7 @@
 
 [[constraint]]
   name = "github.com/labstack/echo"
-  version = "3.3.4"
+  version = "3.3.5"
 
 [[constraint]]
   name = "github.com/labstack/gommon"
@@ -63,7 +63,7 @@
 
 [[constraint]]
   name = "github.com/labstack/labstack-go"
-  version = "0.22.0"
+  version = "0.22.1"
 
 [[constraint]]
   branch = "master"

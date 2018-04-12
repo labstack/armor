@@ -192,8 +192,8 @@
     ".",
     "middleware"
   ]
-  revision = "a5d81b8d4a627f3f49dcb3164ef2bb5239682227"
-  version = "3.3.4"
+  revision = "6d227dfea4d2e52cb76856120b3c17f758139b4e"
+  version = "3.3.5"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -213,8 +213,8 @@
     "echo",
     "util"
   ]
-  revision = "a058670ab329cd90c1a7da32e68086086d836490"
-  version = "0.22.0"
+  revision = "19da7e25730ebf7b4e26a577b5495ff263bede51"
+  version = "0.22.1"
 
 [[projects]]
   branch = "master"
@@ -301,8 +301,8 @@
 [[projects]]
   name = "github.com/ugorji/go"
   packages = ["codec"]
-  revision = "9831f2c3ac1068a78f50999a30db84270f647af6"
-  version = "v1.1"
+  revision = "b4c50a2b199d93b13dc15e78929cfb23bfdf21ab"
+  version = "v1.1.1"
 
 [[projects]]
   branch = "master"
@@ -325,7 +325,7 @@
     "ed25519",
     "ed25519/internal/edwards25519"
   ]
-  revision = "b2aa35443fbc700ab74c586ae79b81c171851023"
+  revision = "d6449816ce06963d9d136eee5a56fca5b0616e7e"
 
 [[projects]]
   branch = "master"
@@ -381,6 +381,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "35bd9bebbb7c03dc434ff851c2c95aa690836fa77a99a3571232b6eb34aa111a"
+  inputs-digest = "1fd4f0dea47316c7887ce05d1b7072ad1b76ee9f215bb2b3528e33525bc1d2f8"
   solver-name = "gps-cdcl"
   solver-version = 1
