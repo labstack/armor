@@ -1,5 +1,5 @@
 IMAGE = labstack/armor
-VERSION = 0.4.5
+VERSION = 0.4.6
 
 publish:
 	git tag $(VERSION)
