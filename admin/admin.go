@@ -21,7 +21,9 @@ func Start(a *armor.Armor) {
 	e := echo.New()
 	e.HideBanner = true
 	e.HidePort = true
-	a.Colorer.Printf("⇨ admin server started on %s\n", a.Colorer.Green(a.Admin.Address))
+	if !a.DefaultConfig {
+		a.Colorer.Printf("⇨ admin server started on %s\n", a.Colorer.Green(a.Admin.Address))
+	}
 	// e.Use(middleware.BasicAuth(func(usr, pwd string, _ echo.Context) (bool, error) {
 	// 	return usr == "admin" && pwd == "L@B$t@ck0709", nil
 	// }))

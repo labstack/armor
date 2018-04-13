@@ -8,6 +8,7 @@ import (
 
 	"github.com/labstack/armor/plugin"
 	"github.com/labstack/armor/store"
+	"github.com/labstack/armor/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
@@ -15,24 +16,25 @@ import (
 
 type (
 	Armor struct {
-		mutex        sync.RWMutex
-		Name         string             `json:"name"`
-		Address      string             `json:"address"`
-		TLS          *TLS               `json:"tls"`
-		Admin        *Admin             `json:"admin"`
-		Storm        *Storm             `json:"storm"`
-		Postgres     *Postgres          `json:"postgres"`
-		Cluster      *Cluster           `json:"cluster"`
-		ReadTimeout  time.Duration      `json:"read_timeout"`
-		WriteTimeout time.Duration      `json:"write_timeout"`
-		RawPlugins   []plugin.RawPlugin `json:"plugins"`
-		Hosts        Hosts              `json:"hosts"`
-		HomeDir      string             `json:"-"`
-		Store        store.Store        `json:"-"`
-		Plugins      []plugin.Plugin    `json:"-"`
-		Echo         *echo.Echo         `json:"-"`
-		Logger       *log.Logger        `json:"-"`
-		Colorer      *color.Color       `json:"-"`
+		mutex         sync.RWMutex
+		Name          string             `json:"name"`
+		Address       string             `json:"address"`
+		TLS           *TLS               `json:"tls"`
+		Admin         *Admin             `json:"admin"`
+		Storm         *Storm             `json:"storm"`
+		Postgres      *Postgres          `json:"postgres"`
+		Cluster       *Cluster           `json:"cluster"`
+		ReadTimeout   time.Duration      `json:"read_timeout"`
+		WriteTimeout  time.Duration      `json:"write_timeout"`
+		RawPlugins    []plugin.RawPlugin `json:"plugins"`
+		Hosts         Hosts              `json:"hosts"`
+		HomeDir       string             `json:"-"`
+		Store         store.Store        `json:"-"`
+		Plugins       []plugin.Plugin    `json:"-"`
+		Echo          *echo.Echo         `json:"-"`
+		Logger        *log.Logger        `json:"-"`
+		Colorer       *color.Color       `json:"-"`
+		DefaultConfig bool               `json:"-"`
 	}
 
 	TLS struct {
@@ -173,6 +175,60 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 			path.UpdatePlugin(p)
 		} else {
 			path.AddPlugin(p)
+		}
+	}
+}
+
+func (a *Armor) SavePlugins() {
+	plugins := []*store.Plugin{}
+
+	// Global plugins
+	for _, rp := range a.RawPlugins {
+		plugins = append(plugins, &store.Plugin{
+			Name:   rp.Name(),
+			Config: rp.JSON(),
+		})
+	}
+
+	for hn, host := range a.Hosts {
+		// Host plugins
+		for _, rp := range host.RawPlugins {
+			plugins = append(plugins, &store.Plugin{
+				Name:   rp.Name(),
+				Host:   hn,
+				Config: rp.JSON(),
+			})
+		}
+
+		for pn, path := range host.Paths {
+			// Path plugins
+			for _, rp := range path.RawPlugins {
+				plugins = append(plugins, &store.Plugin{
+					Name:   rp.Name(),
+					Host:   hn,
+					Path:   pn,
+					Config: rp.JSON(),
+				})
+			}
+		}
+	}
+
+	// Delete
+	if err := a.Store.DeleteBySource("file"); err != nil {
+		panic(err)
+	}
+
+	// Save
+	for _, p := range plugins {
+		p.Source = store.File
+		p.ID = util.ID()
+		now := time.Now()
+		p.CreatedAt = now
+		p.UpdatedAt = now
+
+		// Insert
+		if err := a.Store.AddPlugin(p); err != nil {
+			panic(err)
 		}
 	}
 }

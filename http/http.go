@@ -2,6 +2,7 @@ package http
 
 import (
 	"crypto/tls"
+	"net"
 	"net/http"
 	"path/filepath"
 	"time"
@@ -10,6 +11,8 @@ import (
 	"github.com/labstack/armor/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
+	"github.com/labstack/tunnel"
+	tutil "github.com/labstack/tunnel/util"
 	"github.com/mitchellh/go-homedir"
 	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
@@ -79,10 +82,32 @@ func Init(a *armor.Armor) (h *HTTP) {
 	return
 }
 
+func (h *HTTP) CreateTunnel() {
+	t := &tunnel.Tunnel{
+		Protocol:   "http",
+		RemoteHost: "0.0.0.0",
+		RemotePort: 80,
+		HideBanner: true,
+	}
+	t.TargetHost, t.TargetPort, _ = tutil.SplitHostPort(h.armor.Address)
+	t.Create()
+}
+
 func (h *HTTP) Start() error {
 	a := h.armor
 	e := h.echo
-	a.Colorer.Printf("⇨ http server started on %s\n", a.Colorer.Green(a.Address))
+	if a.DefaultConfig {
+		addrs, _ := net.InterfaceAddrs()
+		for _, addr := range addrs {
+			if ipnet, ok := addr.(*net.IPNet); ok {
+				if ipnet.IP.To4() != nil {
+					a.Colorer.Printf("⇨ serving from %s\n", a.Colorer.Green("http://"+ipnet.IP.String()+a.Address))
+				}
+			}
+		}
+	} else {
+		a.Colorer.Printf("⇨ http server started on %s\n", a.Colorer.Green(a.Address))
+	}
 	return e.StartServer(e.Server)
 }
 
