@@ -11,20 +11,26 @@ type = "guide"
 
 ## Installation
 
-### Binary
+### Via Binary
 
 - Download the latest armor release for your platform from https://github.com/labstack/armor/releases
 - Copy the armor binary to somewhere on the `PATH` so that it can be executed e.g. `/usr/local/bin` or `%PATH%`
 
-### Homebrew
+### Via [Homebrew](https://brew.sh) (MacOS)
 
 `brew install armor`
 
-### Go
+### Via [Scoop](http://scoop.sh) (Windows)
+
+```sh
+scoop install armor
+```
+
+### Via [Go](https://golang.org)
 
 `go get -u github.com/labstack/armor/cmd/armor`
 
-### Docker
+### Via [Docker](https://www.docker.com)
 
 `docker pull labstack/armor`
 
@@ -50,7 +56,7 @@ ________________________O/_______
 This starts armor on address `:8080`, serving the current directory listing using
 the default config. Go to http://localhost:8080 to browse the directory.
 
-Armor can also be run as in a Docker:
+Armor can also be run in a Docker:
 
 ```sh
 docker run \
