@@ -1,5 +1,5 @@
 IMAGE = labstack/armor
-VERSION = 0.4.5
+VERSION = 0.4.7
 
 run:
 	ENV=development

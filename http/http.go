@@ -2,7 +2,6 @@ package http
 
 import (
 	"crypto/tls"
-	"net"
 	"net/http"
 	"path/filepath"
 	"time"
@@ -97,14 +96,7 @@ func (h *HTTP) Start() error {
 	a := h.armor
 	e := h.echo
 	if a.DefaultConfig {
-		addrs, _ := net.InterfaceAddrs()
-		for _, addr := range addrs {
-			if ipnet, ok := addr.(*net.IPNet); ok {
-				if ipnet.IP.To4() != nil {
-					a.Colorer.Printf("⇨ serving from %s\n", a.Colorer.Green("http://"+ipnet.IP.String()+a.Address))
-				}
-			}
-		}
+		a.Colorer.Printf("⇨ serving from %s\n", a.Colorer.Green("http://localhost"+a.Address))
 	} else {
 		a.Colorer.Printf("⇨ http server started on %s\n", a.Colorer.Green(a.Address))
 	}
