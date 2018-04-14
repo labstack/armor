@@ -11,8 +11,6 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/admin"
-	"github.com/labstack/armor/cluster"
-	"github.com/labstack/armor/http"
 	"github.com/labstack/armor/store"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
@@ -133,8 +131,8 @@ func initConfig() {
 		a.Hosts = make(armor.Hosts)
 	}
 
-	// Init http
-	h := http.Init(a)
+	// HTTP
+	h := a.NewHTTP()
 
 	// Store
 	if a.Postgres != nil {
@@ -148,7 +146,7 @@ func initConfig() {
 	a.SavePlugins()
 
 	// Start cluster
-	go cluster.Start(a)
+	go a.StartCluster()
 
 	// Start admin
 	go admin.Start(a)

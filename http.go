@@ -1,4 +1,4 @@
-package http
+package armor
 
 import (
 	"crypto/tls"
@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/labstack/armor"
 	"github.com/labstack/armor/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
@@ -19,13 +18,13 @@ import (
 
 type (
 	HTTP struct {
-		armor  *armor.Armor
+		armor  *Armor
 		echo   *echo.Echo
 		logger *log.Logger
 	}
 )
 
-func Init(a *armor.Armor) (h *HTTP) {
+func (a *Armor) NewHTTP() (h *HTTP) {
 	e := echo.New()
 
 	a.Echo = e
@@ -60,7 +59,7 @@ func Init(a *armor.Armor) (h *HTTP) {
 	e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			c.Response().Before(func() {
-				c.Response().Header().Set(echo.HeaderServer, "armor/"+armor.Version)
+				c.Response().Header().Set(echo.HeaderServer, "armor/"+Version)
 			})
 			return next(c)
 		}

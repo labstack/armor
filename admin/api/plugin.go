@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/labstack/armor"
-	"github.com/labstack/armor/cluster"
 	"github.com/labstack/armor/plugin"
 	"github.com/labstack/armor/store"
 	"github.com/labstack/armor/util"
@@ -53,7 +52,7 @@ func (h *handler) addPlugin(c echo.Context) (err error) {
 	if err = h.store.AddPlugin(p); err != nil {
 		return err
 	}
-	h.cluster.UserEvent(cluster.EventPluginLoad, []byte(p.ID), true)
+	h.cluster.UserEvent(armor.EventPluginLoad, []byte(p.ID), true)
 	return c.JSON(http.StatusCreated, p)
 
 	// hostName := c.Param("host")
@@ -128,7 +127,7 @@ func (h *handler) savePlugin(c echo.Context) (err error) {
 	if err != nil {
 		return
 	}
-	h.cluster.UserEvent(cluster.EventPluginUpdate, []byte(p.ID), true)
+	h.cluster.UserEvent(armor.EventPluginUpdate, []byte(p.ID), true)
 	return c.NoContent(http.StatusNoContent)
 }
 

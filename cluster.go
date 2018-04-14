@@ -1,4 +1,4 @@
-package cluster
+package armor
 
 import (
 	"log"
@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/logutils"
 	"github.com/hashicorp/serf/serf"
-	"github.com/labstack/armor"
 )
 
 // Events
@@ -16,7 +15,7 @@ const (
 	EventPluginUpdate = "2"
 )
 
-func Start(a *armor.Armor) {
+func (a *Armor) StartCluster() {
 	conf := serf.DefaultConfig()
 	filter := &logutils.LevelFilter{
 		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
