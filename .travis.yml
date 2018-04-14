@@ -10,7 +10,6 @@ install:
 script:
     - go test -coverprofile=armor.coverprofile
     - go test -coverprofile=http.coverprofile ./util
-    - go test -coverprofile=http.coverprofile ./http
     - go test -coverprofile=plugin.coverprofile ./plugin
     - go test -coverprofile=cmd.coverprofile ./cmd/armor
     - gover
