@@ -47,8 +47,8 @@
     "pkg/types",
     "version"
   ]
-  revision = "e348b1aedd9167360c466ae98f7343d3e22281f8"
-  version = "v3.3.3"
+  revision = "fdde8705f5bf9a6d9dbfb0220caf2ee1ac816be8"
+  version = "v3.3.4"
 
 [[projects]]
   name = "github.com/coreos/go-semver"
@@ -104,8 +104,8 @@
 [[projects]]
   name = "github.com/hashicorp/consul"
   packages = ["api"]
-  revision = "9a494b5fb9c86180a5702e29c485df1507a47198"
-  version = "v1.0.6"
+  revision = "fb848fc48818f58690db09d14640513aa6bf3c02"
+  version = "v1.0.7"
 
 [[projects]]
   branch = "master"
@@ -209,8 +209,8 @@
     "log",
     "random"
   ]
-  revision = "6fe1405d73ec4bd4cd8a4ac8e2a2b2bf95d03954"
-  version = "0.2.4"
+  revision = "588f4e8bddc6cb45c27b448e925c7fd6a5545434"
+  version = "0.2.5"
 
 [[projects]]
   name = "github.com/labstack/labstack-go"
@@ -228,8 +228,8 @@
     ".",
     "util"
   ]
-  revision = "452f72a0d7db9d881bafeb31722b90ff9aa31020"
-  version = "0.1.3"
+  revision = "873b279bfa640bfbfc2fd728ea0c1b389f721d63"
+  version = "0.2.6"
 
 [[projects]]
   branch = "master"
@@ -298,8 +298,8 @@
     "net",
     "process"
   ]
-  revision = "fc04d2dd9a512906a2604242b35275179e250eda"
-  version = "v2.18.03"
+  revision = "c95755e4bcd7a62bb8bd33f3a597a7c7f35e2cf3"
+  version = "v2.18.04"
 
 [[projects]]
   branch = "master"
@@ -356,7 +356,7 @@
     "poly1305",
     "ssh"
   ]
-  revision = "d6449816ce06963d9d136eee5a56fca5b0616e7e"
+  revision = "b49d69b5da943f7ef3c9cf91c8777c1f78a0cc3c"
 
 [[projects]]
   branch = "master"
@@ -371,7 +371,7 @@
     "ipv6",
     "publicsuffix"
   ]
-  revision = "61147c48b25b599e5b561d2e9c4f3e1ef489ca41"
+  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
 
 [[projects]]
   branch = "master"
@@ -380,7 +380,7 @@
     "unix",
     "windows"
   ]
-  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
+  revision = "cbbc999da32df943dac6cd71eb3ee39e1d7838b9"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -412,6 +412,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0885a99dab11e5c0fd503433f9412671bc85c5a1c4e026b51f9e0df8bc14f32d"
+  inputs-digest = "95a2adb00d996ab2b66e0b49b78c46ab59c7e568487b1b11ff123a986346c9ab"
   solver-name = "gps-cdcl"
   solver-version = 1

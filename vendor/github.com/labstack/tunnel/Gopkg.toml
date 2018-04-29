@@ -48,3 +48,7 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/go-resty/resty"
+  version = "1.4.0"

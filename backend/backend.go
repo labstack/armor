@@ -39,7 +39,7 @@ func Start() {
 	key := "armor"
 	err = kv.Put(key, []byte("bar"), &store.WriteOptions{IsDir: true})
 	if err != nil {
-		fmt.Errorf("Something went wrong when initializing key %v", key)
+		fmt.Errorf("Something went wrong when initializing key: %v", key)
 	}
 
 	stopCh := make(chan struct{})

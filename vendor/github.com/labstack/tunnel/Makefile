@@ -1,4 +1,4 @@
-VERSION = 0.1.3
+VERSION = 0.2.6
 
 publish:
 	git tag $(VERSION)

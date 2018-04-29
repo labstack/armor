@@ -89,11 +89,11 @@ func initConfig() {
 	// Home dir
 	homeDir, err := homedir.Dir()
 	if err != nil {
-		logger.Fatalf("Failed to find the home directory %v", err)
+		logger.Fatalf("Failed to find the home directory: %v", err)
 	}
 	a.HomeDir = filepath.Join(homeDir, ".armor")
 	if err = os.MkdirAll(a.HomeDir, 0755); err != nil {
-		logger.Fatalf("Failed to create config directory %v", err)
+		logger.Fatalf("Failed to create config directory: %v", err)
 	}
 
 	// Config
@@ -104,7 +104,7 @@ func initConfig() {
 		data = []byte(fmt.Sprintf(defaultConfig, net.JoinHostPort("", port), root))
 	}
 	if err = yaml.Unmarshal(data, a); err != nil {
-		logger.Fatalf("Failed to parse the config file %v", err)
+		logger.Fatalf("Failed to parse the config file: %v", err)
 	}
 
 	// Defaults
@@ -139,7 +139,7 @@ func initConfig() {
 		a.Store = store.NewPostgres(a.Postgres.URI)
 	} else {
 		if a.Store, err = store.NewStorm(a.Storm.URI); err != nil {
-			logger.Fatalf("Failed to connect to storm %v", err)
+			logger.Fatalf("Failed to connect to storm: %v", err)
 		}
 	}
 	defer a.Store.Close()

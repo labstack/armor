@@ -1,6 +1,5 @@
 build:
   main: cmd/tunnel/main.go
-  binary: tunnel
   goos:
     - darwin
     - linux

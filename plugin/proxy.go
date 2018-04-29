@@ -26,7 +26,7 @@ type (
 func (t Target) ProxyTarget() (target *middleware.ProxyTarget, err error) {
 	u, err := url.Parse(t.URL)
 	if err != nil {
-		return nil, fmt.Errorf("not able to parse proxy url=%s, error=%v", t.URL, err)
+		return nil, fmt.Errorf("not able to parse proxy: url=%s, error=%v", t.URL, err)
 	}
 	return &middleware.ProxyTarget{
 		Name: t.Name,

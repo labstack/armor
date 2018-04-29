@@ -16,7 +16,7 @@ type = "guide"
 - Download the latest armor release for your platform from https://github.com/labstack/armor/releases
 - Copy the armor binary to somewhere on the `PATH` so that it can be executed e.g. `/usr/local/bin` or `%PATH%`
 
-### Via [Homebrew](https://brew.sh) (MacOS)
+### Via [Homebrew](https://brew.sh) (macOS)
 
 `brew install armor`
 
@@ -44,7 +44,7 @@ Type `armor` in your terminal
    ___
   / _ | ______ _  ___  ____
  / __ |/ __/  ' \/ _ \/ __/
-/_/ |_/_/ /_/_/_/\___/_/    v0.4.7
+/_/ |_/_/ /_/_/_/\___/_/    v0.4.8
 
 Uncomplicated, modern HTTP server
 https://armor.labstack.com

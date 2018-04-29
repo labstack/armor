@@ -41,6 +41,8 @@ const (
 	WARN
 	ERROR
 	OFF
+	panicLevel
+	fatalLevel
 )
 
 var (
@@ -73,6 +75,9 @@ func (l *Logger) initLevels() {
 		l.color.Green("INFO"),
 		l.color.Yellow("WARN"),
 		l.color.Red("ERROR"),
+		"",
+		l.color.Yellow("PANIC", color.U),
+		l.color.Red("FATAL", color.U),
 	}
 }
 
@@ -187,32 +192,32 @@ func (l *Logger) Errorj(j JSON) {
 }
 
 func (l *Logger) Fatal(i ...interface{}) {
-	l.Print(i...)
+	l.log(fatalLevel, "", i...)
 	os.Exit(1)
 }
 
 func (l *Logger) Fatalf(format string, args ...interface{}) {
-	l.Printf(format, args...)
+	l.log(fatalLevel, format, args...)
 	os.Exit(1)
 }
 
 func (l *Logger) Fatalj(j JSON) {
-	l.Printj(j)
+	l.log(fatalLevel, "json", j)
 	os.Exit(1)
 }
 
 func (l *Logger) Panic(i ...interface{}) {
-	l.Print(i...)
+	l.log(panicLevel, "", i...)
 	panic(fmt.Sprint(i...))
 }
 
 func (l *Logger) Panicf(format string, args ...interface{}) {
-	l.Printf(format, args...)
+	l.log(panicLevel, format, args...)
 	panic(fmt.Sprintf(format, args))
 }
 
 func (l *Logger) Panicj(j JSON) {
-	l.Printj(j)
+	l.log(panicLevel, "json", j)
 	panic(j)
 }
 

@@ -81,14 +81,15 @@ func (a *Armor) NewHTTP() (h *HTTP) {
 }
 
 func (h *HTTP) CreateTunnel() {
-	t := &tunnel.Tunnel{
+	c := &tunnel.Config{
+		Host:       "labstack.me:22",
 		Protocol:   "http",
 		RemoteHost: "0.0.0.0",
 		RemotePort: 80,
 		HideBanner: true,
 	}
-	t.TargetHost, t.TargetPort, _ = tutil.SplitHostPort(h.armor.Address)
-	t.Create()
+	c.TargetHost, c.TargetPort, _ = tutil.SplitHostPort(h.armor.Address)
+	tunnel.Create(c)
 }
 
 func (h *HTTP) Start() error {
