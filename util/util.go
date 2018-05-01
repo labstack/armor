@@ -1,6 +1,7 @@
 package util
 
 import (
+	"net"
 	"strings"
 
 	"github.com/labstack/gommon/random"
@@ -21,4 +22,19 @@ func StripPort(host string) string {
 		return strings.TrimPrefix(host[:i], "[")
 	}
 	return host[:colon]
+}
+
+func GetPrivateIP() string {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return ""
+	}
+	for _, address := range addrs {
+		if ipNet, ok := address.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
+			if ipNet.IP.To4() != nil {
+				return ipNet.IP.String()
+			}
+		}
+	}
+	return ""
 }

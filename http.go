@@ -2,6 +2,8 @@ package armor
 
 import (
 	"crypto/tls"
+	"fmt"
+	"net"
 	"net/http"
 	"path/filepath"
 	"time"
@@ -96,7 +98,12 @@ func (h *HTTP) Start() error {
 	a := h.armor
 	e := h.echo
 	if a.DefaultConfig {
-		a.Colorer.Printf("⇨ serving from %s\n", a.Colorer.Green("http://localhost"+a.Address))
+		a.Colorer.Printf("⇨ serving from %s (Local)\n", a.Colorer.Green("http://localhost"+a.Address))
+		ip := util.GetPrivateIP()
+		if ip != "" {
+			_, port, _ := net.SplitHostPort(a.Address)
+			a.Colorer.Printf("⇨ serving from %s (Intranet)\n", a.Colorer.Green(fmt.Sprintf("http://%s:%s", ip, port)))
+		}
 	} else {
 		a.Colorer.Printf("⇨ http server started on %s\n", a.Colorer.Green(a.Address))
 	}
