@@ -1,5 +1,5 @@
 IMAGE = labstack/armor
-VERSION = 0.4.9
+VERSION = 0.4.10
 
 run:
 	go run cmd/armor/main.go

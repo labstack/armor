@@ -99,7 +99,7 @@ func (h *HTTP) Start() error {
 	e := h.echo
 	if a.DefaultConfig {
 		a.Colorer.Printf("⇨ serving from %s (Local)\n", a.Colorer.Green("http://localhost"+a.Address))
-		ip := util.GetPrivateIP()
+		ip := util.PrivateIP()
 		if ip != "" {
 			_, port, _ := net.SplitHostPort(a.Address)
 			a.Colorer.Printf("⇨ serving from %s (Intranet)\n", a.Colorer.Green(fmt.Sprintf("http://%s:%s", ip, port)))
