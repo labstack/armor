@@ -97,6 +97,9 @@ func initConfig() {
 	}
 
 	// Config
+	if configFile == "" {
+		configFile = filepath.Join(a.HomeDir, "config.yaml")
+	}
 	data, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		a.DefaultConfig = true
