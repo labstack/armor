@@ -86,19 +86,19 @@ func initConfig() {
 		Colorer: colorer,
 	}
 
-	// Home dir
-	homeDir, err := homedir.Dir()
+	// Root dir
+	dir, err := homedir.Dir()
 	if err != nil {
 		logger.Fatalf("Failed to find the home directory: %v", err)
 	}
-	a.HomeDir = filepath.Join(homeDir, ".armor")
-	if err = os.MkdirAll(a.HomeDir, 0755); err != nil {
-		logger.Fatalf("Failed to create config directory: %v", err)
+	a.RootDir = filepath.Join(dir, ".armor")
+	if err = os.MkdirAll(a.RootDir, 0755); err != nil {
+		logger.Fatalf("Failed to create root directory: %v", err)
 	}
 
 	// Config
 	if configFile == "" {
-		configFile = filepath.Join(a.HomeDir, "config.yaml")
+		configFile = filepath.Join(a.RootDir, "config.yaml")
 	}
 	data, err := ioutil.ReadFile(configFile)
 	if err != nil {
@@ -116,7 +116,7 @@ func initConfig() {
 	}
 	if a.Storm == nil {
 		a.Storm = &armor.Storm{
-			URI: filepath.Join(a.HomeDir, "storm.db"),
+			URI: filepath.Join(a.RootDir, "storm.db"),
 		}
 	}
 	if a.Admin == nil {

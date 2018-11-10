@@ -1,6 +1,6 @@
 {
   "name": "armor",
-  "version": "1.0.0",
+  "version": "0.4.12",
   "description": "Armor admin",
   "author": "Vishal Rana <vr@labstack.com>",
   "private": true,

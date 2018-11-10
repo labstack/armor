@@ -11,8 +11,8 @@ import (
 	"github.com/labstack/armor/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
-	"github.com/labstack/tunnel"
-	tutil "github.com/labstack/tunnel/util"
+	"github.com/labstack/tunnel-client"
+	tutil "github.com/labstack/tunnel-client/util"
 	"github.com/mitchellh/go-homedir"
 	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
@@ -83,7 +83,7 @@ func (a *Armor) NewHTTP() (h *HTTP) {
 }
 
 func (h *HTTP) CreateTunnel() {
-	c := &tunnel.Config{
+	c := &tunnel.Configuration{
 		Host:       "labstack.me:22",
 		Protocol:   "http",
 		RemoteHost: "0.0.0.0",

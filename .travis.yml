@@ -1,19 +1,13 @@
 language: go
 go:
-    - 1.9.x
-    - 1.10.x
+    - 1.11.x
     - tip
-install:
-    - go get golang.org/x/tools/cmd/cover
-    - go get github.com/mattn/goveralls
-    - go get github.com/modocache/gover
+env:
+  - GO111MODULE=on
 script:
-    - go test -coverprofile=armor.coverprofile
-    - go test -coverprofile=http.coverprofile ./util
-    - go test -coverprofile=plugin.coverprofile ./plugin
-    - go test -coverprofile=cmd.coverprofile ./cmd/armor
-    - gover
-    - goveralls -coverprofile=gover.coverprofile -service=travis-ci
+  go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 matrix:
   allow_failures:
     - go: tip

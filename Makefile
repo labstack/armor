@@ -1,11 +1,11 @@
 IMAGE = labstack/armor
-VERSION = 0.4.11
+VERSION = 0.4.12
 
 run:
 	go run cmd/armor/main.go
 
 publish:
-	git tag $(VERSION)
+	git tag v$(VERSION)
 	git push origin --tags
 	goreleaser --rm-dist
 	docker build -t $(IMAGE):$(VERSION) -t $(IMAGE) .

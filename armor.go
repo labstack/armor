@@ -28,7 +28,7 @@ type (
 		WriteTimeout  time.Duration      `json:"write_timeout"`
 		RawPlugins    []plugin.RawPlugin `json:"plugins"`
 		Hosts         Hosts              `json:"hosts"`
-		HomeDir       string             `json:"-"`
+		RootDir       string             `json:"-"`
 		Store         store.Store        `json:"-"`
 		Plugins       []plugin.Plugin    `json:"-"`
 		Echo          *echo.Echo         `json:"-"`
@@ -92,7 +92,7 @@ type (
 )
 
 const (
-	Version = "0.4.11"
+	Version = "0.4.12"
 	Website = "https://armor.labstack.com"
 )
 
