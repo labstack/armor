@@ -44,7 +44,7 @@ Type `armor` in your terminal
    ___
   / _ | ______ _  ___  ____
  / __ |/ __/  ' \/ _ \/ __/
-/_/ |_/_/ /_/_/_/\___/_/    v0.4.12
+/_/ |_/_/ /_/_/_/\___/_/    v0.4.13
 
 Uncomplicated, modern HTTP server
 https://armor.labstack.com
