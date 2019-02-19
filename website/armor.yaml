@@ -1,0 +1,5 @@
+address: :80
+plugins:
+  - name: logger
+  - name: static
+    root: /var/www
