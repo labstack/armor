@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 )
 
-// GetConfigForClient implements the 
+// GetConfigForClient implements the Config.GetClientCertificate callback
 func (a *Armor) GetConfigForClient(clientHelloInfo *tls.ClientHelloInfo) (*tls.Config, error) {
 	// Get the host from the hello info
 	host := a.Hosts[clientHelloInfo.ServerName]
