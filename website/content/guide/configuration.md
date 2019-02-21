@@ -9,41 +9,42 @@ description = "Armor configuration"
 Armor accepts configuration in YAML format, command-line option `-c` can be used
 to specify a config file, e.g. `armor -c config.yaml`.
 
-Name | Type | Description
-:--- | :--- | :----------
-`address` | string | HTTP listen address e.g. `:8080` listens to all IP address on port 8080
-`read_timeout` | number | Maximum duration in seconds before timing out read of the request
-`write_timeout` | number | Maximum duration before timing out write of the response
-`tls` | object | TLS configuration
-`plugins` | array | Global plugins
-`hosts` | object | Virtual hosts
+| Name            | Type   | Description                                                             |
+| :-------------- | :----- | :---------------------------------------------------------------------- |
+| `address`       | string | HTTP listen address e.g. `:8080` listens to all IP address on port 8080 |
+| `read_timeout`  | number | Maximum duration in seconds before timing out read of the request       |
+| `write_timeout` | number | Maximum duration before timing out write of the response                |
+| `tls`           | object | TLS configuration                                                       |
+| `plugins`       | array  | Global plugins                                                          |
+| `hosts`         | object | Virtual hosts                                                           |
 
 `tls`
 
-Name | Type | Description
-:--- | :--- | :----------
-`address` | string | HTTPS listen address. Default value `:80`
-`cert_file` | string | Certificate file
-`key_file` | string | Key file
-`auto` | bool | Enable automatic certificates from https://letsencrypt.org
-`cache_dir` | string | Cache directory to store certificates from https://letsencrypt.org. Default value `~/.armor/cache`.
-`email` | string | Email optionally specifies a contact email address.
-`directory_url` | string | Defines the ACME CA directory endpoint. If empty, LetsEncryptURL is used (acme.LetsEncryptURL).
+| Name            | Type   | Description                                                                                         |
+| :-------------- | :----- | :-------------------------------------------------------------------------------------------------- |
+| `address`       | string | HTTPS listen address. Default value `:80`                                                           |
+| `cert_file`     | string | Certificate file                                                                                    |
+| `key_file`      | string | Key file                                                                                            |
+| `auto`          | bool   | Enable automatic certificates from https://letsencrypt.org                                          |
+| `cache_dir`     | string | Cache directory to store certificates from https://letsencrypt.org. Default value `~/.armor/cache`. |
+| `email`         | string | Email optionally specifies a contact email address.                                                 |
+| `directory_url` | string | Defines the ACME CA directory endpoint. If empty, LetsEncryptURL is used (acme.LetsEncryptURL).     |
 
 `hosts`
 
-Name | Type | Description
-:--- | :--- | :----------
-`cert_file` | string | Certificate file
-`key_file` | string | Key file
-`plugins` | array | Host plugins
-`paths` | object | Paths
+| Name            | Type   | Description                                                                            |
+| :-------------- | :----- | :------------------------------------------------------------------------------------- |
+| `cert_file`     | string | Certificate file                                                                       |
+| `key_file`      | string | Key file                                                                               |
+| `plugins`       | array  | Host plugins                                                                           |
+| `paths`         | object | Paths                                                                                  |
+| `client_ca_der` | array  | A list of client CA encoded as base64 DER if set client must provide valid certificate |
 
 `paths`
 
-Name | Type | Description
-:--- | :--- | :----------
-`plugins` | array | Path plugins
+| Name      | Type  | Description  |
+| :-------- | :---- | :----------- |
+| `plugins` | array | Path plugins |
 
 ## [Plugins]({{< ref "plugins/redirect.md">}})
 
@@ -92,6 +93,8 @@ hosts:
           targets:
           - url: http://api
   armor.labstack.com:
+    client_ca_der:
+    - "MIIDSzCCAjOgAwI......E/lYx0qGtr0xHQ=="
     paths:
       "/":
         plugins:
