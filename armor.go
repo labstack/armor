@@ -76,7 +76,7 @@ type (
 		Paths       Paths              `json:"paths"`
 		Plugins     []plugin.Plugin    `json:"-"`
 		Echo        *echo.Echo         `json:"-"`
-		ClientCAs   []string           `json:"client_ca_der"`
+		ClientCAs   []string           `json:"client_ca"`
 		TLSConfig   *tls.Config        `json:"-"`
 	}
 

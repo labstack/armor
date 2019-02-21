@@ -32,13 +32,13 @@ to specify a config file, e.g. `armor -c config.yaml`.
 
 `hosts`
 
-| Name            | Type   | Description                                                                            |
-| :-------------- | :----- | :------------------------------------------------------------------------------------- |
-| `cert_file`     | string | Certificate file                                                                       |
-| `key_file`      | string | Key file                                                                               |
-| `plugins`       | array  | Host plugins                                                                           |
-| `paths`         | object | Paths                                                                                  |
-| `client_ca_der` | array  | A list of client CA encoded as base64 DER if set client must provide valid certificate |
+| Name        | Type   | Description                                                                                                                 |
+| :---------- | :----- | :-------------------------------------------------------------------------------------------------------------------------- |
+| `cert_file` | string | Certificate file                                                                                                            |
+| `key_file`  | string | Key file                                                                                                                    |
+| `plugins`   | array  | Host plugins                                                                                                                |
+| `paths`     | object | Paths                                                                                                                       |
+| `client_ca` | array  | A list of client CA (certificate authority) certificate encoded as base64 DER. If set client must provide valid certificate |
 
 `paths`
 
