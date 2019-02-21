@@ -1,6 +1,7 @@
 package armor
 
 import (
+	"crypto/tls"
 	"sync"
 	"time"
 
@@ -75,6 +76,8 @@ type (
 		Paths       Paths              `json:"paths"`
 		Plugins     []plugin.Plugin    `json:"-"`
 		Echo        *echo.Echo         `json:"-"`
+		ClientCAs   []string           `json:"client_ca_der"`
+		TLSConfig   *tls.Config        `json:"-"`
 	}
 
 	Path struct {
