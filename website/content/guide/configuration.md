@@ -20,15 +20,16 @@ to specify a config file, e.g. `armor -c config.yaml`.
 
 `tls`
 
-| Name            | Type   | Description                                                                                         |
-| :-------------- | :----- | :-------------------------------------------------------------------------------------------------- |
-| `address`       | string | HTTPS listen address. Default value `:80`                                                           |
-| `cert_file`     | string | Certificate file                                                                                    |
-| `key_file`      | string | Key file                                                                                            |
-| `auto`          | bool   | Enable automatic certificates from https://letsencrypt.org                                          |
-| `cache_dir`     | string | Cache directory to store certificates from https://letsencrypt.org. Default value `~/.armor/cache`. |
-| `email`         | string | Email optionally specifies a contact email address.                                                 |
-| `directory_url` | string | Defines the ACME CA directory endpoint. If empty, LetsEncryptURL is used (acme.LetsEncryptURL).     |
+| Name            | Type   | Description                                                                                                 |
+| :-------------- | :----- | :---------------------------------------------------------------------------------------------------------- |
+| `address`       | string | HTTPS listen address. Default value `:80`                                                                   |
+| `cert_file`     | string | Certificate file                                                                                            |
+| `key_file`      | string | Key file                                                                                                    |
+| `auto`          | bool   | Enable automatic certificates from https://letsencrypt.org                                                  |
+| `cache_dir`     | string | Cache directory to store certificates from https://letsencrypt.org. Default value `~/.armor/cache`.         |
+| `email`         | string | Email optionally specifies a contact email address.                                                         |
+| `directory_url` | string | Defines the ACME CA directory endpoint. If empty, LetsEncryptURL is used (acme.LetsEncryptURL).             |
+| `secured`       | bool   | If enable, the minimum TLS version is set to 1.2, the ciphers are AEAD and forward secrecy algorithms only. |
 
 `hosts`
 

@@ -45,11 +45,10 @@ func (a *Armor) NewHTTP() (h *HTTP) {
 	if a.TLS != nil {
 		e.TLSServer = &http.Server{
 			Addr:         a.TLS.Address,
-			TLSConfig:    new(tls.Config),
+			TLSConfig:    a.setupTLSConfig(),
 			ReadTimeout:  a.ReadTimeout * time.Second,
 			WriteTimeout: a.WriteTimeout * time.Second,
 		}
-		e.TLSServer.TLSConfig.GetConfigForClient = a.GetConfigForClient
 		e.AutoTLSManager.Email = a.TLS.Email
 		e.AutoTLSManager.Client = new(acme.Client)
 		if a.TLS.DirectoryURL != "" {

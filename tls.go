@@ -11,6 +11,27 @@ func init() {
 	os.Setenv("GODEBUG", os.Getenv("GODEBUG")+",tls13=1")
 }
 
+// setupTLSConfig builds the TLS configuration
+func (a *Armor) setupTLSConfig() *tls.Config {
+	ret := new(tls.Config)
+	ret.GetConfigForClient = a.GetConfigForClient
+
+	if a.TLS.Secured {
+		ret.MinVersion = tls.VersionTLS12
+		ret.CipherSuites = []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+		}
+	}
+
+	return ret
+}
+
 // GetConfigForClient implements the Config.GetClientCertificate callback
 func (a *Armor) GetConfigForClient(clientHelloInfo *tls.ClientHelloInfo) (*tls.Config, error) {
 	// Get the host from the hello info
