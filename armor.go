@@ -46,7 +46,7 @@ type (
 		CacheDir     string `json:"cache_dir"`
 		Email        string `json:"email"`
 		DirectoryURL string `json:"directory_url"`
-		Secured      bool `json:"secured"`
+		Secured      bool   `json:"secured"`
 	}
 
 	Admin struct {
