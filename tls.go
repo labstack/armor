@@ -36,8 +36,10 @@ func (a *Armor) setupTLSConfig() *tls.Config {
 func (a *Armor) GetConfigForClient(clientHelloInfo *tls.ClientHelloInfo) (*tls.Config, error) {
 	// Get the host from the hello info
 	host := a.Hosts[clientHelloInfo.ServerName]
-	if len(host.ClientCAs) == 0 {
-		return nil, nil
+	// If the host or the clientCAs are not configured the function
+	// returns the default TLS configuration
+	if host == nil || len(host.ClientCAs) == 0 {
+		return a.setupTLSConfig(), nil
 	}
 
 	// Use existing host config if exist
