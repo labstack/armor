@@ -39,7 +39,7 @@ func (a *Armor) GetConfigForClient(clientHelloInfo *tls.ClientHelloInfo) (*tls.C
 	// If the host or the clientCAs are not configured the function
 	// returns the default TLS configuration
 	if host == nil || len(host.ClientCAs) == 0 {
-		return a.setupTLSConfig(), nil
+		return nil, nil
 	}
 
 	// Use existing host config if exist
