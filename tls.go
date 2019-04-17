@@ -4,7 +4,33 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/base64"
+	"os"
 )
+
+func init() {
+	os.Setenv("GODEBUG", os.Getenv("GODEBUG")+",tls13=1")
+}
+
+// setupTLSConfig builds the TLS configuration
+func (a *Armor) setupTLSConfig() *tls.Config {
+	cfg := new(tls.Config)
+	cfg.GetConfigForClient = a.GetConfigForClient
+
+	if a.TLS.Secured {
+		cfg.MinVersion = tls.VersionTLS12
+		cfg.CipherSuites = []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+		}
+	}
+
+	return cfg
+}
 
 // GetConfigForClient implements the Config.GetClientCertificate callback
 func (a *Armor) GetConfigForClient(clientHelloInfo *tls.ClientHelloInfo) (*tls.Config, error) {
@@ -13,7 +39,7 @@ func (a *Armor) GetConfigForClient(clientHelloInfo *tls.ClientHelloInfo) (*tls.C
 	// If the host or the clientCAs are not configured the function
 	// returns the default TLS configuration
 	if host == nil || len(host.ClientCAs) == 0 {
-		return a.setupTLSConfig(), nil
+		return nil, nil
 	}
 
 	// Use existing host config if exist
