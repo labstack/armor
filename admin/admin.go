@@ -3,6 +3,7 @@ package admin
 import (
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/admin/api"
+	"github.com/labstack/armor/store"
 	"github.com/labstack/echo"
 )
 
@@ -11,7 +12,19 @@ func loadPlugins(a *armor.Armor) (err error) {
 	if err != nil {
 		return
 	}
+
+	routingPlugins := []*store.Plugin{}
+
 	for _, p := range plugins {
+		switch p.Name {
+		case "proxy", "static":
+			routingPlugins = append(routingPlugins, p)
+			continue
+		}
+		a.LoadPlugin(p, false)
+	}
+
+	for _, p := range routingPlugins {
 		a.LoadPlugin(p, false)
 	}
 	return
