@@ -64,10 +64,6 @@ func (p *Proxy) Update(plugin Plugin) {
 	p.Initialize()
 }
 
-func (*Proxy) Priority() int {
-	return 1
-}
-
 func (p *Proxy) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	p.mutex.RLock()
 	defer p.mutex.RUnlock()

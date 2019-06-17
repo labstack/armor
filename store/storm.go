@@ -33,7 +33,7 @@ func (s *Storm) FindPlugin(id string) (p *Plugin, err error) {
 
 func (s *Storm) FindPlugins() (plugins []*Plugin, err error) {
 	plugins = []*Plugin{}
-	if err = s.All(&plugins); err != nil {
+	if err = s.Select().OrderBy("Order").Find(&plugins); err != nil {
 		return
 	}
 	return plugins, decodeRawPlugin(plugins)

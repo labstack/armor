@@ -22,6 +22,7 @@ type (
 	Plugin struct {
 		ID        string           `json:"id" db:"id" storm:"id"`
 		Name      string           `json:"name" db:"name"`
+		Order     int              `json:"order" db:"order"`
 		Host      string           `json:"host" db:"host"`
 		Path      string           `json:"path" db:"path"`
 		Config    types.JSONText   `json:"config" db:"config"`
@@ -44,7 +45,8 @@ const (
 func decodeRawPlugin(plugins []*Plugin) (err error) {
 	for _, p := range plugins {
 		p.Raw = plugin.RawPlugin{
-			"name": p.Name,
+			"name":  p.Name,
+			"order": p.Order,
 		}
 		if err = json.Unmarshal(p.Config, &p.Raw); err != nil {
 			return

@@ -23,10 +23,6 @@ func (f *File) Update(p Plugin) {
 	f.Initialize()
 }
 
-func (*File) Priority() int {
-	return 1
-}
-
 func (f *File) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		f.mutex.RLock()

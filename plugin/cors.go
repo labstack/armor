@@ -16,10 +16,6 @@ func (c *CORS) Initialize() {
 	c.Middleware = middleware.CORSWithConfig(c.CORSConfig)
 }
 
-func (*CORS) Priority() int {
-	return 1
-}
-
 func (c *CORS) Update(p Plugin) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()

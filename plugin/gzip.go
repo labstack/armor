@@ -23,10 +23,6 @@ func (g *Gzip) Update(p Plugin) {
 	g.Initialize()
 }
 
-func (*Gzip) Priority() int {
-	return 1
-}
-
 func (g *Gzip) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	g.mutex.RLock()
 	defer g.mutex.RUnlock()

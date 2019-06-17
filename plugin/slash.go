@@ -28,10 +28,6 @@ func (s *AddTrailingSlash) Update(p Plugin) {
 	s.Initialize()
 }
 
-func (*AddTrailingSlash) Priority() int {
-	return -1
-}
-
 func (s *AddTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
@@ -47,10 +43,6 @@ func (s *RemoveTrailingSlash) Update(p Plugin) {
 	defer s.mutex.Unlock()
 	s.TrailingSlashConfig = p.(*RemoveTrailingSlash).TrailingSlashConfig
 	s.Initialize()
-}
-
-func (*RemoveTrailingSlash) Priority() int {
-	return -1
 }
 
 func (s *RemoveTrailingSlash) Process(next echo.HandlerFunc) echo.HandlerFunc {

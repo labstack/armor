@@ -23,10 +23,6 @@ func (s *Static) Update(p Plugin) {
 	s.Initialize()
 }
 
-func (*Static) Priority() int {
-	return 1
-}
-
 func (s *Static) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()

@@ -23,10 +23,6 @@ func (b *BodyLimit) Update(p Plugin) {
 	b.Initialize()
 }
 
-func (*BodyLimit) Priority() int {
-	return 1
-}
-
 func (b *BodyLimit) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	b.mutex.RLock()
 	defer b.mutex.RUnlock()

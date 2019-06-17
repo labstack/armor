@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/labstack/armor/admin"
 	"io/ioutil"
 	stdLog "log"
 	"net"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/ghodss/yaml"
 	"github.com/labstack/armor"
-	"github.com/labstack/armor/admin"
 	"github.com/labstack/armor/store"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"

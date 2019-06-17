@@ -100,6 +100,20 @@ const (
 	Website = "https://armor.labstack.com"
 )
 
+var (
+	prePlugins = map[string]bool{
+		plugin.PluginLogger:              true,
+		plugin.PluginRedirect:            true,
+		plugin.PluginHTTPSRedirect:       true,
+		plugin.PluginHTTPSWWWRedirect:    true,
+		plugin.PluginHTTPSNonWWWRedirect: true,
+		plugin.PluginWWWRedirect:         true,
+		plugin.PluginAddTrailingSlash:    true,
+		plugin.PluginRemoveTrailingSlash: true,
+		plugin.PluginNonWWWRedirect:      true,
+	}
+)
+
 func (a *Armor) FindHost(name string, add bool) (h *Host) {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
@@ -130,7 +144,7 @@ func (a *Armor) FindHost(name string, add bool) (h *Host) {
 func (a *Armor) AddPlugin(p plugin.Plugin) {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
-	if p.Priority() < 0 {
+	if p.Order() < 0 {
 		a.Echo.Pre(p.Process)
 	} else {
 		a.Echo.Use(p.Process)
@@ -222,14 +236,20 @@ func (a *Armor) SavePlugins() {
 	}
 
 	// Save
+	i, j := -50, 0
 	for _, p := range plugins {
 		p.Source = store.File
 		p.ID = util.ID()
 		now := time.Now()
 		p.CreatedAt = now
 		p.UpdatedAt = now
-
-		// Insert
+		if _, ok := prePlugins[p.Name]; ok {
+			i++
+			p.Order = i
+		} else {
+			j++
+			p.Order = j
+		}
 		if err := a.Store.AddPlugin(p); err != nil {
 			panic(err)
 		}

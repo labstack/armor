@@ -23,10 +23,6 @@ func (r *Rewrite) Update(p Plugin) {
 	r.Initialize()
 }
 
-func (*Rewrite) Priority() int {
-	return 1
-}
-
 func (r *Rewrite) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()

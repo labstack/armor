@@ -23,10 +23,6 @@ func (l *Logger) Update(p Plugin) {
 	l.Initialize()
 }
 
-func (*Logger) Priority() int {
-	return -1
-}
-
 func (l *Logger) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	l.mutex.RLock()
 	defer l.mutex.RUnlock()

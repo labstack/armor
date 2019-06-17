@@ -53,7 +53,8 @@ func (pg *Postgres) FindPlugin(id string) (p *Plugin, err error) {
 		}
 	}
 	p.Raw = plugin.RawPlugin{
-		"name": p.Name,
+		"name":  p.Name,
+		"order": p.Order,
 	}
 	err = json.Unmarshal(p.Config, &p.Raw)
 	return

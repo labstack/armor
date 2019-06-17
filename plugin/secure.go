@@ -23,10 +23,6 @@ func (s *Secure) Update(p Plugin) {
 	s.Initialize()
 }
 
-func (*Secure) Priority() int {
-	return 1
-}
-
 func (s *Secure) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()

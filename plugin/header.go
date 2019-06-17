@@ -27,10 +27,6 @@ func (h *Header) Update(p Plugin) {
 	h.Initialize()
 }
 
-func (*Header) Priority() int {
-	return 1
-}
-
 func (h *Header) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	h.mutex.RLock()
 	defer h.mutex.RUnlock()

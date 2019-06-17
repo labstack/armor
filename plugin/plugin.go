@@ -21,15 +21,16 @@ type (
 		Initialize()
 		Update(Plugin)
 		Process(echo.HandlerFunc) echo.HandlerFunc
-		Priority() int
+		Order() int
 	}
 
 	RawPlugin map[string]interface{}
 
 	// Base defines the base struct for plugins.
 	Base struct {
-		name  string
 		mutex *sync.RWMutex
+		name  string
+		order int
 		// TODO: to disable
 		Skip       string              `yaml:"skip"`
 		Middleware echo.MiddlewareFunc `yaml:"-"`
@@ -46,47 +47,69 @@ type (
 	}
 )
 
+const (
+	// Plugin types
+	PluginBodyLimit           = "body-limit"
+	PluginLogger              = "logger"
+	PluginRedirect            = "redirect"
+	PluginHTTPSRedirect       = "https-redirect"
+	PluginHTTPSWWWRedirect    = "https-www-redirect"
+	PluginHTTPSNonWWWRedirect = "https-non-www-redirect"
+	PluginWWWRedirect         = "www-redirect"
+	PluginNonWWWRedirect      = "non-www-redirect"
+	PluginAddTrailingSlash    = "add-trailing-slash"
+	PluginRemoveTrailingSlash = "remove-trailing-slash"
+	PluginRewrite             = "rewrite"
+	PluginSecure              = "secure"
+	PluginCORS                = "cors"
+	PluginGzip                = "gzip"
+	PluginHeader              = "header"
+	PluginProxy               = "proxy"
+	PluginStatic              = "static"
+	PluginFile                = "file"
+)
+
 var (
 	bufferPool sync.Pool
 
 	// DefaultLookup function
 	DefaultLookup = func(base Base) (p Plugin) {
 		switch base.Name() {
-		case "body-limit":
+		case PluginBodyLimit:
 			p = &BodyLimit{Base: base}
-		case "logger":
+		case PluginLogger:
 			p = &Logger{Base: base}
-		case "redirect":
+		case PluginRedirect:
 			p = &Redirect{Base: base}
-		case "https-redirect":
+		case PluginHTTPSRedirect:
 			p = &HTTPSRedirect{Base: base}
-		case "https-www-redirect":
+		case PluginHTTPSWWWRedirect:
 			p = &HTTPSWWWRedirect{Base: base}
-		case "https-non-www-redirect":
+		case PluginHTTPSNonWWWRedirect:
 			p = &HTTPSNonWWWRedirect{Base: base}
-		case "www-redirect":
+		case PluginWWWRedirect:
 			p = &WWWRedirect{Base: base}
-		case "non-www-redirect":
+		case PluginNonWWWRedirect:
 			p = &NonWWWRedirect{Base: base}
-		case "add-trailing-slash":
+		case PluginAddTrailingSlash:
 			p = &AddTrailingSlash{Base: base}
-		case "remove-trailing-slash":
+		case PluginRemoveTrailingSlash:
 			p = &RemoveTrailingSlash{Base: base}
-		case "rewrite":
+		case PluginRewrite:
 			p = &Rewrite{Base: base}
-		case "secure":
+		case PluginSecure:
 			p = &Secure{Base: base}
-		case "cors":
+		case PluginCORS:
 			p = &CORS{Base: base}
-		case "gzip":
+		case PluginGzip:
 			p = &Gzip{Base: base}
-		case "header":
+		case PluginHeader:
 			p = &Header{Base: base}
-		case "proxy":
+		case PluginProxy:
 			p = &Proxy{Base: base}
-		case "static":
+		case PluginStatic:
 			p = &Static{Base: base}
-		case "file":
+		case PluginFile:
 			p = &File{Base: base}
 		}
 		return
@@ -106,9 +129,11 @@ func init() {
 }
 
 func (rp RawPlugin) Name() string {
-	name := rp["name"].(string)
-	delete(rp, "name")
-	return name
+	return rp["name"].(string)
+}
+
+func (rp RawPlugin) Order() int {
+	return rp["order"].(int)
 }
 
 func (rp RawPlugin) JSON() []byte {
@@ -124,6 +149,7 @@ func Decode(r RawPlugin, e *echo.Echo, l *log.Logger) (p Plugin) {
 	name := r.Name()
 	base := Base{
 		name:   name,
+		order:  r.Order(),
 		mutex:  new(sync.RWMutex),
 		Skip:   "false",
 		Echo:   e,
@@ -145,6 +171,10 @@ func Decode(r RawPlugin, e *echo.Echo, l *log.Logger) (p Plugin) {
 
 func (b *Base) Name() string {
 	return b.name
+}
+
+func (b *Base) Order() int {
+	return b.order
 }
 
 func NewTemplate(t string) *Template {

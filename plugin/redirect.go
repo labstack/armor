@@ -67,10 +67,6 @@ func (r *Redirect) Update(p Plugin) {
 	r.Initialize()
 }
 
-func (*Redirect) Priority() int {
-	return -1
-}
-
 func (r *Redirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
@@ -90,10 +86,6 @@ func (r *HTTPSRedirect) Update(p Plugin) {
 	r.Initialize()
 }
 
-func (*HTTPSRedirect) Priority() int {
-	return -1
-}
-
 func (r *HTTPSRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
@@ -109,10 +101,6 @@ func (r *HTTPSWWWRedirect) Update(p Plugin) {
 	defer r.mutex.Unlock()
 	r.RedirectConfig = p.(*HTTPSWWWRedirect).RedirectConfig
 	r.Initialize()
-}
-
-func (*HTTPSWWWRedirect) Priority() int {
-	return -1
 }
 
 func (r *HTTPSWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
@@ -140,10 +128,6 @@ func (r *HTTPSNonWWWRedirect) Update(p Plugin) {
 	r.Initialize()
 }
 
-func (*HTTPSNonWWWRedirect) Priority() int {
-	return -1
-}
-
 func (r *HTTPSNonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
@@ -161,10 +145,6 @@ func (r *WWWRedirect) Update(p Plugin) {
 	r.Initialize()
 }
 
-func (*WWWRedirect) Priority() int {
-	return -1
-}
-
 func (r *WWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
@@ -180,10 +160,6 @@ func (r *NonWWWRedirect) Update(p Plugin) {
 	defer r.mutex.Unlock()
 	r.RedirectConfig = p.(*NonWWWRedirect).RedirectConfig
 	r.Initialize()
-}
-
-func (*NonWWWRedirect) Priority() int {
-	return -1
 }
 
 func (r *NonWWWRedirect) Process(next echo.HandlerFunc) echo.HandlerFunc {
