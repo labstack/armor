@@ -9,4 +9,3 @@ hosts:
         targets:
         - name: cloud
           url: http://localhost:9090
-    

@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/store"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type (

@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/armor/plugin"
 	"github.com/labstack/armor/store"
 	"github.com/labstack/armor/util"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func decodePath(c echo.Context) string {

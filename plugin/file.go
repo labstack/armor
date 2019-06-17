@@ -1,6 +1,6 @@
 package plugin
 
-import "github.com/labstack/echo"
+import "github.com/labstack/echo/v4"
 
 type (
 	FileConfig struct {

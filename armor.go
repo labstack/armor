@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/armor/plugin"
 	"github.com/labstack/armor/store"
 	"github.com/labstack/armor/util"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
 )
@@ -76,7 +76,7 @@ type (
 		RawPlugins  []plugin.RawPlugin `json:"plugins"`
 		Paths       Paths              `json:"paths"`
 		Plugins     []plugin.Plugin    `json:"-"`
-		Echo        *echo.Echo         `json:"-"`
+		Group       *echo.Group        `json:"-"`
 		ClientCAs   []string           `json:"client_ca"`
 		TLSConfig   *tls.Config        `json:"-"`
 	}
@@ -119,9 +119,8 @@ func (a *Armor) FindHost(name string, add bool) (h *Host) {
 	// Initialize host
 	if !h.initialized {
 		h.Paths = make(Paths)
-		h.Echo = echo.New()
+		h.Group = a.Echo.Host(name)
 		h.Name = name
-		h.Echo.Logger = a.Logger
 		h.initialized = true
 	}
 
@@ -162,7 +161,7 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 	} else if p.Host != "" && p.Path == "" {
 		// Host level
 		host := a.FindHost(p.Host, true)
-		p := plugin.Decode(p.Raw, host.Echo, a.Logger)
+		p := plugin.Decode(p.Raw, a.Echo, a.Logger)
 		p.Initialize()
 		if update {
 			host.UpdatePlugin(p)
@@ -173,7 +172,7 @@ func (a *Armor) LoadPlugin(p *store.Plugin, update bool) {
 		// Path level
 		host := a.FindHost(p.Host, true)
 		path := host.FindPath(p.Path)
-		p := plugin.Decode(p.Raw, host.Echo, a.Logger)
+		p := plugin.Decode(p.Raw, a.Echo, a.Logger)
 		p.Initialize()
 		if update {
 			path.UpdatePlugin(p)
@@ -251,7 +250,7 @@ func (h *Host) FindPath(name string) (p *Path) {
 	// Initialize path
 	if !p.initialized {
 		p.Name = name
-		p.Group = h.Echo.Group(name)
+		p.Group = h.Group.Group(name)
 		p.initialized = true
 	}
 
@@ -261,11 +260,7 @@ func (h *Host) FindPath(name string) (p *Path) {
 func (h *Host) AddPlugin(p plugin.Plugin) {
 	h.mutex.Lock()
 	defer h.mutex.Unlock()
-	if p.Priority() < 0 {
-		h.Echo.Pre(p.Process)
-	} else {
-		h.Echo.Use(p.Process)
-	}
+	h.Group.Use(p.Process)
 	h.Plugins = append(h.Plugins, p)
 }
 

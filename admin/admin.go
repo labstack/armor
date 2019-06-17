@@ -3,7 +3,7 @@ package admin
 import (
 	"github.com/labstack/armor"
 	"github.com/labstack/armor/admin/api"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func loadPlugins(a *armor.Armor) (err error) {

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/labstack/armor/util"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/labstack/tunnel-client"
 	tutil "github.com/labstack/tunnel-client/util"
@@ -65,18 +65,6 @@ func (a *Armor) NewHTTP() (h *HTTP) {
 			})
 			return next(c)
 		}
-	})
-
-	// Route all requests
-	e.Any("/*", func(c echo.Context) (err error) {
-		req := c.Request()
-		res := c.Response()
-		host := a.FindHost(util.StripPort(req.Host), false)
-		if host == nil {
-			return echo.ErrNotFound
-		}
-		host.Echo.ServeHTTP(res, req)
-		return
 	})
 
 	return
