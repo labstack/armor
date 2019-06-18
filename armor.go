@@ -2,6 +2,7 @@ package armor
 
 import (
 	"crypto/tls"
+	"net"
 	"sync"
 	"time"
 
@@ -20,6 +21,7 @@ type (
 		mutex         sync.RWMutex
 		Name          string             `json:"name"`
 		Address       string             `json:"address"`
+		Port          string             `json:"-"`
 		TLS           *TLS               `json:"tls"`
 		Admin         *Admin             `json:"admin"`
 		Storm         *Storm             `json:"storm"`
@@ -133,7 +135,7 @@ func (a *Armor) FindHost(name string, add bool) (h *Host) {
 	// Initialize host
 	if !h.initialized {
 		h.Paths = make(Paths)
-		h.Group = a.Echo.Host(name)
+		h.Group = a.Echo.Host(net.JoinHostPort(name, a.Port))
 		h.Name = name
 		h.initialized = true
 	}
