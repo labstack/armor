@@ -114,7 +114,7 @@ func initConfig() {
 	if a.Address == "" {
 		a.Address = ":80"
 	}
-	a.Port, _, _ = net.SplitHostPort(a.Address)
+	_, a.Port, _ = net.SplitHostPort(a.Address)
 	if a.Storm == nil {
 		a.Storm = &armor.Storm{
 			URI: filepath.Join(a.RootDir, "storm.db"),
