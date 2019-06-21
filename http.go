@@ -43,6 +43,7 @@ func (a *Armor) NewHTTP() (h *HTTP) {
 		WriteTimeout: a.WriteTimeout * time.Second,
 	}
 	if a.TLS != nil {
+		_, a.TLS.Port, _ = net.SplitHostPort(a.TLS.Address)
 		e.TLSServer = &http.Server{
 			Addr:         a.TLS.Address,
 			TLSConfig:    a.setupTLSConfig(),
@@ -89,8 +90,7 @@ func (h *HTTP) Start() error {
 		a.Colorer.Printf("⇨ serving from %s (Local)\n", a.Colorer.Green("http://localhost"+a.Address))
 		ip := util.PrivateIP()
 		if ip != "" {
-			_, port, _ := net.SplitHostPort(a.Address)
-			a.Colorer.Printf("⇨ serving from %s (Intranet)\n", a.Colorer.Green(fmt.Sprintf("http://%s:%s", ip, port)))
+			a.Colorer.Printf("⇨ serving from %s (Intranet)\n", a.Colorer.Green(fmt.Sprintf("http://%s:%s", ip, a.Port)))
 		}
 	} else {
 		a.Colorer.Printf("⇨ http server started on %s\n", a.Colorer.Green(a.Address))

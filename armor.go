@@ -42,6 +42,7 @@ type (
 
 	TLS struct {
 		Address      string `json:"address"`
+		Port         string `json:"-"`
 		CertFile     string `json:"cert_file"`
 		KeyFile      string `json:"key_file"`
 		Auto         bool   `json:"auto"`
@@ -134,9 +135,11 @@ func (a *Armor) FindHost(name string, add bool) (h *Host) {
 
 	// Initialize host
 	if !h.initialized {
+		h.Name = name
 		h.Paths = make(Paths)
 		h.Group = a.Echo.Host(net.JoinHostPort(name, a.Port))
-		h.Name = name
+		routers := a.Echo.Routers()
+		routers[net.JoinHostPort(name, a.TLS.Port)] = routers[name]
 		h.initialized = true
 	}
 
