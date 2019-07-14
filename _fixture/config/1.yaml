@@ -1,11 +1,10 @@
-name: test
-address: :8080
+address: :7000
 plugins:
   - name: logger
-hosts:
-  localhost:
-    plugins:
-      - name: proxy
-        targets:
-        - name: cloud
-          url: http://localhost:9090
+  - name: redirect
+    from: /docs
+    to: /docs/api/currency/convert
+    code: 302
+  - name: static
+    root: /Users/vr/Projects/labstack/web/build
+    html5: true

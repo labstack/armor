@@ -1,0 +1,13 @@
+address: ":8000"
+tls:
+  address: ":4430"
+  cert_file: _fixture/cert.pem
+  key_file: _fixture/key.pem
+  key_pinning: true
+hosts:
+  localhost:
+    plugins:
+      - name: static
+        html5: true
+        browse: true
+        root: "."

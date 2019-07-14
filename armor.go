@@ -99,7 +99,7 @@ type (
 )
 
 const (
-	Version = "0.4.13"
+	Version = "0.4.14"
 	Website = "https://armor.labstack.com"
 )
 
@@ -114,6 +114,7 @@ var (
 		plugin.PluginAddTrailingSlash:    true,
 		plugin.PluginRemoveTrailingSlash: true,
 		plugin.PluginNonWWWRedirect:      true,
+		plugin.PluginRewrite:             true,
 	}
 )
 
