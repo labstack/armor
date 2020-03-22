@@ -1,14 +1,9 @@
 language: go
 go:
-    - 1.12.x
-    - 1.11.x
-    - tip
-env:
-  - GO111MODULE=on
+    - 1.14.x
+
 script:
-  go test -race -coverprofile=coverage.txt -covermode=atomic ./...
-after_success:
+  - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+  after_success:
   - bash <(curl -s https://codecov.io/bash)
-matrix:
-  allow_failures:
-    - go: tip
