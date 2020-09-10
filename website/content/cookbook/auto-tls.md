@@ -15,7 +15,7 @@ HTML page.
 - [Install Armor]({{< ref "guide.md#installation">}})
 - Copy config `config.yaml` to `/etc/armor`
 - Copy `index.html` to `/var/www/test`
-- Start Armor `armor -c /etc/armor/config.json`
+- Start Armor `armor -c /etc/armor/config.yaml`
 - Browse to `http://test.lab.st`, and in a few seconds TLS certificate will be installed automatically.
 
 ## Maintainers
