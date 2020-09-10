@@ -13,7 +13,7 @@ HTML page.
 
 - Have a domain that resolves to an IP address via `A` or `CNAME` DNS record
 - [Install Armor]({{< ref "guide.md#installation">}})
-- Copy config `config.json` to `/etc/armor`
+- Copy config `config.yaml` to `/etc/armor`
 - Copy `index.html` to `/var/www/test`
 - Start Armor `armor -c /etc/armor/config.json`
 - Browse to `http://test.lab.st`, and in a few seconds TLS certificate will be installed automatically.
@@ -24,7 +24,7 @@ HTML page.
 
 ## Source
 
-`config.json`
+`config.yaml`
 
 ```yaml
 ---
